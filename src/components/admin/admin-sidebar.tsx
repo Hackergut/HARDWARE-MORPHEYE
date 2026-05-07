@@ -28,7 +28,7 @@ const navItems: { icon: React.ElementType; label: string; page: Page }[] = [
 ]
 
 export function AdminSidebar() {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
   const { navigate, currentPage } = useNavigationStore()
   const logout = useAdminAuthStore((s) => s.logout)
 

@@ -204,7 +204,7 @@ export function CheckoutPage() {
         className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
       >
         <ArrowLeft className="size-4" />
-        Back to Cart
+        Return to Cart
       </button>
 
       <h1 className="mb-8 text-2xl font-bold text-white">Checkout</h1>

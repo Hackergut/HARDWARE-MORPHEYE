@@ -172,6 +172,17 @@ export function CategoriesSection() {
                 )
               })}
         </div>
+
+        {/* View All Categories Link */}
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => navigate('shop')}
+            className="group flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/50 px-5 py-2.5 text-sm font-medium text-neutral-400 transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/5 hover:text-cyan-400 hover:shadow-md hover:shadow-cyan-500/5"
+          >
+            View All Categories
+            <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </button>
+        </div>
       </div>
     </section>
   )

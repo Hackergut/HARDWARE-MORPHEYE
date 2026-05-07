@@ -49,9 +49,9 @@ export function HeroSection() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="mb-6"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-xs font-medium text-cyan-400 backdrop-blur-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wide text-cyan-400 backdrop-blur-sm uppercase">
             <Shield className="size-3.5" />
-            Trusted by 50,000+ crypto holders
+            Trusted by 50,000+ Crypto Holders
           </span>
         </motion.div>
 
@@ -61,15 +61,16 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
           className="mb-6 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-7xl"
         >
-          Secure Your Crypto with{' '}
-          <span className="text-gradient-cyan">Certified Hardware Wallets</span>
+          Secure Your Crypto{' '}
+          <br className="hidden sm:block" />
+          <span className="text-gradient-cyan">with Certified Hardware Wallets</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-          className="mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base lg:text-lg text-neutral-400"
+          className="mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base lg:text-lg text-neutral-300/80 leading-relaxed"
         >
           Authorized reseller of Ledger, Trezor &amp; Keystone. Free shipping on
           orders over $150. Every device certified authentic.
@@ -91,6 +92,10 @@ export function HeroSection() {
           <Button
             variant="outline"
             size="lg"
+            onClick={() => {
+              const el = document.getElementById('why-choose-morpheye')
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }}
             className="w-full sm:w-auto border-neutral-700 px-8 text-sm sm:text-base text-white hover:bg-neutral-800 hover:text-white"
           >
             Learn More

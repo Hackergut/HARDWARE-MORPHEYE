@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -22,6 +23,7 @@ import {
   Home,
   ChevronDown,
   Lock,
+  X,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -88,6 +90,144 @@ function extractFeatures(product: Product): string[] {
   return [...new Set(features)].slice(0, 6)
 }
 
+function getEstimatedDelivery(): { startDate: Date; endDate: Date; startStr: string; endStr: string } {
+  const now = new Date()
+  const addBusinessDays = (start: Date, days: number): Date => {
+    const date = new Date(start)
+    let addedDays = 0
+    while (addedDays < days) {
+      date.setDate(date.getDate() + 1)
+      const dayOfWeek = date.getDay()
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        addedDays++
+      }
+    }
+    return date
+  }
+
+  const startDate = addBusinessDays(now, 5)
+  const endDate = addBusinessDays(now, 7)
+
+  const formatShort = (d: Date): string => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`
+  }
+
+  return {
+    startDate,
+    endDate,
+    startStr: formatShort(startDate),
+    endStr: formatShort(endDate),
+  }
+}
+
+function LightboxOverlay({
+  images,
+  activeIndex,
+  onClose,
+  onPrev,
+  onNext,
+  productName,
+}: {
+  images: string[]
+  activeIndex: number
+  onClose: () => void
+  onPrev: () => void
+  onNext: () => void
+  productName: string
+}) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') onPrev()
+      if (e.key === 'ArrowRight') onNext()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [onClose, onPrev, onNext])
+
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+        aria-label="Close lightbox"
+      >
+        <X className="size-5" />
+      </button>
+
+      {/* Image counter */}
+      <div className="absolute bottom-6 left-6 z-10 rounded-lg bg-black/70 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+        {activeIndex + 1}/{images.length}
+      </div>
+
+      {/* Previous arrow */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onPrev()
+          }}
+          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+          aria-label="Previous image"
+        >
+          <ChevronLeft className="size-6" />
+        </button>
+      )}
+
+      {/* Next arrow */}
+      {images.length > 1 && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onNext()
+          }}
+          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+          aria-label="Next image"
+        >
+          <ChevronRight className="size-6" />
+        </button>
+      )}
+
+      {/* Image */}
+      <motion.div
+        key={activeIndex}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="relative max-h-[85vh] max-w-[90vw]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {images[activeIndex] && (
+          <Image
+            src={images[activeIndex]}
+            alt={`${productName} - Image ${activeIndex + 1}`}
+            width={1200}
+            height={1200}
+            className="max-h-[85vh] w-auto rounded-lg object-contain"
+            sizes="90vw"
+          />
+        )}
+      </motion.div>
+    </motion.div>,
+    document.body
+  )
+}
+
 export function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null)
   const [related, setRelated] = useState<Product[]>([])
@@ -100,12 +240,19 @@ export function ProductDetail() {
   const [addedToCart, setAddedToCart] = useState(false)
   const [imageZoom, setImageZoom] = useState(false)
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 })
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
   const { selectedProductId, navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
   const { toggleItem, isInWishlist } = useWishlistStore()
   const showNotification = useNotificationStore((s) => s.show)
   const addRecentlyViewed = useRecentlyViewedStore((s) => s.addProduct)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (selectedProductId) {
@@ -158,6 +305,29 @@ export function ProductDetail() {
     }
   }
 
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }, [])
+
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false)
+  }, [])
+
+  const lightboxPrev = useCallback(() => {
+    if (!product?.images) return
+    setLightboxIndex((prev) =>
+      prev === 0 ? product.images.length - 1 : prev - 1
+    )
+  }, [product?.images])
+
+  const lightboxNext = useCallback(() => {
+    if (!product?.images) return
+    setLightboxIndex((prev) =>
+      prev === product.images.length - 1 ? 0 : prev + 1
+    )
+  }, [product?.images])
+
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -208,6 +378,8 @@ export function ProductDetail() {
           ((product.comparePrice - product.price) / product.comparePrice) * 100
         )
       : null
+
+  const estimatedDelivery = getEstimatedDelivery()
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -342,8 +514,17 @@ export function ProductDetail() {
             {/* Zoom indicator */}
             {imageZoom && product.images?.[activeImage] && !imgErrors[activeImage] && (
               <div className="pointer-events-none absolute bottom-3 right-3 rounded-lg bg-black/70 px-2.5 py-1 text-[10px] text-neutral-300 backdrop-blur-sm">
-                🔍 Zoom
+                Zoom
               </div>
+            )}
+
+            {/* Click to open lightbox */}
+            {product.images?.[activeImage] && !imgErrors[activeImage] && (
+              <button
+                onClick={() => openLightbox(activeImage)}
+                className="absolute inset-0 z-10 cursor-zoom-in"
+                aria-label="Open full-screen image view"
+              />
             )}
 
             {/* Navigation arrows */}
@@ -355,7 +536,7 @@ export function ProductDetail() {
                       prev === 0 ? product.images.length - 1 : prev - 1
                     )
                   }
-                  className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition hover:bg-black/70"
+                  className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition hover:bg-black/70"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
@@ -365,7 +546,7 @@ export function ProductDetail() {
                       prev === product.images.length - 1 ? 0 : prev + 1
                     )
                   }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition hover:bg-black/70"
+                  className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white backdrop-blur-sm transition hover:bg-black/70"
                 >
                   <ChevronRight className="size-4" />
                 </button>
@@ -516,6 +697,23 @@ export function ProductDetail() {
             </span>
           </div>
 
+          {/* Estimated Delivery */}
+          {stockStatus !== 'out_of_stock' && (
+            <div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-4 py-3">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10">
+                <Truck className="size-4 text-cyan-400" />
+              </div>
+              <div>
+                <span className="text-sm font-medium text-white">
+                  Estimated delivery:
+                </span>{' '}
+                <span className="text-sm text-neutral-300">
+                  {estimatedDelivery.startStr} - {estimatedDelivery.endStr}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Quantity + Actions */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -559,7 +757,7 @@ export function ProductDetail() {
                       className="flex items-center gap-2"
                     >
                       <CheckCircle2 className="size-5" />
-                      Added ✓
+                      Added
                     </motion.span>
                   ) : (
                     <motion.span
@@ -744,6 +942,20 @@ export function ProductDetail() {
 
       {/* Product Reviews */}
       {product && <ProductReviews productId={product.id} />}
+
+      {/* Image Lightbox */}
+      {mounted && lightboxOpen && product.images && product.images.length > 0 && (
+        <AnimatePresence>
+          <LightboxOverlay
+            images={product.images}
+            activeIndex={lightboxIndex}
+            onClose={closeLightbox}
+            onPrev={lightboxPrev}
+            onNext={lightboxNext}
+            productName={product.name}
+          />
+        </AnimatePresence>
+      )}
     </motion.div>
   )
 }

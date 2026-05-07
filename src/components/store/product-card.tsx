@@ -9,6 +9,7 @@ import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
 import { useNotificationStore } from '@/store/notification-store'
 import { useComparisonStore } from '@/store/comparison-store'
+import { useQuickViewStore } from '@/store/quick-view-store'
 import { trackAddToCart } from '@/components/integrations/meta-pixel'
 import { calculateDiscount } from '@/lib/utils/cart-calculator'
 import { Button } from '@/components/ui/button'
@@ -59,6 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const { toggleItem, isInWishlist } = useWishlistStore()
   const showNotification = useNotificationStore((s) => s.show)
   const { addItem: addComparisonItem, removeItem: removeComparisonItem, isInComparison } = useComparisonStore()
+  const openQuickView = useQuickViewStore((s) => s.open)
 
   const inWishlist = isInWishlist(product.id)
   const inComparison = isInComparison(product.id)
@@ -273,10 +275,10 @@ export function ProductCard({ product }: ProductCardProps) {
               variant="ghost"
               onClick={(e) => {
                 e.stopPropagation()
-                navigate('product', { productId: product.id })
+                openQuickView(product.id)
               }}
               className="size-8 text-neutral-400 transition-all duration-300 hover:text-cyan-400"
-              title="View Details"
+              title="Quick View"
             >
               <Eye className="size-4" />
             </Button>

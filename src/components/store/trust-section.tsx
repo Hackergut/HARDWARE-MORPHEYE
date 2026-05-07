@@ -64,7 +64,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
 
 export function TrustSection() {
   return (
-    <section className="border-y border-neutral-800 bg-neutral-900/30 py-16">
+    <section id="why-choose-morpheye" className="border-y border-neutral-800 bg-neutral-900/30 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
           <h2 className="text-2xl font-bold text-white">

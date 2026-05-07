@@ -146,7 +146,7 @@ export function NewsletterSection() {
           <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-600">
             <ShieldCheck className="size-3" />
             <span>
-              We respect your privacy. Unsubscribe anytime. No spam, ever.
+              No spam. Unsubscribe anytime.
             </span>
           </div>
         </motion.div>

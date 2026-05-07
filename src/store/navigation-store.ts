@@ -37,13 +37,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   history: ['home'],
   navigate: (page, params) => {
     const state = get()
+    const newHistory = [...state.history, page].slice(-30) // Keep last 30 entries max
     set({
       currentPage: page,
       selectedProductId: params?.productId ?? null,
       selectedCategory: params?.category ?? null,
       searchQuery: params?.query ?? null,
       selectedBrand: params?.brand ?? null,
-      history: [...state.history, page],
+      history: newHistory,
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   },

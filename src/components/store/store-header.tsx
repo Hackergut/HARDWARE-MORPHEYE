@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ShoppingCart, Menu, Shield, X, Heart, ArrowLeftRight } from 'lucide-react'
+import { Search, ShoppingCart, Menu, Shield, X, Heart, ArrowLeftRight, Package, Tag } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
@@ -17,8 +17,26 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from '@/components/ui/sheet'
+
+interface SuggestionProduct {
+  id: string
+  name: string
+  slug: string
+  price: number
+  images: string[]
+}
+
+interface SuggestionCategory {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Suggestions {
+  products: SuggestionProduct[]
+  categories: SuggestionCategory[]
+}
 
 const navLinks = [
   { label: 'Home', page: 'home' as const },
@@ -30,10 +48,84 @@ export function StoreHeader() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [suggestions, setSuggestions] = useState<Suggestions>({ products: [], categories: [] })
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const { navigate, currentPage } = useNavigationStore()
   const itemCount = useCartStore((s) => s.getItemCount())
   const wishlistCount = useWishlistStore((s) => s.getItemCount())
   const comparisonCount = useComparisonStore((s) => s.getItemCount())
+
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (query.length < 2) {
+      setSuggestions({ products: [], categories: [] })
+      setShowSuggestions(false)
+      return
+    }
+    setSuggestionsLoading(true)
+    try {
+      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
+      if (res.ok) {
+        const data = await res.json()
+        setSuggestions(data)
+        setShowSuggestions(true)
+      }
+    } catch {
+      // ignore
+    } finally {
+      setSuggestionsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+    if (!searchOpen) return
+    debounceRef.current = setTimeout(() => {
+      fetchSuggestions(searchValue.trim())
+    }, 300)
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [searchValue, searchOpen, fetchSuggestions])
+
+  // Close suggestions on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Close suggestions on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Scroll listener for border glow effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,11 +133,32 @@ export function StoreHeader() {
       navigate('shop', { query: searchValue.trim() })
       setSearchValue('')
       setSearchOpen(false)
+      setShowSuggestions(false)
     }
   }
 
+  const handleProductClick = (productId: string) => {
+    navigate('product', { productId })
+    setSearchValue('')
+    setSearchOpen(false)
+    setShowSuggestions(false)
+  }
+
+  const handleCategoryClick = (categorySlug: string) => {
+    navigate('shop', { category: categorySlug })
+    setSearchValue('')
+    setSearchOpen(false)
+    setShowSuggestions(false)
+  }
+
+  const hasSuggestions = suggestions.products.length > 0 || suggestions.categories.length > 0
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#0a0a0a]/80 backdrop-blur-xl">
+    <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
+      scrolled
+        ? 'border-cyan-500/30 bg-[#0a0a0a]/95 shadow-[0_1px_20px_rgba(6,182,212,0.08)]'
+        : 'border-neutral-800/80 bg-[#0a0a0a]/80'
+    } backdrop-blur-xl`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <button
@@ -90,47 +203,177 @@ export function StoreHeader() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 md:flex">
-          <AnimatePresence>
-            {searchOpen ? (
-              <motion.form
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 220, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                onSubmit={handleSearch}
-                className="flex items-center gap-2 overflow-hidden"
-              >
-                <Input
-                  autoFocus
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search products..."
-                  className="h-8 border-neutral-700 bg-neutral-900 text-sm text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchOpen(false)
-                    setSearchValue('')
-                  }}
-                  className="text-neutral-400 hover:text-white"
+          <div ref={searchContainerRef} className="relative">
+            <AnimatePresence>
+              {searchOpen ? (
+                <motion.form
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 260, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onSubmit={handleSearch}
+                  className="flex items-center gap-2 overflow-hidden"
                 >
-                  <X className="size-4" />
-                </button>
-              </motion.form>
-            ) : (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSearchOpen(true)}
-                  className="text-neutral-400 hover:text-white"
+                  <Input
+                    autoFocus
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onFocus={() => {
+                      if (searchValue.trim().length >= 2 && hasSuggestions) {
+                        setShowSuggestions(true)
+                      }
+                    }}
+                    placeholder="Search products..."
+                    className="h-8 border-neutral-700 bg-neutral-900 text-sm text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchOpen(false)
+                      setSearchValue('')
+                      setShowSuggestions(false)
+                    }}
+                    className="text-neutral-400 hover:text-white"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSearchOpen(true)}
+                    className="text-neutral-400 hover:text-white"
+                  >
+                    <Search className="size-4" />
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Search Suggestions Dropdown */}
+            <AnimatePresence>
+              {showSuggestions && searchValue.trim().length >= 2 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full z-[60] mt-2 w-80 overflow-hidden rounded-lg border border-neutral-800 bg-[#111111] shadow-xl shadow-black/40"
                 >
-                  <Search className="size-4" />
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                    {/* Loading indicator */}
+                    {suggestionsLoading && (
+                      <div className="flex items-center justify-center px-4 py-3">
+                        <div className="size-4 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+                      </div>
+                    )}
+
+                    {!suggestionsLoading && (
+                      <>
+                        {/* Category Suggestions */}
+                        {suggestions.categories.length > 0 && (
+                          <div>
+                            <div className="flex items-center gap-2 px-4 pt-3 pb-1.5">
+                              <Tag className="size-3 text-cyan-400" />
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                                Categories
+                              </span>
+                            </div>
+                            {suggestions.categories.map((cat) => (
+                              <button
+                                key={cat.id}
+                                onClick={() => handleCategoryClick(cat.slug)}
+                                className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-cyan-500/10"
+                              >
+                                <div className="flex size-7 items-center justify-center rounded-md bg-neutral-800">
+                                  <Tag className="size-3.5 text-cyan-400" />
+                                </div>
+                                <span className="text-sm text-neutral-300 group-hover:text-cyan-400">
+                                  {cat.name}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Divider between categories and products */}
+                        {suggestions.categories.length > 0 && suggestions.products.length > 0 && (
+                          <div className="mx-4 border-t border-neutral-800" />
+                        )}
+
+                        {/* Product Suggestions */}
+                        {suggestions.products.length > 0 && (
+                          <div>
+                            <div className="flex items-center gap-2 px-4 pt-3 pb-1.5">
+                              <Package className="size-3 text-cyan-400" />
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                                Products
+                              </span>
+                            </div>
+                            {suggestions.products.map((prod) => (
+                              <button
+                                key={prod.id}
+                                onClick={() => handleProductClick(prod.id)}
+                                className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-cyan-500/10"
+                              >
+                                <div className="relative size-10 shrink-0 overflow-hidden rounded-md border border-neutral-800 bg-neutral-800">
+                                  {prod.images?.[0] ? (
+                                    <Image
+                                      src={prod.images[0]}
+                                      alt={prod.name}
+                                      fill
+                                      className="object-cover"
+                                      sizes="40px"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full items-center justify-center">
+                                      <Package className="size-4 text-neutral-600" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm text-neutral-300">
+                                    {prod.name}
+                                  </p>
+                                  <p className="text-xs font-semibold text-cyan-400">
+                                    ${prod.price.toFixed(2)}
+                                  </p>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* No results */}
+                        {!hasSuggestions && !suggestionsLoading && (
+                          <div className="px-4 py-6 text-center">
+                            <p className="text-sm text-neutral-500">
+                              No results for &ldquo;{searchValue}&rdquo;
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Footer link */}
+                        {hasSuggestions && (
+                          <div className="border-t border-neutral-800">
+                            <button
+                              onClick={handleSearch}
+                              className="flex w-full items-center justify-center gap-2 px-4 py-3 text-xs font-medium text-cyan-400 transition-colors hover:bg-cyan-500/10"
+                            >
+                              <Search className="size-3" />
+                              View all results for &ldquo;{searchValue}&rdquo;
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Wishlist */}
           <Button

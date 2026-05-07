@@ -13,6 +13,8 @@ const quickLinks = [
   { label: 'Shop', page: 'shop' as const },
   { label: 'Bundles', page: 'shop' as const },
   { label: 'Contact', page: 'contact' as const },
+  { label: 'Privacy Policy', page: null as string | null },
+  { label: 'Terms of Service', page: null as string | null },
 ]
 
 const supportLinks = [
@@ -110,12 +112,18 @@ export function StoreFooter() {
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <button
-                    onClick={() => navigate(link.page)}
-                    className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
-                  >
-                    {link.label}
-                  </button>
+                  {link.page ? (
+                    <button
+                      onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
+                      className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <span className="cursor-pointer text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400">
+                      {link.label}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

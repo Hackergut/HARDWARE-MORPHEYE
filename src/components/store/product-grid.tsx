@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight, Package } from 'lucide-react'
+import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight, Package, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Input } from '@/components/ui/input'
@@ -47,6 +47,8 @@ interface ProductGridProps {
   totalCount?: number
 }
 
+const PRODUCTS_PER_PAGE = 12
+
 export function ProductGrid({
   title = 'All Products',
   products: initialProducts,
@@ -65,6 +67,8 @@ export function ProductGrid({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [isLoading, setIsLoading] = useState(loading)
   const [searchFocused, setSearchFocused] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const { searchQuery, selectedBrand: navBrand, navigate } = useNavigationStore()
 
   useEffect(() => {
@@ -98,20 +102,22 @@ export function ProductGrid({
       if (search) params.set('search', search)
       if (selectedBrand && selectedBrand !== 'all')
         params.set('brand', selectedBrand)
-      params.set('limit', '24')
+      params.set('page', String(page))
+      params.set('limit', String(PRODUCTS_PER_PAGE))
 
       const res = await fetch(`/api/products?${params}`)
       if (res.ok) {
         const data = await res.json()
         setProducts(data.products || [])
         setTotalProductCount(data.pagination?.total || 0)
+        setTotalPages(data.pagination?.totalPages || 1)
       }
     } catch {
       // ignore
     } finally {
       setIsLoading(false)
     }
-  }, [selectedCategory, sort, search, selectedBrand])
+  }, [selectedCategory, sort, search, selectedBrand, page])
 
   const fetchCategories = async () => {
     try {
@@ -137,22 +143,46 @@ export function ProductGrid({
     }
   }
 
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1)
+  }, [selectedCategory, sort, search, selectedBrand])
+
   useEffect(() => {
     if (!initialProducts) {
       fetchProducts()
     }
-  }, [selectedCategory, sort, fetchProducts, initialProducts, selectedBrand])
+  }, [selectedCategory, sort, fetchProducts, initialProducts, selectedBrand, page])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    setPage(1)
     fetchProducts()
   }
 
   const clearSearch = () => {
     setSearch('')
+    setPage(1)
     if (search) {
       setTimeout(() => fetchProducts(), 0)
     }
+  }
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = []
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
+    } else {
+      pages.push(1)
+      if (page > 3) pages.push('ellipsis')
+      const start = Math.max(2, page - 1)
+      const end = Math.min(totalPages - 1, page + 1)
+      for (let i = start; i <= end; i++) pages.push(i)
+      if (page < totalPages - 2) pages.push('ellipsis')
+      pages.push(totalPages)
+    }
+    return pages
   }
 
   if (isLoading) {
@@ -447,6 +477,67 @@ export function ProductGrid({
             ))}
           </AnimatePresence>
         </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-center gap-1 pt-4"
+        >
+          {/* Previous Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="h-9 border-neutral-800 bg-neutral-900/50 px-3 text-neutral-400 hover:border-neutral-700 hover:bg-neutral-800 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="mr-1 size-4" />
+            Previous
+          </Button>
+
+          {/* Page Numbers */}
+          <div className="flex items-center gap-1">
+            {getPageNumbers().map((p, i) =>
+              p === 'ellipsis' ? (
+                <span
+                  key={`ellipsis-${i}`}
+                  className="flex size-9 items-center justify-center text-sm text-neutral-600"
+                >
+                  ...
+                </span>
+              ) : (
+                <Button
+                  key={p}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p)}
+                  className={`h-9 w-9 p-0 transition-all duration-200 ${
+                    page === p
+                      ? 'border-cyan-500 bg-cyan-500 text-black font-bold hover:bg-cyan-400 hover:text-black shadow-md shadow-cyan-500/20'
+                      : 'border-neutral-800 bg-neutral-900/50 text-neutral-400 hover:border-neutral-700 hover:bg-neutral-800 hover:text-white'
+                  }`}
+                >
+                  {p}
+                </Button>
+              )
+            )}
+          </div>
+
+          {/* Next Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="h-9 border-neutral-800 bg-neutral-900/50 px-3 text-neutral-400 hover:border-neutral-700 hover:bg-neutral-800 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Next
+            <ChevronRight className="ml-1 size-4" />
+          </Button>
+        </motion.div>
       )}
     </div>
   )
