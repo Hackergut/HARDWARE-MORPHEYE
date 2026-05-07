@@ -40,8 +40,8 @@ export function AdminLogin() {
       <div className="w-full max-w-md">
         {/* Branding */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="mb-4 flex size-16 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10">
-            <Shield className="size-8 text-emerald-500" />
+          <div className="mb-4 flex size-16 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10">
+            <Shield className="size-8 text-cyan-400" />
           </div>
           <div className="flex items-center gap-2">
             <Image
@@ -57,7 +57,7 @@ export function AdminLogin() {
         </div>
 
         {/* Login Card */}
-        <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl shadow-emerald-500/5">
+        <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl shadow-cyan-500/5">
           <div className="mb-6 text-center">
             <h2 className="text-lg font-semibold text-white">Sign In</h2>
             <p className="mt-1 text-sm text-neutral-400">
@@ -80,7 +80,7 @@ export function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@morpheye.com"
                   required
-                  className="border-neutral-700 bg-neutral-800 pl-10 text-white placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="border-neutral-700 bg-neutral-800 pl-10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:ring-cyan-500/20"
                 />
               </div>
             </div>
@@ -99,7 +99,7 @@ export function AdminLogin() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
-                  className="border-neutral-700 bg-neutral-800 pl-10 pr-10 text-white placeholder:text-neutral-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="border-neutral-700 bg-neutral-800 pl-10 pr-10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:ring-cyan-500/20"
                 />
                 <button
                   type="button"
@@ -126,7 +126,7 @@ export function AdminLogin() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-500 text-black font-semibold hover:bg-emerald-600 disabled:opacity-50"
+              className="w-full bg-cyan-500 text-black font-semibold hover:bg-cyan-400 disabled:opacity-50"
             >
               {loading ? (
                 <span className="flex items-center gap-2">

@@ -117,7 +117,7 @@ export function CheckoutPage() {
         </p>
         <Button
           onClick={() => navigate('shop')}
-          className="bg-emerald-500 text-black hover:bg-emerald-600"
+          className="bg-cyan-500 text-black hover:bg-cyan-400"
         >
           Shop Now
         </Button>
@@ -126,7 +126,7 @@ export function CheckoutPage() {
   }
 
   const inputClass =
-    'border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/30'
+    'border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30'
 
   return (
     <motion.div
@@ -136,7 +136,7 @@ export function CheckoutPage() {
     >
       <button
         onClick={() => navigate('cart')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-emerald-500"
+        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
       >
         <ArrowLeft className="size-4" />
         Back to Cart
@@ -311,7 +311,7 @@ export function CheckoutPage() {
                   <span className="text-neutral-400">Shipping</span>
                   <span
                     className={
-                      shipping === 0 ? 'text-emerald-500' : 'text-white'
+                      shipping === 0 ? 'text-cyan-400' : 'text-white'
                     }
                   >
                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
@@ -322,7 +322,7 @@ export function CheckoutPage() {
                   <span className="text-base font-semibold text-white">
                     Total
                   </span>
-                  <span className="text-lg font-bold text-emerald-500">
+                  <span className="text-lg font-bold text-cyan-400">
                     ${total.toFixed(2)}
                   </span>
                 </div>
@@ -331,7 +331,7 @@ export function CheckoutPage() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="mt-6 w-full bg-emerald-500 py-5 text-base font-semibold text-black hover:bg-emerald-600 disabled:opacity-60"
+                className="mt-6 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400 disabled:opacity-60"
               >
                 {submitting ? (
                   <>

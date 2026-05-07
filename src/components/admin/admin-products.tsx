@@ -375,7 +375,7 @@ export function AdminProducts() {
         </div>
         <Button
           onClick={openAddDialog}
-          className="bg-emerald-500 text-black font-semibold hover:bg-emerald-600"
+          className="bg-cyan-500 text-black font-semibold hover:bg-cyan-400"
         >
           <Plus className="mr-2 size-4" />
           Add Product
@@ -463,7 +463,7 @@ export function AdminProducts() {
                             {product.name}
                           </p>
                           {product.featured && (
-                            <Badge className="mt-0.5 bg-emerald-500/10 text-[9px] text-emerald-500 border-emerald-500/20">
+                            <Badge className="mt-0.5 bg-cyan-500/10 text-[9px] text-cyan-400 border-cyan-500/20">
                               Featured
                             </Badge>
                           )}
@@ -474,7 +474,7 @@ export function AdminProducts() {
                       {product.brand || '-'}
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-medium text-emerald-500">
+                      <span className="text-sm font-medium text-cyan-400">
                         ${product.price.toFixed(2)}
                       </span>
                       {product.comparePrice &&
@@ -502,7 +502,7 @@ export function AdminProducts() {
                         variant="outline"
                         className={
                           product.active
-                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                            ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
                             : 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20'
                         }
                       >
@@ -515,7 +515,7 @@ export function AdminProducts() {
                           variant="ghost"
                           size="icon"
                           onClick={() => openEditDialog(product)}
-                          className="size-8 text-neutral-400 hover:text-emerald-500"
+                          className="size-8 text-neutral-400 hover:text-cyan-400"
                         >
                           <Pencil className="size-3.5" />
                         </Button>
@@ -739,7 +739,7 @@ export function AdminProducts() {
                   variant="ghost"
                   size="sm"
                   onClick={addImageField}
-                  className="text-emerald-500 hover:text-emerald-400"
+                  className="text-cyan-400 hover:text-cyan-300"
                 >
                   <Plus className="mr-1 size-3" />
                   Add Image
@@ -782,7 +782,7 @@ export function AdminProducts() {
                   variant="ghost"
                   size="sm"
                   onClick={addSpec}
-                  className="text-emerald-500 hover:text-emerald-400"
+                  className="text-cyan-400 hover:text-cyan-300"
                 >
                   <Plus className="mr-1 size-3" />
                   Add Spec
@@ -839,7 +839,7 @@ export function AdminProducts() {
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="bg-emerald-500 text-black font-semibold hover:bg-emerald-600"
+              className="bg-cyan-500 text-black font-semibold hover:bg-cyan-400"
             >
               {saving ? (
                 <span className="flex items-center gap-2">

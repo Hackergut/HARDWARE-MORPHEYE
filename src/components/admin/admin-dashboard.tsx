@@ -55,7 +55,7 @@ const statusColors: Record<string, string> = {
   pending: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
   processing: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   shipped: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-  delivered: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  delivered: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
   cancelled: 'bg-red-500/10 text-red-400 border-red-500/20',
 }
 
@@ -63,7 +63,7 @@ const statusBarColors: Record<string, string> = {
   pending: 'bg-yellow-500',
   processing: 'bg-blue-500',
   shipped: 'bg-purple-500',
-  delivered: 'bg-emerald-500',
+  delivered: 'bg-cyan-500',
   cancelled: 'bg-red-500',
 }
 
@@ -171,7 +171,7 @@ export function AdminDashboard() {
           icon={Package}
           title="Total Products"
           value={data.totalProducts}
-          color="bg-emerald-500/10 text-emerald-500"
+          color="bg-cyan-500/10 text-cyan-400"
         />
         <StatCard
           icon={ShoppingCart}
@@ -202,7 +202,7 @@ export function AdminDashboard() {
         <Card className="border-neutral-800 bg-neutral-900">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base font-semibold text-white">
-              <ShoppingCart className="size-4 text-emerald-500" />
+              <ShoppingCart className="size-4 text-cyan-400" />
               Recent Orders
             </CardTitle>
           </CardHeader>
@@ -261,7 +261,7 @@ export function AdminDashboard() {
         <Card className="border-neutral-800 bg-neutral-900">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base font-semibold text-white">
-              <TrendingUp className="size-4 text-emerald-500" />
+              <TrendingUp className="size-4 text-cyan-400" />
               Orders by Status
             </CardTitle>
           </CardHeader>
@@ -349,7 +349,7 @@ export function AdminDashboard() {
                         </span>
                       </div>
                     </div>
-                    <span className="text-sm font-semibold text-emerald-500">
+                    <span className="text-sm font-semibold text-cyan-400">
                       ${product.price.toFixed(2)}
                     </span>
                   </div>
@@ -369,8 +369,8 @@ export function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-emerald-500/10">
-                <Package className="size-6 text-emerald-500" />
+              <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-cyan-500/10">
+                <Package className="size-6 text-cyan-400" />
               </div>
               <p className="text-sm font-medium text-white">
                 {data.totalProducts} Active Products

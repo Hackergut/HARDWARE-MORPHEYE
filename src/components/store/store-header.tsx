@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, ShoppingCart, Menu, Shield, X } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
@@ -42,23 +41,28 @@ export function StoreHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-800 bg-[#0a0a0a]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-800/80 bg-[#0a0a0a]/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <button
           onClick={() => navigate('home')}
-          className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+          className="flex items-center gap-3 transition-opacity hover:opacity-80"
         >
           <Image
             src="/images/logo.png"
             alt="Morpheye"
             width={36}
             height={36}
-            className="rounded"
+            className="rounded-lg invert"
           />
-          <span className="text-xl font-bold tracking-tight text-white">
-            Morpheye
-          </span>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold tracking-tight text-white">
+              MORPHEYE
+            </span>
+            <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
+              Official Reseller
+            </span>
+          </div>
         </button>
 
         {/* Desktop Nav */}
@@ -71,7 +75,7 @@ export function StoreHeader() {
               }
               className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 currentPage === link.page
-                  ? 'text-emerald-500'
+                  ? 'text-cyan-400'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -97,7 +101,7 @@ export function StoreHeader() {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search products..."
-                  className="h-8 border-neutral-700 bg-neutral-900 text-sm text-white placeholder:text-neutral-500"
+                  className="h-8 border-neutral-700 bg-neutral-900 text-sm text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
                 />
                 <button
                   type="button"
@@ -133,7 +137,7 @@ export function StoreHeader() {
           >
             <ShoppingCart className="size-4" />
             {itemCount > 0 && (
-              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-emerald-500 p-0 text-[10px] font-bold text-black">
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-cyan-500 p-0 text-[10px] font-bold text-black">
                 {itemCount}
               </Badge>
             )}
@@ -144,7 +148,7 @@ export function StoreHeader() {
             variant="ghost"
             size="icon"
             onClick={() => navigate('admin')}
-            className="text-neutral-400 hover:text-emerald-500"
+            className="text-neutral-400 hover:text-cyan-400"
             title="Admin Panel"
           >
             <Shield className="size-4" />
@@ -161,7 +165,7 @@ export function StoreHeader() {
           >
             <ShoppingCart className="size-5" />
             {itemCount > 0 && (
-              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-emerald-500 p-0 text-[10px] font-bold text-black">
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-cyan-500 p-0 text-[10px] font-bold text-black">
                 {itemCount}
               </Badge>
             )}
@@ -178,8 +182,15 @@ export function StoreHeader() {
               className="border-neutral-800 bg-[#0a0a0a] text-white"
             >
               <SheetHeader>
-                <SheetTitle className="text-left text-white">
-                  Morpheye
+                <SheetTitle className="text-left text-white flex items-center gap-2">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Morpheye"
+                    width={24}
+                    height={24}
+                    className="rounded invert"
+                  />
+                  MORPHEYE
                 </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-2 px-4 pt-4">
@@ -195,7 +206,7 @@ export function StoreHeader() {
                     }}
                     className={`rounded-md px-3 py-2.5 text-left text-sm font-medium transition-colors ${
                       currentPage === link.page
-                        ? 'bg-emerald-500/10 text-emerald-500'
+                        ? 'bg-cyan-500/10 text-cyan-400'
                         : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
                     }`}
                   >
@@ -213,7 +224,7 @@ export function StoreHeader() {
                   <Button
                     type="submit"
                     size="icon"
-                    className="bg-emerald-500 text-black hover:bg-emerald-600"
+                    className="bg-cyan-500 text-black hover:bg-cyan-400"
                   >
                     <Search className="size-4" />
                   </Button>

@@ -33,7 +33,7 @@ export function CheckoutSuccess() {
         transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
         className="mb-6"
       >
-        <CheckCircle2 className="size-20 text-emerald-500" />
+        <CheckCircle2 className="size-20 text-cyan-400" />
       </motion.div>
 
       <motion.h1
@@ -62,7 +62,7 @@ export function CheckoutSuccess() {
           className="mb-6 rounded-lg border border-neutral-800 bg-neutral-900 px-6 py-3"
         >
           <p className="text-xs text-neutral-500">Order Number</p>
-          <p className="text-lg font-mono font-bold text-emerald-500">
+          <p className="text-lg font-mono font-bold text-cyan-400">
             {orderNumber}
           </p>
         </motion.div>
@@ -74,7 +74,7 @@ export function CheckoutSuccess() {
         transition={{ delay: 0.7 }}
         className="mb-8 flex items-center gap-2 rounded-lg bg-neutral-900/50 px-4 py-3 text-sm text-neutral-400"
       >
-        <Package className="size-4 text-emerald-500" />
+        <Package className="size-4 text-cyan-400" />
         Estimated delivery: 3–7 business days
       </motion.div>
 
@@ -86,7 +86,7 @@ export function CheckoutSuccess() {
       >
         <Button
           onClick={() => navigate('shop')}
-          className="bg-emerald-500 px-8 text-black hover:bg-emerald-600"
+          className="bg-cyan-500 px-8 text-black hover:bg-cyan-400"
         >
           <ShoppingBag className="mr-2 size-4" />
           Continue Shopping

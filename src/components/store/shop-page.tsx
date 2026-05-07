@@ -42,7 +42,7 @@ export function ShopPage() {
           onClick={() => navigate('shop', {})}
           className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
             activeCategory === 'all'
-              ? 'bg-emerald-500 text-black'
+              ? 'bg-cyan-500 text-black'
               : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'
           }`}
         >
@@ -54,7 +54,7 @@ export function ShopPage() {
             onClick={() => navigate('shop', { category: cat.slug })}
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               activeCategory === cat.slug
-                ? 'bg-emerald-500 text-black'
+                ? 'bg-cyan-500 text-black'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'
             }`}
           >

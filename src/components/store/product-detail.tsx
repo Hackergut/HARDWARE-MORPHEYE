@@ -125,7 +125,7 @@ export function ProductDetail() {
           </h2>
           <Button
             onClick={() => navigate('shop')}
-            className="bg-emerald-500 text-black hover:bg-emerald-600"
+            className="bg-cyan-500 text-black hover:bg-cyan-400"
           >
             Back to Shop
           </Button>
@@ -184,7 +184,7 @@ export function ProductDetail() {
       {/* Breadcrumb */}
       <button
         onClick={() => navigate('shop')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-emerald-500"
+        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
       >
         <ChevronLeft className="size-4" />
         Back to Shop
@@ -247,7 +247,7 @@ export function ProductDetail() {
                   onClick={() => setActiveImage(i)}
                   className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                     i === activeImage
-                      ? 'border-emerald-500'
+                      ? 'border-cyan-500'
                       : 'border-neutral-800 hover:border-neutral-600'
                   }`}
                 >
@@ -286,7 +286,7 @@ export function ProductDetail() {
               </Badge>
             )}
             {product.featured && (
-              <Badge className="bg-emerald-500 text-black">Featured</Badge>
+              <Badge className="bg-cyan-500 text-black">Featured</Badge>
             )}
             {discount && (
               <Badge className="bg-amber-500 text-black">
@@ -322,7 +322,7 @@ export function ProductDetail() {
 
           {/* Price */}
           <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-emerald-500">
+            <span className="text-3xl font-bold text-cyan-400">
               ${product.price.toFixed(2)}
             </span>
             {product.comparePrice &&
@@ -343,7 +343,7 @@ export function ProductDetail() {
             <div
               className={`size-2 rounded-full ${
                 stockStatus === 'in_stock'
-                  ? 'bg-emerald-500'
+                  ? 'bg-cyan-500'
                   : stockStatus === 'low_stock'
                     ? 'bg-amber-500'
                     : 'bg-red-500'
@@ -352,7 +352,7 @@ export function ProductDetail() {
             <span
               className={`text-sm font-medium ${
                 stockStatus === 'in_stock'
-                  ? 'text-emerald-500'
+                  ? 'text-cyan-400'
                   : stockStatus === 'low_stock'
                     ? 'text-amber-500'
                     : 'text-red-500'
@@ -396,7 +396,7 @@ export function ProductDetail() {
                 onClick={handleAddToCart}
                 disabled={stockStatus === 'out_of_stock'}
                 size="lg"
-                className="flex-1 bg-emerald-500 text-base font-semibold text-black hover:bg-emerald-600"
+                className="flex-1 bg-cyan-500 text-base font-semibold text-black hover:bg-cyan-400"
               >
                 <ShoppingCart className="mr-2 size-5" />
                 Add to Cart
@@ -416,15 +416,15 @@ export function ProductDetail() {
           {/* Trust Badges */}
           <div className="flex flex-wrap gap-4 rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
             <div className="flex items-center gap-2 text-xs text-neutral-400">
-              <Shield className="size-4 text-emerald-500" />
+              <Shield className="size-4 text-cyan-400" />
               Authorized Reseller
             </div>
             <div className="flex items-center gap-2 text-xs text-neutral-400">
-              <Truck className="size-4 text-emerald-500" />
+              <Truck className="size-4 text-cyan-400" />
               Secure Shipping
             </div>
             <div className="flex items-center gap-2 text-xs text-neutral-400">
-              <RotateCcw className="size-4 text-emerald-500" />
+              <RotateCcw className="size-4 text-cyan-400" />
               Free Returns
             </div>
           </div>
@@ -465,7 +465,7 @@ export function ProductDetail() {
           {product.description && (
             <Accordion type="single" collapsible>
               <AccordionItem value="description" className="border-neutral-800">
-                <AccordionTrigger className="text-sm font-semibold text-white hover:text-emerald-500">
+                <AccordionTrigger className="text-sm font-semibold text-white hover:text-cyan-400">
                   Full Description
                 </AccordionTrigger>
                 <AccordionContent>

@@ -60,7 +60,7 @@ export function FeaturedSection() {
           <Button
             variant="ghost"
             onClick={() => navigate('shop')}
-            className="text-emerald-500 hover:text-emerald-400"
+            className="text-cyan-400 hover:text-cyan-300"
           >
             Shop All
             <ArrowRight className="ml-1 size-4" />

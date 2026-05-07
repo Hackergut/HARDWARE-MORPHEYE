@@ -36,8 +36,8 @@ export function NewsletterSection() {
           transition={{ duration: 0.6 }}
         >
           <div className="mb-6 flex justify-center">
-            <div className="flex size-14 items-center justify-center rounded-xl bg-emerald-500/10">
-              <Mail className="size-7 text-emerald-500" />
+            <div className="flex size-14 items-center justify-center rounded-xl bg-cyan-500/10">
+              <Mail className="size-7 text-cyan-400" />
             </div>
           </div>
 
@@ -52,7 +52,7 @@ export function NewsletterSection() {
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-6 py-4 text-emerald-500"
+              className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-4 text-cyan-400"
             >
               ✓ You&apos;re subscribed! Check your inbox for a confirmation.
             </motion.div>
@@ -67,11 +67,11 @@ export function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 required
-                className="h-11 border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-emerald-500"
+                className="h-11 border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
               />
               <Button
                 type="submit"
-                className="h-11 bg-emerald-500 px-6 font-semibold text-black hover:bg-emerald-600"
+                className="h-11 bg-cyan-500 px-6 font-semibold text-black hover:bg-cyan-400"
               >
                 Subscribe
                 <ArrowRight className="ml-2 size-4" />

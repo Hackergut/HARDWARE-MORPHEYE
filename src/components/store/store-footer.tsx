@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Send, CreditCard, Wallet } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Button } from '@/components/ui/button'
@@ -10,7 +11,7 @@ import { Separator } from '@/components/ui/separator'
 const quickLinks = [
   { label: 'Home', page: 'home' as const },
   { label: 'Shop', page: 'shop' as const },
-  { label: 'About', page: 'home' as const },
+  { label: 'Bundles', page: 'shop' as const },
   { label: 'Contact', page: 'home' as const },
 ]
 
@@ -48,11 +49,20 @@ export function StoreFooter() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded bg-emerald-500 text-sm font-bold text-black">
-                M
+            <div className="flex items-center gap-2.5">
+              <Image
+                src="/images/logo.png"
+                alt="Morpheye"
+                width={28}
+                height={28}
+                className="rounded invert"
+              />
+              <div className="flex flex-col">
+                <span className="text-lg font-bold tracking-tight text-white">MORPHEYE</span>
+                <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
+                  Official Reseller
+                </span>
               </div>
-              <span className="text-lg font-bold text-white">Morpheye</span>
             </div>
             <p className="text-sm text-neutral-400">
               Authorized Hardware Wallet Reseller
@@ -73,7 +83,7 @@ export function StoreFooter() {
                 <li key={link.label}>
                   <button
                     onClick={() => navigate(link.page)}
-                    className="text-sm text-neutral-400 transition-colors hover:text-emerald-500"
+                    className="text-sm text-neutral-400 transition-colors hover:text-cyan-400"
                   >
                     {link.label}
                   </button>
@@ -88,7 +98,7 @@ export function StoreFooter() {
             <ul className="space-y-2">
               {supportLinks.map((link) => (
                 <li key={link}>
-                  <span className="cursor-pointer text-sm text-neutral-400 transition-colors hover:text-emerald-500">
+                  <span className="cursor-pointer text-sm text-neutral-400 transition-colors hover:text-cyan-400">
                     {link}
                   </span>
                 </li>
@@ -110,18 +120,18 @@ export function StoreFooter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="h-8 border-neutral-700 bg-neutral-900 text-xs text-white placeholder:text-neutral-500"
+                className="h-8 border-neutral-700 bg-neutral-900 text-xs text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
               />
               <Button
                 type="submit"
                 size="sm"
-                className="bg-emerald-500 text-black hover:bg-emerald-600"
+                className="bg-cyan-500 text-black hover:bg-cyan-400"
               >
                 Join
               </Button>
             </form>
             {subscribed && (
-              <p className="mt-2 text-xs text-emerald-500">
+              <p className="mt-2 text-xs text-cyan-400">
                 Thanks for subscribing!
               </p>
             )}
@@ -143,7 +153,7 @@ export function StoreFooter() {
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="text-neutral-500 transition-colors hover:text-emerald-500"
+                className="text-neutral-500 transition-colors hover:text-cyan-400"
               >
                 <social.icon className="size-4" />
               </a>

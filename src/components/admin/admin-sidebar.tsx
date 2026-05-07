@@ -77,7 +77,7 @@ export function AdminSidebar() {
                   }}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-emerald-500/10 text-emerald-500'
+                      ? 'bg-cyan-500/10 text-cyan-400'
                       : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                   }`}
                 >
@@ -112,8 +112,8 @@ export function AdminSidebar() {
       <aside className="hidden md:flex md:w-60 md:flex-col md:border-r md:border-neutral-800 md:bg-neutral-900">
         {/* Logo */}
         <div className="flex h-16 items-center gap-2.5 border-b border-neutral-800 px-5">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10">
-            <Shield className="size-4 text-emerald-500" />
+          <div className="flex size-8 items-center justify-center rounded-lg bg-cyan-500/10">
+            <Shield className="size-4 text-cyan-400" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
@@ -143,7 +143,7 @@ export function AdminSidebar() {
                 onClick={() => navigate(item.page)}
                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-emerald-500/10 text-emerald-500'
+                    ? 'bg-cyan-500/10 text-cyan-400'
                     : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                 }`}
               >

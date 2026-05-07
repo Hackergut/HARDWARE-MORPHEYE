@@ -14,6 +14,10 @@ import { CartPage } from '@/components/store/cart-page'
 import { CheckoutPage } from '@/components/store/checkout-page'
 import { CheckoutSuccess } from '@/components/store/checkout-success'
 import { NotificationToast } from '@/components/store/notification-toast'
+import { AdminLayout } from '@/components/admin/admin-layout'
+import { MetaPixel } from '@/components/integrations/meta-pixel'
+
+const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-contact', 'admin-settings']
 
 function HomePage() {
   return (
@@ -29,6 +33,18 @@ function HomePage() {
 
 export default function Home() {
   const { currentPage } = useNavigationStore()
+
+  const isAdmin = adminPages.includes(currentPage)
+
+  if (isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-white">
+        <AdminLayout />
+        <NotificationToast />
+        <MetaPixel />
+      </div>
+    )
+  }
 
   const renderPage = () => {
     switch (currentPage) {
@@ -55,6 +71,7 @@ export default function Home() {
       <main className="flex-1">{renderPage()}</main>
       <StoreFooter />
       <NotificationToast />
+      <MetaPixel />
     </div>
   )
 }

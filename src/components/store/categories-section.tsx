@@ -71,12 +71,12 @@ export function CategoriesSection() {
                   onClick={() =>
                     navigate('shop', { category: category.slug })
                   }
-                  className="group flex flex-col items-start rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all hover:border-emerald-500/50 hover:bg-neutral-900/80 hover:shadow-lg hover:shadow-emerald-500/5"
+                  className="group flex flex-col items-start rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all hover:border-cyan-500/50 hover:bg-neutral-900/80 hover:shadow-lg hover:shadow-cyan-500/5"
                 >
                   <span className="mb-3 text-3xl">
                     {categoryIcons[category.slug] || '🏷️'}
                   </span>
-                  <h3 className="mb-1 text-lg font-semibold text-white group-hover:text-emerald-500">
+                  <h3 className="mb-1 text-lg font-semibold text-white group-hover:text-cyan-400">
                     {category.name}
                   </h3>
                   {category.description && (

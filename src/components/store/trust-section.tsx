@@ -46,10 +46,10 @@ export function TrustSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="flex flex-col items-center rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-center transition-colors hover:border-emerald-500/30"
+              className="flex flex-col items-center rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-center transition-colors hover:border-cyan-500/30"
             >
-              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-emerald-500/10">
-                <pillar.icon className="size-6 text-emerald-500" />
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-cyan-500/10">
+                <pillar.icon className="size-6 text-cyan-400" />
               </div>
               <h3 className="mb-2 text-sm font-semibold text-white">
                 {pillar.title}

@@ -41,7 +41,7 @@ export function CartPage() {
         </p>
         <Button
           onClick={() => navigate('shop')}
-          className="bg-emerald-500 px-8 text-black hover:bg-emerald-600"
+          className="bg-cyan-500 px-8 text-black hover:bg-cyan-400"
         >
           Shop Now
         </Button>
@@ -58,7 +58,7 @@ export function CartPage() {
       {/* Breadcrumb */}
       <button
         onClick={() => navigate('shop')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-emerald-500"
+        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
       >
         <ArrowLeft className="size-4" />
         Continue Shopping
@@ -143,7 +143,7 @@ export function CartPage() {
                       <Plus className="size-3" />
                     </button>
                   </div>
-                  <span className="text-sm font-bold text-emerald-500">
+                  <span className="text-sm font-bold text-cyan-400">
                     ${(item.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
@@ -168,7 +168,7 @@ export function CartPage() {
                 <span className="text-neutral-400">Shipping</span>
                 <span
                   className={
-                    shipping === 0 ? 'text-emerald-500' : 'text-white'
+                    shipping === 0 ? 'text-cyan-400' : 'text-white'
                   }
                 >
                   {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
@@ -186,7 +186,7 @@ export function CartPage() {
                 <span className="text-base font-semibold text-white">
                   Total
                 </span>
-                <span className="text-lg font-bold text-emerald-500">
+                <span className="text-lg font-bold text-cyan-400">
                   ${total.toFixed(2)}
                 </span>
               </div>
@@ -194,14 +194,14 @@ export function CartPage() {
 
             <Button
               onClick={() => navigate('checkout')}
-              className="mt-6 w-full bg-emerald-500 py-5 text-base font-semibold text-black hover:bg-emerald-600"
+              className="mt-6 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400"
             >
               Proceed to Checkout
             </Button>
 
             <button
               onClick={() => navigate('shop')}
-              className="mt-3 w-full text-center text-sm text-neutral-400 hover:text-emerald-500"
+              className="mt-3 w-full text-center text-sm text-neutral-400 hover:text-cyan-400"
             >
               Continue Shopping
             </button>

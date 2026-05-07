@@ -7,6 +7,8 @@ import { Star, ShoppingCart, Eye, Package } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useNotificationStore } from '@/store/notification-store'
+import { trackAddToCart } from '@/components/integrations/meta-pixel'
+import { calculateDiscount } from '@/lib/utils/cart-calculator'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
@@ -33,12 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const showNotification = useNotificationStore((s) => s.show)
 
   const mainImage = product.images?.[0]
-  const discount =
-    product.comparePrice && product.comparePrice > product.price
-      ? Math.round(
-          ((product.comparePrice - product.price) / product.comparePrice) * 100
-        )
-      : null
+  const discount = calculateDiscount(product.price, product.comparePrice)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -49,6 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
       image: product.images?.[0] || '',
       slug: product.slug,
     })
+    trackAddToCart(product.price, 'USD', product.name)
     showNotification(`${product.name} added to cart`, 'success')
   }
 
@@ -56,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <motion.div
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 transition-shadow hover:shadow-lg hover:shadow-emerald-500/5"
+      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-neutral-800 bg-[#111111] transition-all hover:border-cyan-500/20 hover:shadow-lg hover:shadow-cyan-500/5"
       onClick={() => navigate('product', { productId: product.id })}
     >
       {/* Image */}
@@ -89,7 +87,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className="absolute right-3 top-3 flex flex-col gap-1.5">
           {product.featured && (
-            <Badge className="bg-emerald-500 text-[10px] font-bold text-black">
+            <Badge className="bg-cyan-500 text-[10px] font-bold text-black">
               Featured
             </Badge>
           )}
@@ -136,7 +134,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Price + Actions */}
         <div className="mt-auto flex items-end justify-between">
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-emerald-500">
+            <span className="text-lg font-bold text-cyan-400">
               ${product.price.toFixed(2)}
             </span>
             {product.comparePrice && product.comparePrice > product.price && (
@@ -150,7 +148,7 @@ export function ProductCard({ product }: ProductCardProps) {
               size="icon"
               variant="ghost"
               onClick={handleAddToCart}
-              className="size-8 text-neutral-400 hover:bg-emerald-500/10 hover:text-emerald-500"
+              className="size-8 text-neutral-400 hover:bg-cyan-500/10 hover:text-cyan-400"
               title="Add to Cart"
             >
               <ShoppingCart className="size-4" />
@@ -162,7 +160,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 e.stopPropagation()
                 navigate('product', { productId: product.id })
               }}
-              className="size-8 text-neutral-400 hover:text-emerald-500/10 hover:text-emerald-500"
+              className="size-8 text-neutral-400 hover:text-cyan-400"
               title="View Details"
             >
               <Eye className="size-4" />
