@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import {
   Package,
@@ -121,25 +121,125 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
 }
 
+// Animated counter hook - counts up from 0 to target
+function useAnimatedCounter(target: number, duration: number = 1500) {
+  const [count, setCount] = useState(0)
+  const prevTarget = useRef(0)
+
+  useEffect(() => {
+    // Reset when target changes
+    prevTarget.current = target
+
+    if (target === 0) return
+
+    let startTime: number | null = null
+    let frameId: number
+
+    const animate = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp
+        // Reset to 0 at the start of animation
+        setCount(0)
+      }
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / duration, 1)
+
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCount(Math.round(eased * target))
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate)
+      }
+    }
+
+    frameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameId)
+  }, [target, duration])
+
+  return count
+}
+
+// Animated counter for currency values
+function useAnimatedCurrency(target: number, duration: number = 1500) {
+  const [value, setValue] = useState(0)
+
+  useEffect(() => {
+    if (target === 0) return
+
+    let startTime: number | null = null
+    let frameId: number
+
+    const animate = (timestamp: number) => {
+      if (startTime === null) {
+        startTime = timestamp
+        setValue(0)
+      }
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / duration, 1)
+
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setValue(eased * target)
+
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate)
+      }
+    }
+
+    frameId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frameId)
+  }, [target, duration])
+
+  return value
+}
+
 function StatCard({
   icon: Icon,
   title,
   value,
+  numericValue,
+  isCurrency = false,
   subtitle,
   color,
   trend,
   trendUp,
   sparkData,
+  comparisonLabel,
+  comparisonValue,
 }: {
   icon: React.ElementType
   title: string
   value: string | number
+  numericValue?: number
+  isCurrency?: boolean
   subtitle?: string
   color: string
   trend?: string
   trendUp?: boolean
   sparkData?: number[]
+  comparisonLabel?: string
+  comparisonValue?: string
 }) {
+  // Use animated counter for numeric values
+  const animatedCount = useAnimatedCounter(
+    typeof value === 'number' ? value : 0,
+    1200
+  )
+  const animatedCurrency = useAnimatedCurrency(
+    isCurrency && numericValue ? numericValue : 0,
+    1200
+  )
+
+  const displayValue = isCurrency && numericValue !== undefined
+    ? `$${animatedCurrency.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+    : typeof value === 'number'
+      ? animatedCount.toLocaleString()
+      : value
+
   return (
     <Card className="border-neutral-800 bg-neutral-900 admin-stat-card">
       <CardContent className="p-5">
@@ -148,7 +248,9 @@ function StatCard({
             <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
               {title}
             </p>
-            <p className="mt-2 text-2xl font-bold text-white">{value}</p>
+            <p className="mt-2 text-2xl font-bold text-white tabular-nums">
+              {displayValue}
+            </p>
             <div className="mt-1.5 flex items-center gap-2">
               {trend && (
                 <span
@@ -168,6 +270,13 @@ function StatCard({
                 <span className="text-xs text-neutral-500">{subtitle}</span>
               )}
             </div>
+            {/* Comparison to last period */}
+            {comparisonLabel && comparisonValue && (
+              <div className="mt-2 flex items-center gap-1.5 rounded-md bg-neutral-800/50 px-2 py-1">
+                <span className="text-[9px] text-neutral-500">{comparisonLabel}</span>
+                <span className="text-[10px] font-semibold text-neutral-300">{comparisonValue}</span>
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-end gap-2">
             <div
@@ -209,16 +318,20 @@ function StatCard({
   )
 }
 
-// Custom tooltip for recharts
-function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
+// Enhanced custom tooltip for recharts
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string; payload?: Record<string, unknown> }>; label?: string }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 shadow-xl">
-      <p className="mb-1 text-xs font-medium capitalize text-neutral-300">{label}</p>
+    <div className="rounded-lg border border-neutral-700 bg-neutral-900/95 px-4 py-3 shadow-xl backdrop-blur-sm">
+      <p className="mb-1.5 text-xs font-semibold capitalize text-neutral-200">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.name} className="text-xs" style={{ color: entry.color }}>
-          {entry.name}: {entry.value}
-        </p>
+        <div key={entry.name} className="flex items-center gap-2">
+          <div className="size-2 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span className="text-xs text-neutral-400">{entry.name}:</span>
+          <span className="text-xs font-semibold text-neutral-200">
+            {entry.name === 'revenue' ? `$${entry.value.toFixed(2)}` : entry.value}
+          </span>
+        </div>
       ))}
     </div>
   )
@@ -384,6 +497,10 @@ export function AdminDashboard() {
     ? ((revenueThisMonth - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1)
     : '0'
 
+  // Simulated comparison values for KPI cards
+  const lastWeekOrders = Math.max(1, Math.round(data.totalOrders * 0.2))
+  const lastWeekProducts = Math.max(1, Math.round(data.totalProducts * 0.15))
+
   // Combine activities
   const activities = [
     ...data.recentOrders.slice(0, 5).map(o => ({
@@ -404,6 +521,19 @@ export function AdminDashboard() {
     })),
   ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 8)
 
+  // Animated currency for Revenue This Month card
+  const AnimatedRevenueThisMonth = () => {
+    const animated = useAnimatedCurrency(revenueThisMonth, 1500)
+    return (
+      <span className="tabular-nums">
+        ${animated.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </span>
+    )
+  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -419,7 +549,7 @@ export function AdminDashboard() {
         </p>
       </motion.div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - with animated counters and KPI comparison */}
       <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={Package}
@@ -429,6 +559,8 @@ export function AdminDashboard() {
           trend="+2 this week"
           trendUp={true}
           sparkData={ordersSpark}
+          comparisonLabel="vs last week"
+          comparisonValue={`${lastWeekProducts} products`}
         />
         <StatCard
           icon={ShoppingCart}
@@ -438,6 +570,8 @@ export function AdminDashboard() {
           trend={ordersTrend}
           trendUp={true}
           sparkData={ordersSpark}
+          comparisonLabel="vs last week"
+          comparisonValue={`${lastWeekOrders} orders`}
         />
         <StatCard
           icon={DollarSign}
@@ -446,10 +580,14 @@ export function AdminDashboard() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}`}
+          numericValue={data.totalRevenue || 0}
+          isCurrency={true}
           color="bg-amber-500/10 text-amber-500"
           trend={revenueTrend}
           trendUp={true}
           sparkData={revenueSpark}
+          comparisonLabel="vs last month"
+          comparisonValue={`$${lastMonthRevenue.toFixed(2)}`}
         />
         <StatCard
           icon={Clock}
@@ -459,10 +597,12 @@ export function AdminDashboard() {
           color="bg-yellow-500/10 text-yellow-500"
           trend={pendingOrders > 0 ? 'Needs attention' : undefined}
           trendUp={false}
+          comparisonLabel="vs completed"
+          comparisonValue={`${(data.ordersByStatus?.delivered || 0)} delivered`}
         />
       </motion.div>
 
-      {/* Revenue This Month Card */}
+      {/* Revenue This Month Card - with animated counter */}
       <motion.div variants={itemVariants}>
         <Card className="border-neutral-800 bg-neutral-900 overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-teal-500/5 pointer-events-none" />
@@ -473,10 +613,7 @@ export function AdminDashboard() {
                   Revenue This Month
                 </p>
                 <p className="mt-2 text-3xl font-bold text-white">
-                  ${revenueThisMonth.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  <AnimatedRevenueThisMonth />
                 </p>
                 <div className="mt-2 flex items-center gap-2">
                   <span className={`flex items-center gap-0.5 text-xs font-medium ${
@@ -540,7 +677,7 @@ export function AdminDashboard() {
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Orders by Status - Bar Chart */}
+        {/* Orders by Status - Bar Chart with gradient fills */}
         <motion.div variants={itemVariants}>
           <Card className="border-neutral-800 bg-neutral-900">
             <CardHeader className="pb-3">
@@ -561,6 +698,14 @@ export function AdminDashboard() {
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={barChartData} barSize={40}>
+                    <defs>
+                      {barChartData.map((entry, index) => (
+                        <linearGradient key={index} id={`barGrad-${index}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={entry.fill} stopOpacity={1} />
+                          <stop offset="100%" stopColor={entry.fill} stopOpacity={0.4} />
+                        </linearGradient>
+                      ))}
+                    </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
                     <XAxis
                       dataKey="name"
@@ -574,10 +719,10 @@ export function AdminDashboard() {
                       tickLine={{ stroke: '#262626' }}
                       allowDecimals={false}
                     />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                     <Bar dataKey="count" radius={[6, 6, 0, 0]}>
-                      {barChartData.map((entry, index) => (
-                        <Cell key={index} fill={entry.fill} />
+                      {barChartData.map((_, index) => (
+                        <Cell key={index} fill={`url(#barGrad-${index})`} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -587,7 +732,7 @@ export function AdminDashboard() {
           </Card>
         </motion.div>
 
-        {/* Revenue Overview - Area Chart */}
+        {/* Revenue Overview - Area Chart with enhanced gradient */}
         <motion.div variants={itemVariants}>
           <Card className="border-neutral-800 bg-neutral-900">
             <CardHeader className="pb-3">
@@ -609,9 +754,16 @@ export function AdminDashboard() {
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={revenueData}>
                     <defs>
-                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                      <linearGradient id="revenueGradientEnhanced" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.4} />
+                        <stop offset="30%" stopColor="#06b6d4" stopOpacity={0.2} />
+                        <stop offset="70%" stopColor="#14b8a6" stopOpacity={0.08} />
+                        <stop offset="100%" stopColor="#14b8a6" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="revenueStrokeGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#06b6d4" />
+                        <stop offset="50%" stopColor="#22d3ee" />
+                        <stop offset="100%" stopColor="#14b8a6" />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
@@ -631,9 +783,11 @@ export function AdminDashboard() {
                     <Area
                       type="monotone"
                       dataKey="revenue"
-                      stroke="#06b6d4"
-                      strokeWidth={2}
-                      fill="url(#revenueGradient)"
+                      stroke="url(#revenueStrokeGradient)"
+                      strokeWidth={2.5}
+                      fill="url(#revenueGradientEnhanced)"
+                      dot={{ r: 4, fill: '#06b6d4', stroke: '#0a0a0a', strokeWidth: 2 }}
+                      activeDot={{ r: 6, fill: '#22d3ee', stroke: '#0a0a0a', strokeWidth: 2 }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>

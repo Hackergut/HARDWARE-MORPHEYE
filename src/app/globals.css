@@ -152,6 +152,7 @@
 }
 :root:not(.dark) ::-webkit-scrollbar-thumb {
   background: #ccc;
+  border-radius: 3px;
 }
 :root:not(.dark) ::-webkit-scrollbar-thumb:hover {
   background: #aaa;
@@ -845,4 +846,160 @@
 .gradient-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), rgba(38, 38, 38, 0.5), transparent);
+}
+
+/* ============================================
+   STYLING-1 - Light Mode & Global Enhancements
+   ============================================ */
+
+/* Focus visible styles for accessibility - cyan ring */
+*:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Light mode overrides for custom CSS classes */
+:root:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(229, 229, 229, 0.8);
+}
+
+:root:not(.dark) .glass-card-strong {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(229, 229, 229, 0.6);
+}
+
+:root:not(.dark) .shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(229, 229, 229, 1) 25%,
+    rgba(245, 245, 245, 1) 50%,
+    rgba(229, 229, 229, 1) 75%
+  );
+  background-size: 200% 100%;
+}
+
+:root:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+}
+:root:not(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+:root:not(.dark) .hover-lift:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 0 15px rgba(6, 182, 212, 0.06);
+}
+
+:root:not(.dark) .scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.015) 2px,
+    rgba(0, 0, 0, 0.015) 4px
+  );
+}
+
+:root:not(.dark) .gradient-divider {
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.15), rgba(229, 229, 229, 0.5), transparent);
+}
+
+:root:not(.dark) .product-counter {
+  background: rgba(6, 182, 212, 0.06);
+  border-color: rgba(6, 182, 212, 0.2);
+  color: #525252;
+}
+
+:root:not(.dark) .product-counter .count-value {
+  color: #0891b2;
+}
+
+:root:not(.dark) .shop-banner {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(20, 184, 166, 0.04) 100%);
+  border-bottom-color: rgba(6, 182, 212, 0.15);
+}
+
+:root:not(.dark) .shop-banner::before {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+}
+
+:root:not(.dark) .grid-pattern {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+}
+
+:root:not(.dark) .morpheye-gradient-subtle {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(20, 184, 166, 0.06) 50%, rgba(16, 185, 129, 0.04) 100%);
+}
+
+:root:not(.dark) .header-glow::after {
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.15), transparent);
+}
+
+:root:not(.dark) .header-glow.scrolled::after {
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.08);
+}
+
+:root:not(.dark) .admin-stat-card:hover {
+  box-shadow: 0 8px 30px rgba(6, 182, 212, 0.08), 0 0 15px rgba(6, 182, 212, 0.04);
+}
+
+:root:not(.dark) .shine-effect::after {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.3) 55%,
+    transparent 60%
+  );
+}
+
+:root:not(.dark) .category-shine::before {
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(6, 182, 212, 0.06) 45%,
+    rgba(6, 182, 212, 0.12) 50%,
+    rgba(6, 182, 212, 0.06) 55%,
+    transparent 60%
+  );
+}
+
+/* Smooth scroll-to-top animation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Page transition - smoother with slight scale */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(6px) scale(0.998);
+}
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all 0.25s ease-out;
+}
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.998);
+  transition: all 0.2s ease-in;
+}
+
+/* Thin cyan accent scrollbar globally */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

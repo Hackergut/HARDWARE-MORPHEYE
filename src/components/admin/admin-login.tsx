@@ -206,7 +206,7 @@ export function AdminLogin() {
             <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider mb-1.5">Demo Credentials</p>
             <div className="flex items-center gap-4 text-xs text-neutral-400">
               <span>Email: <code className="text-neutral-300">admin@morpheye.com</code></span>
-              <span>Pass: <code className="text-neutral-300">admin123</code></span>
+              <span>Pass: <code className="text-neutral-300">morpheye2024</code></span>
             </div>
           </div>
         </motion.div>

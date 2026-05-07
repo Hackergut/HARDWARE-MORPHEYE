@@ -35,6 +35,9 @@ import {
   MoveHorizontal,
   HelpCircle,
   MessageCircleQuestion,
+  Bell,
+  BellRing,
+  Mail as MailIcon,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -44,6 +47,7 @@ import { useRecentlyViewedStore } from '@/store/recently-viewed-store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
 import {
   Accordion,
   AccordionContent,
@@ -409,6 +413,9 @@ export function ProductDetail() {
   const [stickyBarDismissed, setStickyBarDismissed] = useState(false)
   const [isHoveringGallery, setIsHoveringGallery] = useState(false)
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 })
+  const [notifyEmail, setNotifyEmail] = useState('')
+  const [notifySubmitted, setNotifySubmitted] = useState(false)
+  const [notifyFormOpen, setNotifyFormOpen] = useState(false)
   const ctaRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery('(max-width: 768px)')
 
@@ -1055,17 +1062,33 @@ export function ProductDetail() {
             </div>
           )}
 
-          {/* Price */}
+          {/* Price - Animated highlight for high discounts */}
           <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-cyan-400">
+            <motion.span
+              key={`price-${discount}`}
+              initial={discount && discount > 20 ? { scale: 1, color: '#06b6d4' } : false}
+              animate={discount && discount > 20 ? { scale: [1, 1.12, 1], color: ['#06b6d4', '#22d3ee', '#06b6d4'] } : {}}
+              transition={discount && discount > 20 ? { duration: 0.8, ease: 'easeInOut' } : {}}
+              className="text-3xl font-bold text-cyan-400"
+            >
               ${product.price.toFixed(2)}
-            </span>
+            </motion.span>
             {product.comparePrice &&
               product.comparePrice > product.price && (
                 <span className="text-lg text-neutral-500 line-through">
                   ${product.comparePrice.toFixed(2)}
                 </span>
               )}
+            {discount && discount > 20 && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8, x: -8 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.4, type: 'spring', stiffness: 300 }}
+                className="rounded-full bg-red-500/15 px-2.5 py-0.5 text-xs font-bold text-red-400 border border-red-500/25"
+              >
+                🔥 {discount}% OFF
+              </motion.span>
+            )}
           </div>
 
           {/* Stock - More Prominent */}
@@ -1095,6 +1118,100 @@ export function ProductDetail() {
                   : 'Out of Stock'}
             </span>
           </div>
+
+          {/* Out of Stock - Notify Me */}
+          {stockStatus === 'out_of_stock' && (
+            <div className="space-y-3">
+              <button
+                onClick={() => setNotifyFormOpen(!notifyFormOpen)}
+                className="group flex w-full items-center gap-3 rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-500/10 to-teal-500/5 px-5 py-4 transition-all duration-300 hover:border-cyan-500/50 hover:from-cyan-500/15 hover:to-teal-500/10"
+              >
+                <div className="relative flex size-10 items-center justify-center rounded-full bg-cyan-500/10">
+                  <Bell className="size-5 text-cyan-400" />
+                  <motion.span
+                    animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute inset-0 rounded-full border-2 border-cyan-400"
+                  />
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-semibold text-foreground">Notify Me When Available</p>
+                  <p className="text-xs text-muted-foreground">Get an email when this product is back in stock</p>
+                </div>
+                <ChevronDown className={`size-5 text-cyan-400 transition-transform duration-200 ${notifyFormOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {notifyFormOpen && !notifySubmitted && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <BellRing className="size-4 text-cyan-400" />
+                        <span className="text-sm font-medium text-foreground">Back-in-Stock Notification</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Enter your email and we&apos;ll notify you as soon as the {product.name} is back in stock.
+                      </p>
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                          <Input
+                            type="email"
+                            value={notifyEmail}
+                            onChange={(e) => setNotifyEmail(e.target.value)}
+                            placeholder="your@email.com"
+                            className="border-border bg-muted pl-9 text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-10 text-sm"
+                          />
+                        </div>
+                        <Button
+                          onClick={() => {
+                            if (notifyEmail.trim() && /\S+@\S+\.\S+/.test(notifyEmail)) {
+                              setNotifySubmitted(true)
+                              showNotification('You\'ll be notified when this product is back in stock!', 'success')
+                            } else {
+                              showNotification('Please enter a valid email address', 'error')
+                            }
+                          }}
+                          className="bg-cyan-500 text-black hover:bg-cyan-400 px-6"
+                        >
+                          Notify Me
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {notifySubmitted && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-full bg-emerald-500/10">
+                        <CheckCircle2 className="size-4 text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">You&apos;re on the list!</p>
+                        <p className="text-xs text-muted-foreground">
+                          We&apos;ll email <span className="text-cyan-400">{notifyEmail}</span> when this product is back in stock.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
           {/* Recently Purchased & Dispatch Timer */}
           {stockStatus !== 'out_of_stock' && (
@@ -1322,25 +1439,31 @@ export function ProductDetail() {
 
           <Separator className="bg-muted" />
 
-          {/* Specifications - Always visible, enhanced design */}
+          {/* Specifications - Enhanced with alternating rows, bold labels, cyan left border */}
           {product.specs &&
             typeof product.specs === 'object' &&
             Object.keys(product.specs).length > 0 && (
               <div>
-                <h3 className="mb-3 text-sm font-semibold text-foreground">
-                  Specifications
-                </h3>
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex size-6 items-center justify-center rounded-md bg-cyan-500/10">
+                    <Zap className="size-3.5 text-cyan-400" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Specifications
+                  </h3>
+                  <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+                </div>
                 <div className="overflow-hidden rounded-lg border border-border">
                   <table className="w-full text-sm">
                     <tbody>
                       {Object.entries(product.specs).map(([key, value], index) => (
                         <tr
                           key={key}
-                          className={`border-b border-border/50 last:border-0 ${
-                            index % 2 === 0 ? 'bg-card/80' : 'bg-neutral-800/40'
+                          className={`border-b border-border/50 last:border-0 transition-colors hover:bg-cyan-500/[0.03] ${
+                            index % 2 === 0 ? 'bg-card/80' : 'bg-muted/30'
                           }`}
                         >
-                          <td className="px-4 py-3 font-medium text-muted-foreground w-2/5">
+                          <td className="px-4 py-3 w-2/5 border-l-2 border-l-cyan-500/40 font-semibold text-foreground">
                             {key}
                           </td>
                           <td className="px-4 py-3 text-muted-foreground">

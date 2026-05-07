@@ -14,12 +14,12 @@ const quickLinks = [
   { label: 'Shop', page: 'shop' as const },
   { label: 'Bundles', page: 'shop' as const },
   { label: 'Contact', page: 'contact' as const },
-  { label: 'Privacy Policy', page: null as string | null },
-  { label: 'Terms of Service', page: null as string | null },
+  { label: 'Privacy Policy', page: 'privacy' as const },
+  { label: 'Terms of Service', page: 'terms' as const },
 ]
 
 const supportLinks = [
-  { label: 'FAQ', page: null as string | null },
+  { label: 'FAQ', page: 'faq' as const },
   { label: 'Shipping', page: null as string | null },
   { label: 'Returns', page: null as string | null },
   { label: 'Warranty', page: null as string | null },

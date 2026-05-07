@@ -20,6 +20,10 @@ import { BrandShowcase } from '@/components/store/brand-showcase'
 import { DealOfTheDay } from '@/components/store/deal-of-the-day'
 import { OrderTrackingPage } from '@/components/store/order-tracking-page'
 import { ContactPage } from '@/components/store/contact-page'
+import { FAQPage } from '@/components/store/faq-page'
+import { PrivacyPolicyPage } from '@/components/store/privacy-policy-page'
+import { TermsPage } from '@/components/store/terms-page'
+import { NotFoundPage } from '@/components/store/not-found-page'
 import { SearchResultsPage } from '@/components/store/search-results-page'
 import { CookieConsent } from '@/components/store/cookie-consent'
 import { SocialProofNotification } from '@/components/store/social-proof-notification'
@@ -92,8 +96,14 @@ export default function Home() {
         return <ContactPage />
       case 'search':
         return <SearchResultsPage />
+      case 'faq':
+        return <FAQPage />
+      case 'privacy':
+        return <PrivacyPolicyPage />
+      case 'terms':
+        return <TermsPage />
       default:
-        return <HomePage />
+        return <NotFoundPage />
     }
   }
 

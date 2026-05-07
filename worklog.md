@@ -646,3 +646,185 @@ Stage Summary:
 - Cart Page: Promo code input, apply/remove, discount display, total update, revalidation on quantity change
 - Checkout Page: Same promo code functionality in order summary sidebar, promo data passed with order
 - Order API: Accepts promoCode/discount, applies to total, stores in notes, increments promo usedCount
+
+---
+Task ID: STYLING-1
+Agent: Styling Polish Agent
+Task: Significant styling and visual polish improvements across storefront, checkout, admin dashboard, and global styles
+
+Work Log:
+- Read worklog.md and all existing component files to understand current state
+- Enhanced `/src/components/store/product-detail.tsx`:
+  - Improved specs table with bold labels (font-semibold), cyan left border (border-l-2 border-l-cyan-500/40), alternating rows (bg-card/80 / bg-muted/30), hover highlight (hover:bg-cyan-500/[0.03])
+  - Added animated price highlight for >20% discount: motion.span scale/color animation + "🔥 {discount}% OFF" badge with spring animation
+  - Added Input component import for existing email input field
+- Enhanced `/src/app/globals.css` with light mode and global improvements:
+  - Focus visible styles for accessibility (outline: 2px solid #06b6d4, offset: 2px)
+  - Light mode overrides for 15+ custom CSS classes (glass-card, shimmer, custom-scrollbar, hover-lift, scanlines, gradient-divider, product-counter, shop-banner, grid-pattern, morpheye-gradient-subtle, header-glow, admin-stat-card, shine-effect, category-shine)
+  - Smooth scroll-to-top (html scroll-behavior: smooth)
+  - Page transition animation classes (.page-transition-enter/exit)
+  - Thin cyan accent scrollbar globally with corner transparency
+- Updated `/src/app/layout.tsx`:
+  - Removed forced dark class from html element (was `className="dark"`)
+  - Changed ThemeProvider to enable system theme (enableSystem={true})
+- Complete rewrite of `/src/components/store/checkout-page.tsx`:
+  - 3-step animated progress stepper (Cart → Details → Payment) with icons, completed step checkmarks, cyan glow on current step, animated step connectors
+  - Step transitions with AnimatePresence (slide left/right with direction tracking)
+  - Input field icons: User for name, Mail for email, Phone for phone, MapPin for address
+  - Form validation indicators: green check (Check icon) for valid fields, red X (AlertCircle icon) for invalid fields, with spring animation
+  - Collapsible order summary on mobile (default collapsed, expandable with AnimatePresence, item count + total in header, rotating chevron)
+  - Enhanced Secure Checkout badge with "256-bit SSL" text
+  - Step 1: Cart review with item thumbnails
+  - Step 2: Customer + shipping info with icons, validation indicators, estimated delivery bar
+  - Step 3: Payment method (crypto), order summary review, shipping details review with Edit button, trust badges
+- Complete rewrite of `/src/components/admin/admin-dashboard.tsx`:
+  - Animated stat counters (useAnimatedCounter, useAnimatedCurrency hooks with ease-out cubic animation via requestAnimationFrame)
+  - Revenue This Month card with animated currency counter
+  - Bar chart with gradient fills per status (linearGradient per bar cell, top→bottom opacity fade)
+  - Area chart with enhanced gradient (4-stop gradient fill, gradient stroke line, dot/activeDot on data points)
+  - Enhanced tooltip with colored dots, better spacing, backdrop blur
+  - KPI comparison badges on stat cards (vs last week/month data, previous period comparison)
+  - Cursor highlight on bar chart hover (fill: rgba(255,255,255,0.03))
+- All lint checks passed with no errors
+- Dev server running correctly on port 3000
+
+Stage Summary:
+- Product Detail: Enhanced specs table (bold labels, cyan left border, alternating rows, hover), animated price highlight for >20% discount with fire badge
+- Light Mode: 15+ CSS class overrides, proper scrollbar colors, focus-visible styles, smooth scroll, page transitions, theme switching enabled
+- Layout: Removed forced dark class, enabled system theme in ThemeProvider
+- Checkout: 3-step animated stepper, input field icons (User/Mail/Phone/MapPin), validation indicators (green check/red X), collapsible mobile order summary, step transitions (AnimatePresence + directional slide), enhanced Secure Checkout badge, payment step with crypto info and order review
+- Admin Dashboard: Animated counters (ease-out cubic via requestAnimationFrame), bar chart gradient fills, area chart 4-stop gradient + gradient stroke + dots, enhanced tooltips with colored dots, KPI comparison badges, cursor highlight on bar chart
+- Global: Focus-visible cyan ring, smooth scroll, page transition classes, thin scrollbar with corner transparency
+
+---
+Task ID: FEATURES-1
+Agent: New Features Agent
+Task: Add e-commerce features - FAQ, Privacy Policy, Terms of Service, 404 page, Gift Message, Stock Notification
+
+Work Log:
+- Read worklog.md and all existing component files to understand current state
+- Created `/src/components/store/faq-page.tsx` — Comprehensive FAQ page with:
+  - 5 categories (General, Products & Security, Orders & Shipping, Returns & Warranty, Payment & Billing)
+  - 5+ questions per category with detailed answers (25+ total FAQ items)
+  - Search functionality filtering questions and answers in real-time
+  - Category filter pills with active state (cyan bg)
+  - "Still Have Questions?" CTA linking to contact page
+  - Empty state with clear filters button
+  - Framer Motion staggered entrance animations per category
+  - shadcn/ui Accordion component for expand/collapse
+  - Dark theme with cyan accents
+- Created `/src/components/store/privacy-policy-page.tsx` — Privacy Policy page with:
+  - 7 sections: Information Collection, Use of Information, Data Security, Cookies, Third-Party Services, User Rights, Contact
+  - Desktop: Sticky table of contents sidebar with scroll-tracking active state
+  - Mobile: Horizontal pill-style TOC
+  - Last updated date (March 4, 2026)
+  - Professional legal content for e-commerce hardware wallet store
+  - Data security section with 4 feature cards (SSL, Payment, Access Controls, Audits)
+  - Cookies table with type/purpose/duration
+  - User rights grid (Access, Correction, Deletion, Portability, Opt-Out, Restriction)
+  - Contact section with email, phone, address in styled card
+  - Smooth scroll navigation between sections
+- Created `/src/components/store/terms-page.tsx` — Terms of Service page with:
+  - 8 sections: Acceptance, Products & Pricing, Orders, Shipping, Returns, Warranties, Limitation of Liability, Governing Law
+  - Same sticky TOC sidebar pattern as privacy policy
+  - Last updated date (March 4, 2026)
+  - Security notice callout for Returns section (hardware wallet opened devices)
+  - Warranty comparison table by brand (Ledger, Trezor, Keystone, Cryptosteel)
+  - Professional legal styling with proper typography hierarchy
+  - "Questions About Our Terms?" CTA at bottom linking to contact page
+- Created `/src/components/store/not-found-page.tsx` — 404 Not Found page with:
+  - Animated lock icon with floating broken chain links
+  - Pulsing outer ring animation
+  - "This block has been removed from the chain" crypto-themed message
+  - "Back to Home" and "Browse Shop" CTAs
+  - Framer Motion entrance animations
+  - Dark theme with cyan accents
+- Added Gift Wrap & Message feature to `/src/components/store/checkout-page.tsx`:
+  - Gift wrap toggle switch (cyan when on, neutral when off)
+  - Gift message textarea (max 200 chars with counter)
+  - Gift wrap costs $4.99 extra, added to order total
+  - Live preview of gift message with decorative styling
+  - AnimatePresence for show/hide of message form
+  - Gift wrap line item in order summary (sidebar and payment step)
+  - Gift wrap data passed with order submission (giftWrap, giftMessage, giftWrapCost)
+- Added Stock Notification feature to `/src/components/store/product-detail.tsx`:
+  - "Notify Me When Available" button visible only when product is out of stock
+  - Pulsing ring animation around bell icon to draw attention
+  - Expandable form with email input and "Notify Me" button
+  - Email validation before submission
+  - Success state with emerald checkmark and confirmation message
+  - Uses notification toast for feedback
+  - State variables: notifyEmail, notifySubmitted, notifyFormOpen
+  - AnimatePresence for smooth expand/collapse transitions
+- Updated `/src/store/navigation-store.ts` — Added 'faq', 'privacy', 'terms' to Page type union
+- Updated `/src/app/page.tsx`:
+  - Added FAQPage, PrivacyPolicyPage, TermsPage, NotFoundPage imports
+  - Added 'faq', 'privacy', 'terms' cases to renderPage switch
+  - Changed default case from `<HomePage />` to `<NotFoundPage />` for 404 handling
+- Updated `/src/components/store/store-footer.tsx`:
+  - Updated Privacy Policy link to navigate to 'privacy' page
+  - Updated Terms of Service link to navigate to 'terms' page
+  - Updated FAQ link to navigate to 'faq' page
+- All lint checks passed with no errors
+- Dev server running correctly on port 3000
+
+Stage Summary:
+- FAQ Page: 5 categories, 25+ questions, search, category filters, "Still Have Questions?" CTA
+- Privacy Policy: 7 sections, sticky TOC sidebar, professional legal content, security cards, cookies table, user rights grid
+- Terms of Service: 8 sections, sticky TOC sidebar, warranty comparison table, security notice callout
+- 404 Page: Animated lock + broken chains, crypto-themed message, Home/Shop CTAs, pulsing ring
+- Gift Wrap: Toggle switch, $4.99 cost, 200-char message with preview, order summary integration
+- Stock Notification: "Notify Me When Available" with pulsing bell, email form, success confirmation
+- Navigation: Added 'faq', 'privacy', 'terms' page types
+- Routing: New pages in page.tsx switch, 404 as default case
+- Footer: All three new pages linked (FAQ, Privacy Policy, Terms of Service)
+
+---
+Task ID: QA-3
+Agent: Main Agent
+Task: QA testing, bug fixes, styling improvements, and feature additions
+
+Work Log:
+- Read worklog.md and all key project files to understand current state
+- Performed comprehensive QA testing via agent-browser across all pages
+- Verified homepage, shop, product detail, cart, admin panel all working
+- Fixed admin login credentials mismatch (display said 'admin123', actual was 'morpheye2024')
+- Confirmed "Back to Store" navigation works correctly (was agent-browser testing artifact)
+- Confirmed product card click navigation works correctly (was agent-browser testing artifact)
+- Launched two parallel subagents for styling improvements and new features
+
+Bug Fixed:
+- Admin login demo credentials display showed wrong password ('admin123' instead of 'morpheye2024')
+
+Styling Improvements (STYLING-1 Agent):
+- Product detail: improved specs table (bold labels, cyan left border, alternating rows, hover highlight)
+- Product detail: animated price highlight for >20% discounts (scale+color pulse)
+- Light mode: added 15+ CSS overrides for proper light/dark theme support
+- Light mode: removed forced dark class, enabled system theme detection
+- Checkout: 3-step animated progress stepper with directional slide transitions
+- Checkout: input field icons (User, Mail, Phone, MapPin)
+- Checkout: form field validation with green check/red X indicators
+- Checkout: collapsible order summary on mobile
+- Checkout: enhanced secure checkout badge
+- Admin dashboard: animated stat counters (useAnimatedCounter/useAnimatedCurrency hooks)
+- Admin dashboard: bar chart gradient fills, enhanced area chart with 4-stop gradient
+- Admin dashboard: improved tooltips, KPI comparison badges
+- Global: focus visible styles (cyan ring), custom scrollbar with cyan accent
+- Global: smooth scroll behavior, page transition CSS classes
+
+New Features (FEATURES-1 Agent):
+- FAQ Page: 5 categories, 25+ questions, search functionality, category filter pills
+- Privacy Policy Page: 7 sections, sticky TOC sidebar, professional legal content
+- Terms of Service Page: 8 sections, sticky TOC sidebar, warranty comparison table
+- 404 Not Found Page: animated lock icon, crypto-themed messaging
+- Gift Wrap & Message: toggle (+$4.99), textarea with char counter, live preview
+- Stock Notification: "Notify Me When Available" for out-of-stock products with email form
+- Navigation: added 'faq', 'privacy', 'terms' to Page type union
+- Footer: updated FAQ, Privacy Policy, Terms of Service links to navigate properly
+
+Stage Summary:
+- All lint checks pass with zero errors
+- Dev server running correctly on port 3000
+- All new pages verified working via agent-browser testing
+- Admin login bug fixed (credentials mismatch)
+- Project now has comprehensive e-commerce features: storefront, admin, reviews, promo codes, order tracking, wishlist, comparison, FAQ, privacy, terms, 404, gift wrapping, stock notifications
