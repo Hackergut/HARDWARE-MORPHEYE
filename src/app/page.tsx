@@ -14,6 +14,10 @@ import { CartPage } from '@/components/store/cart-page'
 import { CheckoutPage } from '@/components/store/checkout-page'
 import { CheckoutSuccess } from '@/components/store/checkout-success'
 import { WishlistPage } from '@/components/store/wishlist-page'
+import { ComparisonPage } from '@/components/store/comparison-page'
+import { RecentlyViewedSection } from '@/components/store/recently-viewed-section'
+import { OrderTrackingPage } from '@/components/store/order-tracking-page'
+import { ContactPage } from '@/components/store/contact-page'
 import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
@@ -25,6 +29,7 @@ function HomePage() {
     <>
       <HeroSection />
       <FeaturedSection />
+      <RecentlyViewedSection />
       <CategoriesSection />
       <TrustSection />
       <NewsletterSection />
@@ -63,6 +68,12 @@ export default function Home() {
         return <CheckoutSuccess />
       case 'wishlist':
         return <WishlistPage />
+      case 'comparison':
+        return <ComparisonPage />
+      case 'tracking':
+        return <OrderTrackingPage />
+      case 'contact':
+        return <ContactPage />
       default:
         return <HomePage />
     }

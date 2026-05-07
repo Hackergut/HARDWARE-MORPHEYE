@@ -313,6 +313,7 @@ export function CheckoutSuccess() {
           Continue Shopping
         </Button>
         <Button
+          onClick={() => navigate('tracking')}
           variant="outline"
           className="border-neutral-700 text-white hover:bg-neutral-800 hover:text-white"
         >

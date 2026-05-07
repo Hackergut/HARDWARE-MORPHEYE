@@ -22,6 +22,7 @@ interface Product {
   featured?: boolean
   rating?: number
   reviewCount?: number
+  stock?: number
   category?: { name: string; slug: string }
 }
 

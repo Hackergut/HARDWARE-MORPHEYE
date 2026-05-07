@@ -24,6 +24,7 @@ import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
 import { useNotificationStore } from '@/store/notification-store'
+import { useRecentlyViewedStore } from '@/store/recently-viewed-store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -99,6 +100,7 @@ export function ProductDetail() {
   const addItem = useCartStore((s) => s.addItem)
   const { toggleItem, isInWishlist } = useWishlistStore()
   const showNotification = useNotificationStore((s) => s.show)
+  const addRecentlyViewed = useRecentlyViewedStore((s) => s.addProduct)
 
   useEffect(() => {
     if (selectedProductId) {
@@ -115,6 +117,7 @@ export function ProductDetail() {
         setProduct(data.product || data)
         setActiveImage(0)
         setQuantity(1)
+        addRecentlyViewed(data.product?.id || data.id)
         // Fetch related products
         if (data.product?.category?.slug || data.category?.slug) {
           const catSlug = data.product?.category?.slug || data.category?.slug

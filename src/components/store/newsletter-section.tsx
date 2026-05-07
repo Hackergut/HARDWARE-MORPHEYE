@@ -37,15 +37,32 @@ export function NewsletterSection() {
       <div className="absolute left-1/4 top-1/2 -translate-y-1/2 size-96 rounded-full bg-cyan-500/5 blur-[120px]" />
       <div className="absolute right-1/4 top-1/2 -translate-y-1/2 size-64 rounded-full bg-teal-500/5 blur-[100px]" />
 
+      {/* Floating crypto symbols */}
+      <div className="absolute left-[8%] top-[20%] select-none text-4xl font-bold text-cyan-500/8 crypto-float-1">
+        ₿
+      </div>
+      <div className="absolute right-[12%] top-[30%] select-none text-3xl font-bold text-teal-500/6 crypto-float-2">
+        Ξ
+      </div>
+      <div className="absolute left-[18%] bottom-[25%] select-none text-2xl font-bold text-cyan-400/5 crypto-float-2">
+        ◎
+      </div>
+      <div className="absolute right-[20%] bottom-[20%] select-none text-3xl font-bold text-teal-400/6 crypto-float-1">
+        ₿
+      </div>
+      <div className="absolute left-[50%] top-[10%] select-none text-2xl font-bold text-cyan-300/4 crypto-float-1" style={{ animationDelay: '2s' }}>
+        Ξ
+      </div>
+
       <div className="relative mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Crypto/Lock Icon Visual */}
+          {/* Crypto/Lock Icon Visual with pulsing ring */}
           <div className="mb-8 flex justify-center">
-            <div className="relative">
+            <div className="ring-pulse-outer relative">
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
@@ -53,6 +70,7 @@ export function NewsletterSection() {
               >
                 <Lock className="size-7 text-cyan-400" />
               </motion.div>
+              {/* Existing animated ring */}
               <motion.div
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -116,7 +134,7 @@ export function NewsletterSection() {
               </div>
               <Button
                 type="submit"
-                className="h-12 bg-cyan-500 px-8 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:bg-cyan-400 hover:shadow-cyan-500/30 hover:shadow-xl"
+                className="subscribe-burst h-12 bg-cyan-500 px-8 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:bg-cyan-400 hover:shadow-cyan-500/40 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
               >
                 Subscribe
                 <ArrowRight className="ml-2 size-4" />

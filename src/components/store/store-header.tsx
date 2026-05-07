@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ShoppingCart, Menu, Shield, X, Heart } from 'lucide-react'
+import { Search, ShoppingCart, Menu, Shield, X, Heart, ArrowLeftRight } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
+import { useComparisonStore } from '@/store/comparison-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -32,6 +33,7 @@ export function StoreHeader() {
   const { navigate, currentPage } = useNavigationStore()
   const itemCount = useCartStore((s) => s.getItemCount())
   const wishlistCount = useWishlistStore((s) => s.getItemCount())
+  const comparisonCount = useComparisonStore((s) => s.getItemCount())
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -145,6 +147,22 @@ export function StoreHeader() {
             )}
           </Button>
 
+          {/* Comparison */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('comparison')}
+            className="relative text-neutral-400 hover:text-cyan-400"
+            title="Compare Products"
+          >
+            <ArrowLeftRight className="size-4" />
+            {comparisonCount > 0 && (
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-cyan-500 p-0 text-[10px] font-bold text-black">
+                {comparisonCount}
+              </Badge>
+            )}
+          </Button>
+
           {/* Cart */}
           <Button
             variant="ghost"
@@ -184,6 +202,20 @@ export function StoreHeader() {
             {wishlistCount > 0 && (
               <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-white">
                 {wishlistCount}
+              </Badge>
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('comparison')}
+            className="relative text-neutral-400"
+            title="Compare Products"
+          >
+            <ArrowLeftRight className="size-5" />
+            {comparisonCount > 0 && (
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-cyan-500 p-0 text-[10px] font-bold text-black">
+                {comparisonCount}
               </Badge>
             )}
           </Button>
@@ -275,6 +307,25 @@ export function StoreHeader() {
                   {wishlistCount > 0 && (
                     <Badge className="ml-auto bg-red-500 px-1.5 text-[10px] font-bold text-white">
                       {wishlistCount}
+                    </Badge>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('comparison')
+                    setMobileOpen(false)
+                  }}
+                  className={`flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                    currentPage === 'comparison'
+                      ? 'bg-cyan-500/10 text-cyan-400'
+                      : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
+                  }`}
+                >
+                  <ArrowLeftRight className="size-4" />
+                  Compare
+                  {comparisonCount > 0 && (
+                    <Badge className="ml-auto bg-cyan-500 px-1.5 text-[10px] font-bold text-black">
+                      {comparisonCount}
                     </Badge>
                   )}
                 </button>

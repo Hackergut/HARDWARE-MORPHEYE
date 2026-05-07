@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Facebook, Twitter, Instagram, Send, CreditCard, Wallet } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Send, CreditCard, Wallet, ArrowUp, ShieldCheck } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,14 +12,15 @@ const quickLinks = [
   { label: 'Home', page: 'home' as const },
   { label: 'Shop', page: 'shop' as const },
   { label: 'Bundles', page: 'shop' as const },
-  { label: 'Contact', page: 'home' as const },
+  { label: 'Contact', page: 'contact' as const },
 ]
 
 const supportLinks = [
-  'FAQ',
-  'Shipping',
-  'Returns',
-  'Warranty',
+  { label: 'FAQ', page: null as string | null },
+  { label: 'Shipping', page: null as string | null },
+  { label: 'Returns', page: null as string | null },
+  { label: 'Warranty', page: null as string | null },
+  { label: 'Track Order', page: 'tracking' as string | null },
 ]
 
 const socialLinks = [
@@ -29,10 +30,26 @@ const socialLinks = [
   { icon: Send, label: 'Telegram', href: '#' },
 ]
 
+const paymentMethods = [
+  { icon: CreditCard, label: 'Visa', color: 'text-blue-400' },
+  { icon: CreditCard, label: 'MC', color: 'text-orange-400' },
+  { icon: CreditCard, label: 'Amex', color: 'text-blue-300' },
+  { icon: Wallet, label: 'Crypto', color: 'text-cyan-400' },
+]
+
 export function StoreFooter() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [showBackToTop, setShowBackToTop] = useState(false)
   const { navigate } = useNavigationStore()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,10 +60,17 @@ export function StoreFooter() {
     }
   }
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
-    <footer className="mt-auto border-t border-neutral-800 bg-[#0a0a0a]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="relative mt-auto border-t border-neutral-800 bg-[#0a0a0a]">
+      {/* Gradient top border */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
+
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
@@ -71,6 +95,11 @@ export function StoreFooter() {
               Your trusted source for certified crypto security hardware. We
               only sell genuine, factory-sealed devices.
             </p>
+            {/* Trust badge */}
+            <div className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2">
+              <ShieldCheck className="size-4 text-cyan-400" />
+              <span className="text-[10px] font-medium text-neutral-400">Verified Authentic Reseller</span>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -78,12 +107,12 @@ export function StoreFooter() {
             <h4 className="mb-4 text-sm font-semibold text-white">
               Quick Links
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <button
                     onClick={() => navigate(link.page)}
-                    className="text-sm text-neutral-400 transition-colors hover:text-cyan-400"
+                    className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
                   >
                     {link.label}
                   </button>
@@ -95,12 +124,21 @@ export function StoreFooter() {
           {/* Support */}
           <div>
             <h4 className="mb-4 text-sm font-semibold text-white">Support</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {supportLinks.map((link) => (
-                <li key={link}>
-                  <span className="cursor-pointer text-sm text-neutral-400 transition-colors hover:text-cyan-400">
-                    {link}
-                  </span>
+                <li key={link.label}>
+                  {link.page ? (
+                    <button
+                      onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
+                      className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <span className="cursor-pointer text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400">
+                      {link.label}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -138,7 +176,7 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <Separator className="my-8 bg-neutral-800" />
+        <Separator className="my-10 bg-neutral-800" />
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
@@ -147,15 +185,15 @@ export function StoreFooter() {
           </p>
 
           {/* Social Icons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {socialLinks.map((social) => (
               <a
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="text-neutral-500 transition-colors hover:text-cyan-400"
+                className="flex size-8 items-center justify-center rounded-full border border-neutral-800 text-neutral-500 transition-all duration-200 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5"
               >
-                <social.icon className="size-4" />
+                <social.icon className="size-3.5" />
               </a>
             ))}
           </div>
@@ -164,22 +202,30 @@ export function StoreFooter() {
           <div className="flex items-center gap-2 text-neutral-500">
             <span className="text-xs">We accept:</span>
             <div className="flex items-center gap-1.5">
-              <div className="flex items-center gap-1 rounded bg-neutral-800 px-2 py-1">
-                <CreditCard className="size-3" />
-                <span className="text-[10px]">Visa</span>
-              </div>
-              <div className="flex items-center gap-1 rounded bg-neutral-800 px-2 py-1">
-                <CreditCard className="size-3" />
-                <span className="text-[10px]">MC</span>
-              </div>
-              <div className="flex items-center gap-1 rounded bg-neutral-800 px-2 py-1">
-                <Wallet className="size-3" />
-                <span className="text-[10px]">Crypto</span>
-              </div>
+              {paymentMethods.map((method) => (
+                <div
+                  key={method.label}
+                  className="flex items-center gap-1 rounded border border-neutral-800 bg-neutral-900/50 px-2 py-1 transition-colors duration-200 hover:border-neutral-700"
+                >
+                  <method.icon className={`size-3 ${method.color}`} />
+                  <span className="text-[10px] font-medium">{method.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="back-to-top-visible fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/90 text-cyan-400 shadow-lg shadow-cyan-500/10 backdrop-blur-sm transition-all duration-300 hover:bg-cyan-500 hover:text-black hover:border-cyan-400 hover:shadow-cyan-500/20"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="size-4" />
+        </button>
+      )}
     </footer>
   )
 }

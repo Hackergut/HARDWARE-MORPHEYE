@@ -71,7 +71,7 @@ export function CategoriesSection() {
   return (
     <section className="bg-[#0a0a0a] py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center">
+        <div className="mb-6 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -89,12 +89,15 @@ export function CategoriesSection() {
           </motion.p>
         </div>
 
+        {/* Decorative gradient line */}
+        <div className="mx-auto mb-10 h-px w-48 bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-44 animate-pulse rounded-xl border border-neutral-800 bg-neutral-900"
+                  className="h-52 animate-pulse rounded-xl border border-neutral-800 bg-neutral-900"
                 />
               ))
             : categories.map((category, i) => {
@@ -113,7 +116,7 @@ export function CategoriesSection() {
                     onClick={() =>
                       navigate('shop', { category: category.slug })
                     }
-                    className="group relative flex flex-col items-start overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
+                    className="category-shine group relative flex min-h-[200px] flex-col items-start overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
                   >
                     {/* Background Pattern */}
                     <div
@@ -133,7 +136,7 @@ export function CategoriesSection() {
 
                     <div className="relative z-10 flex w-full items-start justify-between">
                       {/* Icon */}
-                      <div className="mb-4 flex size-12 items-center justify-center rounded-xl border border-neutral-700/50 bg-neutral-800/80 transition-all duration-300 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10 group-hover:shadow-md group-hover:shadow-cyan-500/10">
+                      <div className="icon-pulse-hover mb-4 flex size-12 items-center justify-center rounded-xl border border-neutral-700/50 bg-neutral-800/80 transition-all duration-300 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10 group-hover:shadow-md group-hover:shadow-cyan-500/10">
                         <IconComponent className="size-5 text-neutral-400 transition-colors duration-300 group-hover:text-cyan-400" />
                       </div>
 

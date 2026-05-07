@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Shield, Truck, Award } from 'lucide-react'
+import { Shield, Truck, Award, ChevronDown, Users, Star, BadgeCheck } from 'lucide-react'
 import Image from 'next/image'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Button } from '@/components/ui/button'
@@ -12,11 +12,23 @@ const floatingBadges = [
   { icon: Award, label: '2-Year Warranty', delay: 0.4 },
 ]
 
+const stats = [
+  { icon: Users, value: '50,000+', label: 'Customers' },
+  { icon: Star, value: '4.9★', label: 'Rating' },
+  { icon: BadgeCheck, value: '100%', label: 'Authentic' },
+]
+
+const heroProducts = [
+  { src: '/images/ledger-nano-x.jpg', alt: 'Ledger Nano X', floatClass: 'float-animation', rotate: -3, delay: 0 },
+  { src: '/images/trezor-model-t.jpg', alt: 'Trezor Model T', floatClass: 'float-animation-alt', rotate: 2, delay: 0.2 },
+  { src: '/images/ledger-stax.jpg', alt: 'Ledger Stax', floatClass: 'float-animation-slow', rotate: -2, delay: 0.4 },
+]
+
 export function HeroSection() {
   const { navigate } = useNavigationStore()
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] grid-pattern">
+    <section className="relative overflow-hidden bg-[#0a0a0a] grid-pattern hero-particles">
       {/* Background layers */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/40 via-[#0a0a0a]/70 to-[#0a0a0a]" />
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5" />
@@ -25,7 +37,12 @@ export function HeroSection() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] bg-emerald-500/8 rounded-full blur-[100px]" />
 
-      <div className="relative mx-auto flex min-h-[90vh] max-w-7xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6 lg:px-8">
+      {/* Additional ambient particles */}
+      <div className="absolute top-1/3 left-[70%] w-1.5 h-1.5 rounded-full bg-cyan-400/20 animate-pulse" />
+      <div className="absolute top-2/3 left-[10%] w-1 h-1 rounded-full bg-teal-400/15 animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-[85%] w-1 h-1 rounded-full bg-cyan-300/10 animate-pulse" style={{ animationDelay: '2s' }} />
+
+      <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,34 +115,75 @@ export function HeroSection() {
           ))}
         </div>
 
-        {/* Hero product images floating */}
+        {/* Stats Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.75, ease: 'easeOut' }}
+          className="mt-10 flex items-center gap-6 sm:gap-10"
+        >
+          {stats.map((stat, i) => (
+            <div key={stat.label} className="flex items-center gap-3">
+              {i > 0 && (
+                <div className="h-8 w-px bg-neutral-700 -ml-3 sm:-ml-5" />
+              )}
+              <div className="flex items-center gap-2">
+                <stat.icon className="size-4 text-cyan-400/60" />
+                <div className="text-left">
+                  <span className="text-sm font-bold text-white sm:text-base">{stat.value}</span>
+                  <span className="ml-1.5 text-xs text-neutral-500 sm:text-sm">{stat.label}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Animated Product Showcase */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.8, ease: 'easeOut' }}
-          className="mt-12 flex items-center justify-center gap-4 opacity-30"
+          transition={{ duration: 1, delay: 0.9, ease: 'easeOut' }}
+          className="mt-14 flex items-center justify-center gap-6 sm:gap-10"
         >
-          <Image
-            src="/images/ledger-nano-x.jpg"
-            alt="Ledger Nano X"
-            width={120}
-            height={120}
-            className="rounded-xl"
-          />
-          <Image
-            src="/images/trezor-model-t.jpg"
-            alt="Trezor Model T"
-            width={120}
-            height={120}
-            className="rounded-xl"
-          />
-          <Image
-            src="/images/ledger-stax.jpg"
-            alt="Ledger Stax"
-            width={120}
-            height={120}
-            className="rounded-xl"
-          />
+          {heroProducts.map((product, i) => (
+            <motion.div
+              key={product.alt}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 1 + i * 0.15 }}
+              className={`relative ${product.floatClass}`}
+              style={{ animationDelay: `${i * 0.5}s` }}
+            >
+              {/* Glow halo behind product */}
+              <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-500/10 blur-xl" />
+              <div className="absolute inset-0 -m-2 rounded-xl bg-gradient-to-br from-cyan-500/8 to-teal-500/5 blur-md" />
+              <div
+                className="relative rounded-2xl border border-neutral-700/30 bg-neutral-900/50 p-3 backdrop-blur-sm transition-transform duration-300 hover:scale-105"
+                style={{ transform: `rotate(${product.rotate}deg)` }}
+              >
+                <Image
+                  src={product.src}
+                  alt={product.alt}
+                  width={180}
+                  height={180}
+                  className="rounded-xl"
+                />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2"
+        >
+          <div className="scroll-indicator flex flex-col items-center gap-1">
+            <span className="text-[10px] tracking-widest text-neutral-500 uppercase">Scroll</span>
+            <ChevronDown className="size-4 text-cyan-400/60" />
+          </div>
         </motion.div>
       </div>
     </section>

@@ -1,12 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ShoppingBag, Trash2, Plus, Minus, ArrowLeft } from 'lucide-react'
+import { ShoppingBag, Trash2, Plus, Minus, ArrowLeft, ShieldCheck, Lock, Truck } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useNotificationStore } from '@/store/notification-store'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+
+const FREE_SHIPPING_THRESHOLD = 150
 
 export function CartPage() {
   const { navigate } = useNavigationStore()
@@ -15,8 +17,10 @@ export function CartPage() {
   const showNotification = useNotificationStore((s) => s.show)
 
   const subtotal = getTotal()
-  const shipping = subtotal > 150 || subtotal === 0 ? 0 : 9.99
+  const shipping = subtotal > FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 9.99
   const total = subtotal + shipping
+  const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
+  const remainingForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal
 
   const handleClearCart = () => {
     clearCart()
@@ -77,13 +81,38 @@ export function CartPage() {
         </Button>
       </div>
 
+      {/* Free Shipping Progress Bar */}
+      <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Truck className="size-4 text-cyan-400" />
+            <span className="text-sm text-neutral-300">
+              {remainingForFreeShipping > 0
+                ? `Add $${remainingForFreeShipping.toFixed(2)} more for free shipping`
+                : 'You qualify for free shipping!'}
+            </span>
+          </div>
+          <span className="text-xs text-neutral-500">$150 minimum</span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-neutral-800">
+          <div
+            className={`h-full rounded-full transition-all duration-700 ease-out ${
+              shippingProgress >= 100
+                ? 'bg-gradient-to-r from-cyan-500 to-emerald-500'
+                : 'bg-gradient-to-r from-cyan-500/60 to-cyan-500'
+            }`}
+            style={{ width: `${shippingProgress}%` }}
+          />
+        </div>
+      </div>
+
       <div className="mt-6 grid gap-8 lg:grid-cols-3">
         {/* Cart Items */}
         <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex gap-4 rounded-xl border border-neutral-800 bg-neutral-900 p-4"
+              className="flex gap-4 rounded-xl border border-neutral-800 border-l-2 border-l-cyan-500 bg-neutral-900 p-4 transition-all duration-200 hover:border-neutral-700 hover:border-l-cyan-400"
             >
               {/* Item Image */}
               <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-neutral-800">
@@ -194,10 +223,20 @@ export function CartPage() {
 
             <Button
               onClick={() => navigate('checkout')}
-              className="mt-6 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400"
+              className="mt-6 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400 pulse-glow"
             >
               Proceed to Checkout
             </Button>
+
+            {/* Order Protection Badge */}
+            <div className="mt-4 flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-800/50 px-3 py-2.5">
+              <Lock className="size-4 text-cyan-400 shrink-0" />
+              <div className="text-left">
+                <p className="text-[10px] font-semibold text-white">Order Protection</p>
+                <p className="text-[9px] text-neutral-500">256-bit SSL encrypted checkout</p>
+              </div>
+              <ShieldCheck className="ml-auto size-4 text-emerald-400 shrink-0" />
+            </div>
 
             <button
               onClick={() => navigate('shop')}
