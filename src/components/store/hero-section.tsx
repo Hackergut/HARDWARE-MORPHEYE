@@ -42,7 +42,7 @@ export function HeroSection() {
       <div className="absolute top-2/3 left-[10%] w-1 h-1 rounded-full bg-teal-400/15 animate-pulse" style={{ animationDelay: '1s' }} />
       <div className="absolute top-1/2 left-[85%] w-1 h-1 rounded-full bg-cyan-300/10 animate-pulse" style={{ animationDelay: '2s' }} />
 
-      <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-[70vh] sm:min-h-[85vh] max-w-7xl flex-col items-center justify-center px-4 py-12 sm:py-20 text-center sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,7 +59,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-          className="mb-6 max-w-5xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-7xl"
+          className="mb-6 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-7xl"
         >
           Secure Your Crypto with{' '}
           <span className="text-gradient-cyan">Certified Hardware Wallets</span>
@@ -69,7 +69,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-          className="mb-10 max-w-2xl text-base text-neutral-400 sm:text-lg"
+          className="mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base lg:text-lg text-neutral-400"
         >
           Authorized reseller of Ledger, Trezor &amp; Keystone. Free shipping on
           orders over $150. Every device certified authentic.
@@ -79,26 +79,26 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.45, ease: 'easeOut' }}
-          className="flex flex-col gap-4 sm:flex-row"
+          className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
         >
           <Button
             onClick={() => navigate('shop')}
             size="lg"
-            className="bg-cyan-500 px-8 text-base font-semibold text-black hover:bg-cyan-400 pulse-glow"
+            className="w-full sm:w-auto bg-cyan-500 px-8 text-sm sm:text-base font-semibold text-black hover:bg-cyan-400 pulse-glow"
           >
             Shop Now
           </Button>
           <Button
             variant="outline"
             size="lg"
-            className="border-neutral-700 px-8 text-base text-white hover:bg-neutral-800 hover:text-white"
+            className="w-full sm:w-auto border-neutral-700 px-8 text-sm sm:text-base text-white hover:bg-neutral-800 hover:text-white"
           >
             Learn More
           </Button>
         </motion.div>
 
         {/* Floating trust badges */}
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+        <div className="mt-8 sm:mt-16 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
           {floatingBadges.map((badge) => (
             <motion.div
               key={badge.label}
@@ -120,7 +120,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.75, ease: 'easeOut' }}
-          className="mt-10 flex items-center gap-6 sm:gap-10"
+          className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-10"
         >
           {stats.map((stat, i) => (
             <div key={stat.label} className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.9, ease: 'easeOut' }}
-          className="mt-14 flex items-center justify-center gap-6 sm:gap-10"
+          className="mt-8 sm:mt-14 flex items-center justify-center gap-4 sm:gap-10"
         >
           {heroProducts.map((product, i) => (
             <motion.div
@@ -158,15 +158,15 @@ export function HeroSection() {
               <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-500/10 blur-xl" />
               <div className="absolute inset-0 -m-2 rounded-xl bg-gradient-to-br from-cyan-500/8 to-teal-500/5 blur-md" />
               <div
-                className="relative rounded-2xl border border-neutral-700/30 bg-neutral-900/50 p-3 backdrop-blur-sm transition-transform duration-300 hover:scale-105"
+                className="relative rounded-xl sm:rounded-2xl border border-neutral-700/30 bg-neutral-900/50 p-2 sm:p-3 backdrop-blur-sm transition-transform duration-300 hover:scale-105"
                 style={{ transform: `rotate(${product.rotate}deg)` }}
               >
                 <Image
                   src={product.src}
                   alt={product.alt}
-                  width={180}
-                  height={180}
-                  className="rounded-xl"
+                  width={120}
+                  height={120}
+                  className="rounded-lg sm:rounded-xl sm:!h-[180px] sm:!w-[180px]"
                 />
               </div>
             </motion.div>

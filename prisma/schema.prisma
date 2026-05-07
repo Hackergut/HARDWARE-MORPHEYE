@@ -59,6 +59,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   category    Category @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
+  reviews     Review[]
 }
 
 model Order {
@@ -106,6 +107,32 @@ model ContactMessage {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  author    String
+  rating    Int
+  title     String?
+  comment   String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model PromoCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  description String?
+  type        String    @default("percentage")
+  value       Float
+  minPurchase Float?
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  active      Boolean   @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 model SiteSetting {

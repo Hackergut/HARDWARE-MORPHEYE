@@ -69,8 +69,8 @@ export function StoreFooter() {
       {/* Gradient top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
 
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
@@ -176,7 +176,7 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <Separator className="my-10 bg-neutral-800" />
+        <Separator className="my-8 sm:my-10 bg-neutral-800" />
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">

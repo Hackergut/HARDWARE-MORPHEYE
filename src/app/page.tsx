@@ -16,11 +16,13 @@ import { CheckoutSuccess } from '@/components/store/checkout-success'
 import { WishlistPage } from '@/components/store/wishlist-page'
 import { ComparisonPage } from '@/components/store/comparison-page'
 import { RecentlyViewedSection } from '@/components/store/recently-viewed-section'
+import { BrandShowcase } from '@/components/store/brand-showcase'
 import { OrderTrackingPage } from '@/components/store/order-tracking-page'
 import { ContactPage } from '@/components/store/contact-page'
 import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-contact', 'admin-settings']
 
@@ -31,10 +33,17 @@ function HomePage() {
       <FeaturedSection />
       <RecentlyViewedSection />
       <CategoriesSection />
+      <BrandShowcase />
       <TrustSection />
       <NewsletterSection />
     </>
   )
+}
+
+const pageVariants = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
 }
 
 export default function Home() {
@@ -82,7 +91,20 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-[#0a0a0a] text-white">
       <StoreHeader />
-      <main className="flex-1">{renderPage()}</main>
+      <main className="flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+          >
+            {renderPage()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
       <StoreFooter />
       <NotificationToast />
       <MetaPixel />

@@ -81,12 +81,12 @@ export async function GET(request: NextRequest) {
       db.product.count({ where }),
     ])
 
-    // Parse JSON fields for each product
+    // Parse JSON fields for each product (with safe fallback)
     const parsed = products.map((p) => ({
       ...p,
-      images: JSON.parse(p.images || '[]'),
-      specs: JSON.parse(p.specs || '{}'),
-      tags: JSON.parse(p.tags || '[]'),
+      images: (() => { try { return JSON.parse(p.images || '[]') } catch { return [] } })(),
+      specs: (() => { try { return JSON.parse(p.specs || '{}') } catch { return {} } })(),
+      tags: (() => { try { return JSON.parse(p.tags || '[]') } catch { return [] } })(),
     }))
 
     return NextResponse.json({

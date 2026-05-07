@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight } from 'lucide-react'
+import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight, Package } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Input } from '@/components/ui/input'
@@ -33,6 +33,12 @@ interface Category {
   productCount: number
 }
 
+interface Brand {
+  name: string
+  productCount: number
+  minPrice: number | null
+}
+
 interface ProductGridProps {
   title?: string
   products?: Product[]
@@ -51,13 +57,15 @@ export function ProductGrid({
   const [products, setProducts] = useState<Product[]>(initialProducts || [])
   const [totalProductCount, setTotalProductCount] = useState<number>(initialTotalCount || 0)
   const [categories, setCategories] = useState<Category[]>([])
+  const [brands, setBrands] = useState<Brand[]>([])
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('newest')
   const [selectedCategory, setSelectedCategory] = useState(category || 'all')
+  const [selectedBrand, setSelectedBrand] = useState<string>('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [isLoading, setIsLoading] = useState(loading)
   const [searchFocused, setSearchFocused] = useState(false)
-  const { searchQuery, navigate } = useNavigationStore()
+  const { searchQuery, selectedBrand: navBrand, navigate } = useNavigationStore()
 
   useEffect(() => {
     if (initialProducts) {
@@ -72,7 +80,12 @@ export function ProductGrid({
   }, [searchQuery])
 
   useEffect(() => {
+    if (navBrand) setSelectedBrand(navBrand)
+  }, [navBrand])
+
+  useEffect(() => {
     fetchCategories()
+    fetchBrands()
   }, [])
 
   const fetchProducts = useCallback(async () => {
@@ -83,6 +96,8 @@ export function ProductGrid({
         params.set('category', selectedCategory)
       if (sort) params.set('sort', sort)
       if (search) params.set('search', search)
+      if (selectedBrand && selectedBrand !== 'all')
+        params.set('brand', selectedBrand)
       params.set('limit', '24')
 
       const res = await fetch(`/api/products?${params}`)
@@ -96,7 +111,7 @@ export function ProductGrid({
     } finally {
       setIsLoading(false)
     }
-  }, [selectedCategory, sort, search])
+  }, [selectedCategory, sort, search, selectedBrand])
 
   const fetchCategories = async () => {
     try {
@@ -110,11 +125,23 @@ export function ProductGrid({
     }
   }
 
+  const fetchBrands = async () => {
+    try {
+      const res = await fetch('/api/brands')
+      if (res.ok) {
+        const data = await res.json()
+        setBrands(data.brands || [])
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   useEffect(() => {
     if (!initialProducts) {
       fetchProducts()
     }
-  }, [selectedCategory, sort, fetchProducts, initialProducts])
+  }, [selectedCategory, sort, fetchProducts, initialProducts, selectedBrand])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -277,6 +304,47 @@ export function ProductGrid({
             </button>
           ))}
         </div>
+
+        {/* Brand Filter Pills */}
+        {brands.length > 0 && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+              Brand:
+            </span>
+            <button
+              onClick={() => setSelectedBrand('all')}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                selectedBrand === 'all'
+                  ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
+                  : 'border border-neutral-700 bg-neutral-800/60 text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
+              }`}
+            >
+              All Brands
+            </button>
+            {brands.map((brand) => (
+              <button
+                key={brand.name}
+                onClick={() => setSelectedBrand(brand.name)}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                  selectedBrand === brand.name
+                    ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
+                    : 'border border-neutral-700 bg-neutral-800/60 text-neutral-400 hover:border-neutral-600 hover:text-neutral-300'
+                }`}
+              >
+                {brand.name}
+                <span
+                  className={`ml-1.5 inline-flex size-4 items-center justify-center rounded-full text-[10px] ${
+                    selectedBrand === brand.name
+                      ? 'bg-black/20 text-black'
+                      : 'bg-neutral-700 text-neutral-500'
+                  }`}
+                >
+                  {brand.productCount}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Grid / List */}
@@ -299,6 +367,7 @@ export function ProductGrid({
             onClick={() => {
               setSearch('')
               setSelectedCategory('all')
+              setSelectedBrand('all')
               navigate('shop')
             }}
             className="bg-cyan-500 px-6 text-black hover:bg-cyan-400"
@@ -329,7 +398,7 @@ export function ProductGrid({
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-neutral-600">
-                      <LayoutGrid className="size-6" />
+                      <Package className="size-6" />
                     </div>
                   )}
                 </div>
@@ -342,11 +411,18 @@ export function ProductGrid({
                       {product.shortDesc}
                     </p>
                   )}
-                  {product.category && (
-                    <span className="mt-1 inline-block text-[10px] text-neutral-500">
-                      {product.category.name}
-                    </span>
-                  )}
+                  <div className="mt-1 flex items-center gap-2">
+                    {product.category && (
+                      <span className="text-[10px] text-neutral-500">
+                        {product.category.name}
+                      </span>
+                    )}
+                    {product.brand && (
+                      <span className="rounded border border-neutral-700 px-1.5 py-0.5 text-[9px] text-neutral-400">
+                        {product.brand}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <p className="text-base font-bold text-cyan-400">

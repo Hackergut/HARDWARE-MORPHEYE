@@ -508,5 +508,141 @@ Stage Summary:
 3. Add real payment gateway integration (Stripe/crypto)
 4. Add email notification service for orders and contact messages
 5. Add inventory management with stock deduction on order
+
+---
+Task ID: 5-6
+Agent: full-stack-developer (Brand Showcase + Styling Polish + Mobile Responsiveness)
+Task: Add Brand Showcase section, polish styling across components, enhance product detail and checkout pages, fix mobile responsiveness, add page transitions
+
+Work Log:
+- Read worklog.md and all existing component files to understand current state
+- Created `/src/app/api/brands/route.ts` — GET endpoint using db.product.groupBy to return brand names with product counts and min prices
+- Created `/src/components/store/brand-showcase.tsx` — Authorized Brands section with:
+  - 4 brand cards (Ledger, Trezor, Keystone, Cryptosteel) with unique gradient backgrounds and taglines
+  - First-letter gradient logo placeholders in styled circles
+  - Product count badges with Package icon
+  - "Shop {Brand}" hover link with arrow animation
+  - Hover effects: lift, scale, cyan glow border, background overlay
+  - Framer Motion staggered entrance animations
+  - Responsive: 1 column mobile, 2 tablet, 4 desktop
+- Updated `/src/store/navigation-store.ts` — Added `selectedBrand` state and `brand` param to navigate function
+- Updated `/src/app/page.tsx` — Added BrandShowcase import and component between CategoriesSection and TrustSection
+- Updated `/src/components/store/product-grid.tsx`:
+  - Added brands state and fetchBrands() call
+  - Added selectedBrand state with navBrand sync
+  - Added brand filter pills row below category pills with "Brand:" label
+  - Added brand parameter to fetchProducts API call
+  - Brand pills with product count badges matching category pill style
+  - "All Brands" default option
+- Enhanced `/src/components/store/product-detail.tsx`:
+  - Full breadcrumb navigation: Home > Shop > Category > Product Name (clickable, with cyan hover)
+  - Image zoom on hover (150% scale, cursor crosshair, transform-origin follows mouse)
+  - Zoom indicator badge when hovering
+  - "Customers Also Bought" section below related products (fetches featured products)
+  - "Added ✓" animation on Add to Cart button with AnimatePresence
+  - Premium quantity selector with rounded-xl, hover effects on +/- buttons
+  - "Secure Checkout" badge with Lock icon below Guaranteed Authentic badge
+  - Clickable brand badge navigates to shop filtered by brand
+- Enhanced `/src/components/store/checkout-page.tsx`:
+  - 3-step progress stepper (Cart → Details → Payment) with icons
+  - Completed steps with checkmarks, current step with cyan glow
+  - Step connectors with cyan color for completed steps
+  - Section icons: User icon for Customer Info, MapPin for Shipping
+  - Order Summary items now show product images
+  - Estimated delivery date (5-7 business days) with Calendar icon
+  - 3 trust badges below Place Order: SSL Encrypted, Money-Back Guarantee, 100% Authentic
+  - Lock icon on Place Order button
+  - Centered checkout title
+- Mobile Responsiveness fixes:
+  - Hero section: min-h-[70vh] on mobile, reduced text sizes, full-width CTAs, smaller product images
+  - Product detail: wrapped breadcrumb for mobile, responsive grid gaps
+  - Cart page: reduced padding on mobile, responsive heading sizes
+  - Footer: reduced gap/spacing on mobile, responsive padding
+- Page Transition Animations:
+  - Added AnimatePresence with motion.div in page.tsx
+  - Key={currentPage} for re-rendering on page changes
+  - Fade + slight Y translation (8px) for smooth transitions
+  - 0.25s duration with easeInOut
+- All lint checks passed with no errors
+- Dev server running correctly
+
+Stage Summary:
+- Brands API: GET /api/brands with groupBy query returning brand names, product counts, min prices
+- Brand Showcase: 4-card grid with unique gradients, staggered animations, hover effects, responsive
+- Product Grid: Brand filter pills with counts, synced with navigation store
+- Navigation Store: Added selectedBrand state and brand param
+- Product Detail: Breadcrumb, image zoom, "Customers Also Bought", cart animation, secure checkout badge, premium quantity selector
+- Checkout: 3-step progress stepper, section icons, order summary images, estimated delivery, trust badges (SSL/Money-Back/Authentic)
+- Mobile: Responsive hero (70vh mobile/85vh desktop), full-width CTAs, reduced spacing/padding, smaller images
+- Page Transitions: AnimatePresence + motion.div with fade + Y translation
 6. Performance optimization (image lazy loading, code splitting)
 7. Add user account system with order history
+
+---
+Task ID: 3-4
+Agent: full-stack-developer (Product Reviews & Promo/Discount Code System)
+Task: Add product reviews/ratings system and promo/discount code system
+
+Work Log:
+- Read worklog.md and all existing component files to understand current project state
+- Added Review model to `/prisma/schema.prisma` with fields: id, productId, author, rating (1-5), title, comment, verified, createdAt, and relation to Product
+- Added `reviews Review[]` relation to Product model
+- Added PromoCode model to `/prisma/schema.prisma` with fields: id, code (unique), description, type (percentage/fixed), value, minPurchase, maxUses, usedCount, active, expiresAt, createdAt
+- Ran `bun run db:push` to sync both new models to the database
+- Created `/src/app/api/products/[id]/reviews/route.ts`:
+  - GET: List reviews with pagination (page, limit), sorting (newest, highest, lowest), rating distribution, average rating aggregation
+  - POST: Create review with validation (author required, rating 1-5), auto-updates product rating and reviewCount
+- Created `/src/components/store/product-reviews.tsx`:
+  - Summary section with average rating display, star visualization, total count
+  - Rating distribution bar chart (5-star to 1-star with animated percentage bars)
+  - Review list with author, date, rating stars, title, comment, verified purchase badge
+  - Sort options: Newest, Highest Rating, Lowest Rating
+  - "Write a Review" button opening modal form with interactive star selector, author name, title, comment fields
+  - Form validation and submission to API
+  - Pagination controls
+  - Dark theme with cyan accents, Framer Motion animations, responsive design
+- Updated `/src/components/store/product-detail.tsx`:
+  - Added ProductReviews import
+  - Added ProductReviews component below Related Products section, passing product.id
+- Created `/scripts/seed-promo.ts` to seed 3 promo codes:
+  - "WELCOME10" - 10% off, no minimum, active
+  - "SAVE25" - 25% off, min $200 purchase, active
+  - "FLAT15" - $15 off, min $100 purchase, active
+- Ran seed script successfully, all 3 promo codes created
+- Created `/src/app/api/promo/validate/route.ts`:
+  - POST: Validates promo code against cart total
+  - Checks: code exists, is active, not expired, usage limit not reached, minimum purchase met
+  - Returns discount details (type, value, calculated discount amount)
+- Updated `/src/components/store/cart-page.tsx`:
+  - Added promo code input field with Tag icon and "Apply" button below order summary
+  - Shows applied promo code with discount amount and "Remove" button
+  - Promo code badge with code name, discount type, description, and remove X button
+  - Updates totals to reflect discount
+  - Re-validates promo when cart items change
+  - Clears promo when cart is cleared
+- Updated `/src/components/store/checkout-page.tsx`:
+  - Added same promo code functionality in the order summary sidebar
+  - Promo input with Enter key support, loading state
+  - Applied promo badge with remove button
+  - Discount line in order summary
+  - Updated total calculation to include discount
+  - Passes promoCode and discount fields with order submission
+- Updated `/src/app/api/orders/route.ts`:
+  - Accepts optional `promoCode` and `discount` fields in POST body
+  - Calculates discount and applies to total (capped at subtotal + shipping + tax)
+  - Stores promo code info in order notes field
+  - Increments promo code usedCount on successful order
+- All lint checks passed with no errors
+- Dev server running correctly
+
+Stage Summary:
+- Review Model: Added to Prisma with productId, author, rating (1-5), title, comment, verified, product relation
+- Review API: GET (paginated, sorted, with distribution/summary) and POST (validated, auto-updates product stats)
+- Product Reviews Component: Full review section with summary, distribution bars, review list, sort options, write review modal, verified badge, pagination, Framer Motion animations
+- Product Detail: ProductReviews integrated below Related Products
+- PromoCode Model: Added to Prisma with code (unique), type (percentage/fixed), value, minPurchase, maxUses, usedCount, active, expiresAt
+- Promo Code Seed: 3 codes created (WELCOME10, SAVE25, FLAT15)
+- Promo Validate API: POST endpoint with full validation (active, expired, usage limit, minimum purchase)
+- Cart Page: Promo code input, apply/remove, discount display, total update, revalidation on quantity change
+- Checkout Page: Same promo code functionality in order summary sidebar, promo data passed with order
+- Order API: Accepts promoCode/discount, applies to total, stores in notes, increments promo usedCount

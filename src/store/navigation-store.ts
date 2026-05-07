@@ -22,7 +22,8 @@ interface NavigationState {
   selectedProductId: string | null
   selectedCategory: string | null
   searchQuery: string | null
-  navigate: (page: Page, params?: { productId?: string; category?: string; query?: string }) => void
+  selectedBrand: string | null
+  navigate: (page: Page, params?: { productId?: string; category?: string; query?: string; brand?: string }) => void
   goBack: () => void
   history: Page[]
 }
@@ -32,6 +33,7 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   selectedProductId: null,
   selectedCategory: null,
   searchQuery: null,
+  selectedBrand: null,
   history: ['home'],
   navigate: (page, params) => {
     const state = get()
@@ -40,6 +42,7 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
       selectedProductId: params?.productId ?? null,
       selectedCategory: params?.category ?? null,
       searchQuery: params?.query ?? null,
+      selectedBrand: params?.brand ?? null,
       history: [...state.history, page],
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })

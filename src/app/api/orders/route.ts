@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
       shippingZip,
       items,
       paymentMethod,
+      promoCode,
+      discount,
     } = body
 
     // Validate required fields
@@ -76,7 +78,10 @@ export async function POST(request: NextRequest) {
     const taxRate = 0
     const tax = subtotal * taxRate
 
-    const total = subtotal + shipping + tax
+    // Apply promo code discount if provided
+    const discountAmount = typeof discount === 'number' && discount > 0 ? Math.min(discount, subtotal + shipping + tax) : 0
+
+    const total = subtotal + shipping + tax - discountAmount
 
     // Generate unique order number
     const now = new Date()
@@ -104,6 +109,7 @@ export async function POST(request: NextRequest) {
           shipping,
           tax,
           total,
+          notes: promoCode ? `Promo: ${promoCode} (-$${discountAmount.toFixed(2)})` : null,
           items: {
             create: items.map((item: { productId: string; quantity: number }) => {
               const product = productMap.get(item.productId)!
@@ -129,6 +135,14 @@ export async function POST(request: NextRequest) {
         await tx.product.update({
           where: { id: item.productId },
           data: { stock: product.stock - item.quantity },
+        })
+      }
+
+      // Increment promo code usage if applicable
+      if (promoCode && discountAmount > 0) {
+        await tx.promoCode.updateMany({
+          where: { code: promoCode },
+          data: { usedCount: { increment: 1 } },
         })
       }
 

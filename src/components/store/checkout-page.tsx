@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Loader2, ArrowLeft } from 'lucide-react'
+import { Loader2, ArrowLeft, Tag, X } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useNotificationStore } from '@/store/notification-store'
@@ -10,6 +10,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+
+interface AppliedPromo {
+  id: string
+  code: string
+  description: string | null
+  type: string
+  value: number
+  minPurchase: number | null
+  discountAmount: number
+}
 
 export function CheckoutPage() {
   const { navigate } = useNavigationStore()
@@ -28,9 +38,15 @@ export function CheckoutPage() {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  // Promo code state
+  const [promoInput, setPromoInput] = useState('')
+  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null)
+  const [promoLoading, setPromoLoading] = useState(false)
+
   const subtotal = getTotal()
   const shipping = subtotal > 150 || subtotal === 0 ? 0 : 9.99
-  const total = subtotal + shipping
+  const discountAmount = appliedPromo ? appliedPromo.discountAmount : 0
+  const total = Math.max(0, subtotal + shipping - discountAmount)
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -41,6 +57,40 @@ export function CheckoutPage() {
         return next
       })
     }
+  }
+
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) {
+      showNotification('Please enter a promo code', 'error')
+      return
+    }
+
+    setPromoLoading(true)
+    try {
+      const res = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoInput, cartTotal: subtotal }),
+      })
+
+      const data = await res.json()
+      if (res.ok && data.valid) {
+        setAppliedPromo(data.promo)
+        setPromoInput('')
+        showNotification(`Promo code ${data.promo.code} applied! You save $${data.promo.discountAmount.toFixed(2)}`, 'success')
+      } else {
+        showNotification(data.error || 'Invalid promo code', 'error')
+      }
+    } catch {
+      showNotification('Failed to validate promo code', 'error')
+    } finally {
+      setPromoLoading(false)
+    }
+  }
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null)
+    showNotification('Promo code removed', 'info')
   }
 
   const validate = () => {
@@ -69,19 +119,28 @@ export function CheckoutPage() {
         quantity: item.quantity,
       }))
 
+      const body: Record<string, unknown> = {
+        ...form,
+        items: orderItems,
+        paymentMethod: 'crypto',
+      }
+
+      // Include promo code data if applied
+      if (appliedPromo) {
+        body.promoCode = appliedPromo.code
+        body.discount = discountAmount
+      }
+
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          items: orderItems,
-          paymentMethod: 'crypto',
-        }),
+        body: JSON.stringify(body),
       })
 
       if (res.ok) {
         const data = await res.json()
         clearCart()
+        setAppliedPromo(null)
         showNotification('Order placed successfully!', 'success')
         navigate('checkout-success')
         // Store order number and total for success page
@@ -323,6 +382,24 @@ export function CheckoutPage() {
                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                   </span>
                 </div>
+
+                {/* Promo Code Discount */}
+                {appliedPromo && (
+                  <div className="flex justify-between text-sm">
+                    <span className="flex items-center gap-1.5 text-cyan-400">
+                      <Tag className="size-3" />
+                      {appliedPromo.code}
+                      <button
+                        onClick={handleRemovePromo}
+                        className="text-neutral-500 hover:text-red-400 transition"
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </span>
+                    <span className="text-cyan-400">-${discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+
                 <Separator className="bg-neutral-800" />
                 <div className="flex justify-between">
                   <span className="text-base font-semibold text-white">
@@ -334,10 +411,73 @@ export function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Promo Code Input */}
+              {!appliedPromo && (
+                <div className="mt-4">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-neutral-500" />
+                      <Input
+                        value={promoInput}
+                        onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                        placeholder="Promo code"
+                        className="border-neutral-700 bg-neutral-800 pl-9 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-9 text-sm"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            handleApplyPromo()
+                          }
+                        }}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleApplyPromo}
+                      disabled={promoLoading || !promoInput.trim()}
+                      variant="outline"
+                      size="sm"
+                      className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 disabled:opacity-40"
+                    >
+                      {promoLoading ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        'Apply'
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Applied Promo Code Badge */}
+              {appliedPromo && (
+                <div className="mt-4 flex items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-3 py-2.5">
+                  <Tag className="size-4 text-cyan-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-cyan-400">{appliedPromo.code}</span>
+                      <span className="text-[10px] text-neutral-500">
+                        {appliedPromo.type === 'percentage'
+                          ? `${appliedPromo.value}% off`
+                          : `$${appliedPromo.value} off`}
+                      </span>
+                    </div>
+                    {appliedPromo.description && (
+                      <p className="text-[10px] text-neutral-500 truncate">{appliedPromo.description}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleRemovePromo}
+                    className="text-neutral-500 hover:text-red-400 transition shrink-0"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 disabled={submitting}
-                className="mt-6 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400 disabled:opacity-60"
+                className="mt-4 w-full bg-cyan-500 py-5 text-base font-semibold text-black hover:bg-cyan-400 disabled:opacity-60"
               >
                 {submitting ? (
                   <>

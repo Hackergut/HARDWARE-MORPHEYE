@@ -19,6 +19,9 @@ import {
   Share2,
   CheckCircle2,
   BadgeCheck,
+  Home,
+  ChevronDown,
+  Lock,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -35,6 +38,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { ProductCard } from './product-card'
+import { ProductReviews } from './product-reviews'
 
 interface Product {
   id: string
@@ -59,7 +63,6 @@ interface Product {
 function extractFeatures(product: Product): string[] {
   const features: string[] = []
 
-  // Extract meaningful tags as features
   if (product.tags && Array.isArray(product.tags)) {
     product.tags.forEach((tag) => {
       if (tag && tag.length > 1) {
@@ -68,7 +71,6 @@ function extractFeatures(product: Product): string[] {
     })
   }
 
-  // Extract key points from short description
   if (product.shortDesc) {
     const sentences = product.shortDesc.split(/[.!]/).filter((s) => s.trim().length > 10)
     sentences.slice(0, 3).forEach((s) => {
@@ -76,7 +78,6 @@ function extractFeatures(product: Product): string[] {
     })
   }
 
-  // If still not enough features, extract from specs
   if (features.length < 3 && product.specs && typeof product.specs === 'object') {
     const specEntries = Object.entries(product.specs)
     specEntries.slice(0, 3).forEach(([key, value]) => {
@@ -90,11 +91,15 @@ function extractFeatures(product: Product): string[] {
 export function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null)
   const [related, setRelated] = useState<Product[]>([])
+  const [alsoBought, setAlsoBought] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [activeImage, setActiveImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({})
   const [heartAnimating, setHeartAnimating] = useState(false)
+  const [addedToCart, setAddedToCart] = useState(false)
+  const [imageZoom, setImageZoom] = useState(false)
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 })
 
   const { selectedProductId, navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
@@ -118,9 +123,10 @@ export function ProductDetail() {
         setActiveImage(0)
         setQuantity(1)
         addRecentlyViewed(data.product?.id || data.id)
-        // Fetch related products
-        if (data.product?.category?.slug || data.category?.slug) {
-          const catSlug = data.product?.category?.slug || data.category?.slug
+
+        const catSlug = data.product?.category?.slug || data.category?.slug
+        // Fetch related products (same category)
+        if (catSlug) {
           const relRes = await fetch(
             `/api/products?category=${catSlug}&limit=4`
           )
@@ -132,6 +138,17 @@ export function ProductDetail() {
               )
             )
           }
+        }
+
+        // Fetch "Customers also bought" — featured products excluding current
+        const featRes = await fetch('/api/products?featured=true&limit=4')
+        if (featRes.ok) {
+          const featData = await featRes.json()
+          setAlsoBought(
+            (featData.products || []).filter(
+              (p: Product) => p.id !== (data.product?.id || data.id)
+            ).slice(0, 4)
+          )
         }
       }
     } catch {
@@ -203,6 +220,8 @@ export function ProductDetail() {
       })
     }
     showNotification(`${quantity}x ${product.name} added to cart`, 'success')
+    setAddedToCart(true)
+    setTimeout(() => setAddedToCart(false), 1500)
   }
 
   const handleBuyNow = () => {
@@ -244,6 +263,14 @@ export function ProductDetail() {
     }
   }
 
+  const handleImageMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageZoom) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    setZoomPos({ x, y })
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -252,24 +279,55 @@ export function ProductDetail() {
       className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
       {/* Breadcrumb */}
-      <button
-        onClick={() => navigate('shop')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
-      >
-        <ChevronLeft className="size-4" />
-        Back to Shop
-      </button>
+      <nav className="mb-4 sm:mb-6 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-neutral-500" aria-label="Breadcrumb">
+        <button
+          onClick={() => navigate('home')}
+          className="flex items-center gap-1 transition-colors hover:text-cyan-400"
+        >
+          <Home className="size-3.5" />
+          Home
+        </button>
+        <ChevronDown className="-rotate-90 size-3" />
+        <button
+          onClick={() => navigate('shop')}
+          className="transition-colors hover:text-cyan-400"
+        >
+          Shop
+        </button>
+        {product.category && (
+          <>
+            <ChevronDown className="-rotate-90 size-3" />
+            <button
+              onClick={() => navigate('shop', { category: product.category!.slug })}
+              className="transition-colors hover:text-cyan-400"
+            >
+              {product.category.name}
+            </button>
+          </>
+        )}
+        <ChevronDown className="-rotate-90 size-3" />
+        <span className="max-w-[200px] truncate text-neutral-300">{product.name}</span>
+      </nav>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
         {/* Image Gallery */}
         <div className="space-y-3">
-          <div className="relative aspect-square overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
+          <div
+            className="relative aspect-square overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900"
+            onMouseEnter={() => setImageZoom(true)}
+            onMouseLeave={() => setImageZoom(false)}
+            onMouseMove={handleImageMouseMove}
+            style={{ cursor: imageZoom ? 'crosshair' : undefined }}
+          >
             {product.images?.[activeImage] && !imgErrors[activeImage] ? (
               <Image
                 src={product.images[activeImage]}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className={`object-cover transition-transform duration-200 ${
+                  imageZoom ? 'scale-150' : 'scale-100'
+                }`}
+                style={imageZoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 onError={() =>
                   setImgErrors((prev) => ({ ...prev, [activeImage]: true }))
@@ -278,6 +336,13 @@ export function ProductDetail() {
             ) : (
               <div className="flex h-full items-center justify-center">
                 <Package className="size-20 text-neutral-700" />
+              </div>
+            )}
+
+            {/* Zoom indicator */}
+            {imageZoom && product.images?.[activeImage] && !imgErrors[activeImage] && (
+              <div className="pointer-events-none absolute bottom-3 right-3 rounded-lg bg-black/70 px-2.5 py-1 text-[10px] text-neutral-300 backdrop-blur-sm">
+                🔍 Zoom
               </div>
             )}
 
@@ -348,12 +413,12 @@ export function ProductDetail() {
           {/* Brand & Featured */}
           <div className="flex items-center gap-2">
             {product.brand && (
-              <Badge
-                variant="outline"
-                className="border-neutral-700 text-neutral-400"
+              <button
+                onClick={() => navigate('shop', { brand: product.brand! })}
+                className="rounded-full border border-neutral-700 px-2.5 py-0.5 text-xs text-neutral-400 transition-colors hover:border-cyan-500/40 hover:text-cyan-400"
               >
                 {product.brand}
-              </Badge>
+              </button>
             )}
             {product.featured && (
               <Badge className="bg-cyan-500 text-black">Featured</Badge>
@@ -455,21 +520,22 @@ export function ProductDetail() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="text-sm text-neutral-400">Quantity:</span>
-              <div className="flex items-center gap-0 rounded-lg border border-neutral-700">
+              {/* Premium Quantity Selector */}
+              <div className="flex items-center overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="flex size-9 items-center justify-center text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
+                  className="flex size-10 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                 >
                   <Minus className="size-4" />
                 </button>
-                <span className="flex w-10 items-center justify-center text-sm font-medium text-white">
+                <span className="flex w-12 items-center justify-center border-x border-neutral-700/50 text-sm font-semibold text-white">
                   {quantity}
                 </span>
                 <button
                   onClick={() =>
-                    setQuantity(Math.min(product.stock, quantity + 1))
+                    setQuantity(Math.min(product.stock || 99, quantity + 1))
                   }
-                  className="flex size-9 items-center justify-center text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
+                  className="flex size-10 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                 >
                   <Plus className="size-4" />
                 </button>
@@ -481,10 +547,33 @@ export function ProductDetail() {
                 onClick={handleAddToCart}
                 disabled={stockStatus === 'out_of_stock'}
                 size="lg"
-                className="flex-1 bg-cyan-500 text-base font-semibold text-black hover:bg-cyan-400"
+                className="flex-1 bg-cyan-500 text-base font-semibold text-black hover:bg-cyan-400 transition-all duration-300"
               >
-                <ShoppingCart className="mr-2 size-5" />
-                Add to Cart
+                <AnimatePresence mode="wait">
+                  {addedToCart ? (
+                    <motion.span
+                      key="added"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      className="flex items-center gap-2"
+                    >
+                      <CheckCircle2 className="size-5" />
+                      Added ✓
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="add"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      className="flex items-center gap-2"
+                    >
+                      <ShoppingCart className="size-5" />
+                      Add to Cart
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Button>
               <Button
                 onClick={handleBuyNow}
@@ -542,6 +631,15 @@ export function ProductDetail() {
             <div>
               <span className="text-sm font-semibold text-cyan-400">Guaranteed Authentic</span>
               <p className="text-xs text-neutral-500">100% genuine products with full warranty</p>
+            </div>
+          </div>
+
+          {/* Secure Checkout Badge */}
+          <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
+            <Lock className="size-5 shrink-0 text-emerald-400" />
+            <div>
+              <span className="text-sm font-semibold text-emerald-400">Secure Checkout</span>
+              <p className="text-xs text-neutral-500">256-bit SSL encrypted payment processing</p>
             </div>
           </div>
 
@@ -626,6 +724,26 @@ export function ProductDetail() {
           </div>
         </div>
       )}
+
+      {/* Customers Also Bought */}
+      {alsoBought.length > 0 && (
+        <div className="mt-16">
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-xl font-bold text-white">
+              Customers Also Bought
+            </h2>
+            <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {alsoBought.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Product Reviews */}
+      {product && <ProductReviews productId={product.id} />}
     </motion.div>
   )
 }

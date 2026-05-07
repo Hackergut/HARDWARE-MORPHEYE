@@ -24,12 +24,12 @@ export async function GET(
       )
     }
 
-    // Parse JSON fields
+    // Parse JSON fields (with safe fallback)
     const parsed = {
       ...product,
-      images: JSON.parse(product.images || '[]'),
-      specs: JSON.parse(product.specs || '{}'),
-      tags: JSON.parse(product.tags || '[]'),
+      images: (() => { try { return JSON.parse(product.images || '[]') } catch { return [] } })(),
+      specs: (() => { try { return JSON.parse(product.specs || '{}') } catch { return {} } })(),
+      tags: (() => { try { return JSON.parse(product.tags || '[]') } catch { return [] } })(),
     }
 
     return NextResponse.json({ product: parsed })
@@ -72,12 +72,12 @@ export async function PUT(
       },
     })
 
-    // Parse JSON fields for response
+    // Parse JSON fields for response (with safe fallback)
     const parsed = {
       ...product,
-      images: JSON.parse(product.images || '[]'),
-      specs: JSON.parse(product.specs || '{}'),
-      tags: JSON.parse(product.tags || '[]'),
+      images: (() => { try { return JSON.parse(product.images || '[]') } catch { return [] } })(),
+      specs: (() => { try { return JSON.parse(product.specs || '{}') } catch { return {} } })(),
+      tags: (() => { try { return JSON.parse(product.tags || '[]') } catch { return [] } })(),
     }
 
     return NextResponse.json({ product: parsed })
