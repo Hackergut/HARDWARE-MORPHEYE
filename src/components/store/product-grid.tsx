@@ -56,29 +56,29 @@ const PRICE_MAX = 500
 // Shimmer skeleton card that matches product card dimensions
 function SkeletonProductCard() {
   return (
-    <div className="overflow-hidden rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-[#111111] dark:bg-[#111111] bg-white relative">
+    <div className="overflow-hidden rounded-xl border border-border bg-card relative">
       {/* Shimmer animation overlay */}
       <div className="absolute inset-0 z-10 overflow-hidden rounded-xl">
         <div className="absolute inset-0 animate-[shimmer-slide_2s_infinite] bg-gradient-to-r from-transparent via-white/5 dark:via-white/5 via-neutral-200/30 to-transparent" />
       </div>
       {/* Image skeleton */}
       <div className="relative aspect-square">
-        <Skeleton className="h-full w-full bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 rounded-none" />
+        <Skeleton className="h-full w-full bg-muted rounded-none" />
         {/* Badge skeleton */}
         <div className="absolute top-2 right-2">
-          <Skeleton className="h-5 w-12 rounded-full bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
+          <Skeleton className="h-5 w-12 rounded-full bg-muted-foreground/30" />
         </div>
       </div>
       {/* Content skeleton */}
       <div className="space-y-2.5 p-4">
-        <Skeleton className="h-3 w-12 rounded bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
-        <Skeleton className="h-4 w-3/4 rounded bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
-        <Skeleton className="h-3 w-1/2 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+        <Skeleton className="h-3 w-12 rounded bg-muted-foreground/30" />
+        <Skeleton className="h-4 w-3/4 rounded bg-muted-foreground/30" />
+        <Skeleton className="h-3 w-1/2 rounded bg-muted" />
         <div className="flex items-center gap-2">
-          <Skeleton className="h-5 w-16 rounded bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
-          <Skeleton className="h-4 w-12 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+          <Skeleton className="h-5 w-16 rounded bg-muted-foreground/30" />
+          <Skeleton className="h-4 w-12 rounded bg-muted" />
         </div>
-        <Skeleton className="h-8 w-full rounded-md bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
+        <Skeleton className="h-8 w-full rounded-md bg-muted-foreground/30" />
       </div>
     </div>
   )
@@ -87,17 +87,17 @@ function SkeletonProductCard() {
 // Shimmer for list view
 function SkeletonListItem() {
   return (
-    <div className="relative flex items-center gap-4 rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-[#111111] dark:bg-[#111111] bg-white p-3 sm:p-4">
+    <div className="relative flex items-center gap-4 rounded-xl border border-border bg-card p-3 sm:p-4">
       <div className="absolute inset-0 z-10 overflow-hidden rounded-xl">
         <div className="absolute inset-0 animate-[shimmer-slide_2s_infinite] bg-gradient-to-r from-transparent via-white/5 dark:via-white/5 via-neutral-200/30 to-transparent" />
       </div>
-      <Skeleton className="size-20 rounded-lg bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 shrink-0" />
+      <Skeleton className="size-20 rounded-lg bg-muted shrink-0" />
       <div className="flex-1 space-y-2">
-        <Skeleton className="h-4 w-3/5 rounded bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
-        <Skeleton className="h-3 w-2/5 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
-        <Skeleton className="h-3 w-1/4 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+        <Skeleton className="h-4 w-3/5 rounded bg-muted-foreground/30" />
+        <Skeleton className="h-3 w-2/5 rounded bg-muted" />
+        <Skeleton className="h-3 w-1/4 rounded bg-muted" />
       </div>
-      <Skeleton className="h-5 w-16 rounded bg-neutral-700 dark:bg-neutral-700 bg-neutral-300" />
+      <Skeleton className="h-5 w-16 rounded bg-muted-foreground/30" />
     </div>
   )
 }
@@ -281,19 +281,19 @@ export function ProductGrid({
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <Skeleton className="h-8 w-48 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
-            <Skeleton className="mt-2 h-4 w-32 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+            <Skeleton className="h-8 w-48 bg-muted" />
+            <Skeleton className="mt-2 h-4 w-32 bg-muted" />
           </div>
         </div>
         {/* Filter bar skeleton */}
-        <div className="rounded-xl border border-neutral-800/60 dark:border-neutral-800/60 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 p-4">
+        <div className="rounded-xl border border-border/60 dark:border-border/60 border-neutral-200 bg-card/50 p-4">
           <div className="flex gap-3">
-            <Skeleton className="h-10 flex-1 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 rounded-md" />
-            <Skeleton className="h-10 w-[160px] bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 rounded-md" />
+            <Skeleton className="h-10 flex-1 bg-muted rounded-md" />
+            <Skeleton className="h-10 w-[160px] bg-muted rounded-md" />
           </div>
           <div className="mt-3 flex gap-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-9 w-24 rounded-full bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+              <Skeleton key={i} className="h-9 w-24 rounded-full bg-muted" />
             ))}
           </div>
         </div>
@@ -314,21 +314,21 @@ export function ProductGrid({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white dark:text-white text-neutral-900">{title}</h2>
-          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-500 text-neutral-400">
+          <h2 className="text-2xl font-bold text-foreground">{title}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Showing <span className="font-medium text-cyan-400">{displayedCount}</span> of{' '}
-            <span className="font-medium text-neutral-300 dark:text-neutral-300 text-neutral-700">{totalProductCount}</span> products
+            <span className="font-medium text-muted-foreground">{totalProductCount}</span> products
           </p>
         </div>
         <div className="flex items-center gap-2">
           {/* View Toggle */}
-          <div className="flex items-center rounded-lg border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/80 dark:bg-neutral-900/80 bg-neutral-50 p-0.5">
+          <div className="flex items-center rounded-lg border border-border bg-card/80 dark:bg-card/80 bg-muted/50 p-0.5">
             <button
               onClick={() => setViewMode('grid')}
               className={`flex items-center justify-center rounded-md p-1.5 transition-all ${
                 viewMode === 'grid'
                   ? 'bg-cyan-500/20 text-cyan-400 shadow-sm shadow-cyan-500/10'
-                  : 'text-neutral-500 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                  : 'text-neutral-500 hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
               }`}
               title="Grid view"
             >
@@ -339,7 +339,7 @@ export function ProductGrid({
               className={`flex items-center justify-center rounded-md p-1.5 transition-all ${
                 viewMode === 'list'
                   ? 'bg-cyan-500/20 text-cyan-400 shadow-sm shadow-cyan-500/10'
-                  : 'text-neutral-500 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                  : 'text-neutral-500 hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
               }`}
               title="List view"
             >
@@ -350,18 +350,18 @@ export function ProductGrid({
       </div>
 
       {/* Filter Bar */}
-      <div className="rounded-xl border border-neutral-800/60 dark:border-neutral-800/60 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 p-4 backdrop-blur-sm">
+      <div className="rounded-xl border border-border/60 dark:border-border/60 border-neutral-200 bg-card/50 p-4 backdrop-blur-sm">
         {/* Search + Sort Row */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <form onSubmit={handleSearch} className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
               placeholder="Search products..."
-              className={`h-10 border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/80 dark:bg-neutral-800/80 bg-white pl-9 pr-9 text-sm text-white dark:text-white text-neutral-900 placeholder:text-neutral-500 transition-all duration-300 ${
+              className={`h-10 border-border bg-muted/80 pl-9 pr-9 text-sm text-foreground placeholder:text-muted-foreground transition-all duration-300 ${
                 searchFocused
                   ? 'border-cyan-500/60 shadow-[0_0_12px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/20'
                   : ''
@@ -371,7 +371,7 @@ export function ProductGrid({
               <button
                 type="button"
                 onClick={clearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition-colors hover:text-neutral-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition-colors hover:text-foreground"
               >
                 <X className="size-4" />
               </button>
@@ -380,10 +380,10 @@ export function ProductGrid({
 
           <div className="flex items-center gap-2">
             <Select value={sort} onValueChange={setSort}>
-              <SelectTrigger className="h-10 w-[160px] border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/80 dark:bg-neutral-800/80 bg-white text-sm text-white dark:text-white text-neutral-900 hover:border-neutral-600">
+              <SelectTrigger className="h-10 w-[160px] border-border bg-muted/80 text-sm text-foreground hover:border-border">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900 dark:bg-neutral-900 bg-white text-white dark:text-white text-neutral-900">
+              <SelectContent className="border-border bg-card text-foreground">
                 <SelectItem value="newest">Newest First</SelectItem>
                 <SelectItem value="price_asc">Price: Low → High</SelectItem>
                 <SelectItem value="price_desc">Price: High → Low</SelectItem>
@@ -400,7 +400,7 @@ export function ProductGrid({
             className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
               selectedCategory === 'all'
                 ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                : 'border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-600 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                : 'border border-border bg-muted/60 text-muted-foreground hover:border-border hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
             }`}
           >
             All
@@ -412,7 +412,7 @@ export function ProductGrid({
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
                 selectedCategory === cat.slug
                   ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                  : 'border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-600 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                  : 'border border-border bg-muted/60 text-muted-foreground hover:border-border hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
               }`}
             >
               {cat.name}
@@ -420,7 +420,7 @@ export function ProductGrid({
                 className={`ml-1.5 inline-flex size-4 items-center justify-center rounded-full text-[10px] ${
                   selectedCategory === cat.slug
                     ? 'bg-black/20 text-black'
-                    : 'bg-neutral-700 dark:bg-neutral-700 bg-neutral-300 text-neutral-500 dark:text-neutral-500 text-neutral-500'
+                    : 'bg-muted-foreground/30 text-muted-foreground text-neutral-500'
                 }`}
               >
                 {cat.productCount}
@@ -432,7 +432,7 @@ export function ProductGrid({
         {/* Brand Filter Pills */}
         {brands.length > 0 && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-600 text-neutral-400">
+            <span className="mr-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Brand:
             </span>
             <button
@@ -440,7 +440,7 @@ export function ProductGrid({
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
                 selectedBrand === 'all'
                   ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                  : 'border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-600 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                  : 'border border-border bg-muted/60 text-muted-foreground hover:border-border hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
               }`}
             >
               All Brands
@@ -452,7 +452,7 @@ export function ProductGrid({
                 className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
                   selectedBrand === brand.name
                     ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                    : 'border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-600 hover:text-neutral-300 dark:hover:text-neutral-300 hover:text-neutral-700'
+                    : 'border border-border bg-muted/60 text-muted-foreground hover:border-border hover:text-foreground dark:hover:text-foreground hover:text-neutral-700'
                 }`}
               >
                 {brand.name}
@@ -460,7 +460,7 @@ export function ProductGrid({
                   className={`ml-1.5 inline-flex size-4 items-center justify-center rounded-full text-[10px] ${
                     selectedBrand === brand.name
                       ? 'bg-black/20 text-black'
-                      : 'bg-neutral-700 dark:bg-neutral-700 bg-neutral-300 text-neutral-500 dark:text-neutral-500 text-neutral-500'
+                      : 'bg-muted-foreground/30 text-muted-foreground text-neutral-500'
                   }`}
                 >
                   {brand.productCount}
@@ -479,7 +479,7 @@ export function ProductGrid({
               className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
                 showDeals
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-md shadow-amber-500/20'
-                  : 'border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-amber-500/40 hover:text-amber-400'
+                  : 'border border-border bg-muted/60 text-muted-foreground hover:border-amber-500/40 hover:text-amber-400'
               }`}
             >
               <Sparkles className="size-3" />
@@ -489,7 +489,7 @@ export function ProductGrid({
 
           {/* Price Range Slider */}
           <div className="flex items-center gap-3 min-w-0 sm:min-w-[280px]">
-            <SlidersHorizontal className="size-4 shrink-0 text-neutral-500" />
+            <SlidersHorizontal className="size-4 shrink-0 text-muted-foreground" />
             <div className="flex-1 min-w-0">
               <Slider
                 min={PRICE_MIN}
@@ -500,7 +500,7 @@ export function ProductGrid({
                 className="[&_[data-slot=slider-track]]:bg-neutral-800 dark:[&_[data-slot=slider-track]]:bg-neutral-800 [&_[data-slot=slider-track]]:bg-neutral-200 [&_[data-slot=slider-range]]:bg-cyan-500 [&_[data-slot=slider-thumb]]:border-cyan-500 [&_[data-slot=slider-thumb]]:bg-neutral-900 dark:[&_[data-slot=slider-thumb]]:bg-neutral-900 [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:hover:ring-cyan-500/30"
               />
             </div>
-            <span className="shrink-0 text-[10px] font-medium text-neutral-400 dark:text-neutral-400 text-neutral-600">
+            <span className="shrink-0 text-[10px] font-medium text-muted-foreground">
               ${priceRange[0]} - ${priceRange[1]}
             </span>
           </div>
@@ -508,12 +508,12 @@ export function ProductGrid({
 
         {/* Active Filter Chips */}
         {activeFilterCount > 0 && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-neutral-800/50 dark:border-neutral-800/50 border-neutral-200 pt-3">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-600 text-neutral-400">
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/50 dark:border-border/50 border-neutral-200 pt-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Active:
             </span>
             {search && (
-              <div className="flex items-center gap-1 rounded-full border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 px-2.5 py-1 text-[10px] text-neutral-300 dark:text-neutral-300 text-neutral-600">
+              <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] text-muted-foreground">
                 Search: &ldquo;{search}&rdquo;
                 <button onClick={clearSearch} className="ml-1 text-neutral-500 hover:text-red-400 transition-colors">
                   <X className="size-3" />
@@ -546,7 +546,7 @@ export function ProductGrid({
               </div>
             )}
             {(priceRange[0] > PRICE_MIN || priceRange[1] < PRICE_MAX) && (
-              <div className="flex items-center gap-1 rounded-full border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 px-2.5 py-1 text-[10px] text-neutral-300 dark:text-neutral-300 text-neutral-600">
+              <div className="flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] text-muted-foreground">
                 ${priceRange[0]} - ${priceRange[1]}
                 <button onClick={() => setPriceRange([PRICE_MIN, PRICE_MAX])} className="ml-1 text-neutral-500 hover:text-red-400 transition-colors">
                   <X className="size-3" />
@@ -586,15 +586,15 @@ export function ProductGrid({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center justify-center rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/30 dark:bg-neutral-900/30 bg-neutral-50 py-20 text-center"
+          className="flex flex-col items-center justify-center rounded-xl border border-border bg-card/30 py-20 text-center"
         >
-          <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-neutral-800/80 dark:bg-neutral-800/80 bg-neutral-200 shadow-lg shadow-cyan-500/5">
-            <Search className="size-10 text-neutral-500" />
+          <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-muted/80 dark:bg-muted/80 bg-neutral-200 shadow-lg shadow-cyan-500/5">
+            <Search className="size-10 text-muted-foreground" />
           </div>
-          <h3 className="mb-2 text-xl font-semibold text-white dark:text-white text-neutral-900">
+          <h3 className="mb-2 text-xl font-semibold text-foreground">
             No products found
           </h3>
-          <p className="mb-6 max-w-sm text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
+          <p className="mb-6 max-w-sm text-sm text-muted-foreground">
             We couldn&apos;t find any products matching your criteria. Try adjusting your filters or search terms.
           </p>
           <Button
@@ -616,9 +616,9 @@ export function ProductGrid({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 onClick={() => navigate('product', { productId: product.id })}
-                className="group flex cursor-pointer items-center gap-4 rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-[#111111] dark:bg-[#111111] bg-white p-3 sm:p-4 transition-all hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5"
+                className="group flex cursor-pointer items-center gap-4 rounded-xl border border-border bg-card p-3 sm:p-4 transition-all hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5"
               >
-                <div className="relative size-20 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-800 dark:bg-neutral-800 bg-neutral-200">
+                <div className="relative size-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                   {product.images?.[0] ? (
                     <img
                       src={product.images[0]}
@@ -626,7 +626,7 @@ export function ProductGrid({
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-neutral-600">
+                    <div className="flex h-full items-center justify-center text-muted-foreground">
                       <Package className="size-6" />
                     </div>
                   )}
@@ -638,22 +638,22 @@ export function ProductGrid({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-white dark:text-white text-neutral-900 group-hover:text-cyan-400 transition-colors">
+                  <h3 className="truncate text-sm font-semibold text-foreground group-hover:text-cyan-400 transition-colors">
                     {product.name}
                   </h3>
                   {product.shortDesc && (
-                    <p className="mt-0.5 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
+                    <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
                       {product.shortDesc}
                     </p>
                   )}
                   <div className="mt-1 flex items-center gap-2">
                     {product.category && (
-                      <span className="text-[10px] text-neutral-500 dark:text-neutral-500 text-neutral-400">
+                      <span className="text-[10px] text-muted-foreground">
                         {product.category.name}
                       </span>
                     )}
                     {product.brand && (
-                      <span className="rounded border border-neutral-700 dark:border-neutral-700 border-neutral-300 px-1.5 py-0.5 text-[9px] text-neutral-400 dark:text-neutral-400 text-neutral-600">
+                      <span className="rounded border border-border px-1.5 py-0.5 text-[9px] text-muted-foreground">
                         {product.brand}
                       </span>
                     )}
@@ -668,7 +668,7 @@ export function ProductGrid({
                             className={`text-[10px] ${
                               i < Math.floor(product.rating || 0)
                                 ? 'text-amber-500'
-                                : 'text-neutral-700 dark:text-neutral-700 text-neutral-300'
+                                : 'text-neutral-700 dark:text-neutral-700 text-muted-foreground'
                             }`}
                           >
                             ★
@@ -676,7 +676,7 @@ export function ProductGrid({
                         ))}
                       </div>
                       {product.reviewCount && (
-                        <span className="text-[9px] text-neutral-600 dark:text-neutral-600 text-neutral-400">({product.reviewCount})</span>
+                        <span className="text-[9px] text-muted-foreground">({product.reviewCount})</span>
                       )}
                     </div>
                   )}
@@ -691,7 +691,7 @@ export function ProductGrid({
                     </p>
                   )}
                 </div>
-                <ArrowRight className="size-4 flex-shrink-0 text-neutral-600 transition-colors group-hover:text-cyan-400" />
+                <ArrowRight className="size-4 flex-shrink-0 text-muted-foreground transition-colors group-hover:text-cyan-400" />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -708,7 +708,7 @@ export function ProductGrid({
 
       {/* Loading More indicator */}
       {isFilterLoading && !isLoading && (
-        <div className="flex items-center justify-center gap-2 py-4 text-sm text-neutral-500">
+        <div className="flex items-center justify-center gap-2 py-4 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin text-cyan-400" />
           <span>Loading more products...</span>
         </div>
@@ -727,7 +727,7 @@ export function ProductGrid({
             size="sm"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="h-9 border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-white px-3 text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-700 dark:hover:border-neutral-700 hover:border-neutral-300 hover:bg-neutral-800 dark:hover:bg-neutral-800 hover:bg-neutral-50 hover:text-white dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            className="h-9 border-border bg-card/50 px-3 text-muted-foreground hover:border-border dark:hover:border-border hover:bg-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="mr-1 size-4" />
             Previous
@@ -739,7 +739,7 @@ export function ProductGrid({
               p === 'ellipsis' ? (
                 <span
                   key={`ellipsis-${i}`}
-                  className="flex size-9 items-center justify-center text-sm text-neutral-600 dark:text-neutral-600 text-neutral-400"
+                  className="flex size-9 items-center justify-center text-sm text-muted-foreground"
                 >
                   ...
                 </span>
@@ -752,7 +752,7 @@ export function ProductGrid({
                   className={`h-9 w-9 p-0 transition-all duration-200 ${
                     page === p
                       ? 'border-cyan-500 bg-cyan-500 text-black font-bold hover:bg-cyan-400 hover:text-black shadow-md shadow-cyan-500/20'
-                      : 'border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-white text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-700 dark:hover:border-neutral-700 hover:border-neutral-300 hover:bg-neutral-800 dark:hover:bg-neutral-800 hover:bg-neutral-50 hover:text-white dark:hover:text-white'
+                      : 'border-border bg-card/50 text-muted-foreground hover:border-border dark:hover:border-border hover:bg-muted hover:text-foreground'
                   }`}
                 >
                   {p}
@@ -767,7 +767,7 @@ export function ProductGrid({
             size="sm"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="h-9 border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-white px-3 text-neutral-400 dark:text-neutral-400 text-neutral-600 hover:border-neutral-700 dark:hover:border-neutral-700 hover:border-neutral-300 hover:bg-neutral-800 dark:hover:bg-neutral-800 hover:bg-neutral-50 hover:text-white dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            className="h-9 border-border bg-card/50 px-3 text-muted-foreground hover:border-border dark:hover:border-border hover:bg-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Next
             <ChevronRight className="ml-1 size-4" />

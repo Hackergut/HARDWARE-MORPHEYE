@@ -72,10 +72,10 @@ function SearchSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="animate-pulse rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
-          <div className="aspect-square rounded-lg bg-neutral-800" />
-          <div className="mt-3 h-4 w-3/4 rounded bg-neutral-800" />
-          <div className="mt-2 h-4 w-1/2 rounded bg-neutral-800" />
+        <div key={i} className="animate-pulse rounded-xl border border-border bg-card/50 p-4">
+          <div className="aspect-square rounded-lg bg-muted" />
+          <div className="mt-3 h-4 w-3/4 rounded bg-muted" />
+          <div className="mt-2 h-4 w-1/2 rounded bg-muted" />
         </div>
       ))}
     </div>
@@ -167,7 +167,7 @@ export function SearchResultsPage() {
     >
       {/* Search Header */}
       <div className="mb-8">
-        <h1 className="mb-6 text-2xl font-bold text-white sm:text-3xl">
+        <h1 className="mb-6 text-2xl font-bold text-foreground sm:text-3xl">
           Search
         </h1>
 
@@ -175,18 +175,18 @@ export function SearchResultsPage() {
         <form onSubmit={handleSearch} className="relative">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for hardware wallets, accessories, bundles..."
-                className="h-12 border-neutral-700 bg-neutral-900/50 pl-10 pr-10 text-sm text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
+                className="h-12 border-border bg-card/50 pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={handleClearSearch}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition-colors hover:text-neutral-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition-colors hover:text-foreground"
                 >
                   <X className="size-4" />
                 </button>
@@ -207,12 +207,12 @@ export function SearchResultsPage() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-4 text-sm text-neutral-400"
+            className="mt-4 text-sm text-muted-foreground"
           >
             {totalResults > 0 ? (
               <>
-                Showing <span className="font-semibold text-white">{results.length}</span> of{' '}
-                <span className="font-semibold text-white">{totalResults}</span> results for{' '}
+                Showing <span className="font-semibold text-foreground">{results.length}</span> of{' '}
+                <span className="font-semibold text-foreground">{totalResults}</span> results for{' '}
                 <span className="font-semibold text-cyan-400">&ldquo;{navQuery || searchQuery}&rdquo;</span>
               </>
             ) : (
@@ -236,10 +236,10 @@ export function SearchResultsPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
+              <div className="rounded-xl border border-border bg-card/50 p-6">
                 <div className="mb-4 flex items-center gap-2">
                   <Clock className="size-4 text-cyan-400" />
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-300">
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                     Recent Searches
                   </h2>
                 </div>
@@ -248,15 +248,15 @@ export function SearchResultsPage() {
                     <li key={term} className="group flex items-center">
                       <button
                         onClick={() => handleRecentClick(term)}
-                        className="flex flex-1 items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-neutral-300 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                        className="flex flex-1 items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                       >
-                        <Clock className="size-3.5 text-neutral-600 group-hover:text-cyan-500" />
+                        <Clock className="size-3.5 text-muted-foreground group-hover:text-cyan-500" />
                         {term}
                         <ArrowRight className="ml-auto size-3 opacity-0 transition-opacity group-hover:opacity-100" />
                       </button>
                       <button
                         onClick={() => handleRemoveRecent(term)}
-                        className="mr-2 flex size-6 items-center justify-center rounded-full text-neutral-600 opacity-0 transition-all hover:bg-neutral-800 hover:text-neutral-400 group-hover:opacity-100"
+                        className="mr-2 flex size-6 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-all hover:bg-muted hover:text-neutral-400 group-hover:opacity-100"
                         aria-label={`Remove ${term} from recent searches`}
                       >
                         <X className="size-3" />
@@ -274,10 +274,10 @@ export function SearchResultsPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: 0.15 }}
           >
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
+            <div className="rounded-xl border border-border bg-card/50 p-6">
               <div className="mb-4 flex items-center gap-2">
                 <TrendingUp className="size-4 text-cyan-400" />
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-300">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   Trending Searches
                 </h2>
               </div>
@@ -286,7 +286,7 @@ export function SearchResultsPage() {
                   <button
                     key={term}
                     onClick={() => handleTrendingClick(term)}
-                    className="flex items-center gap-1.5 rounded-full border border-neutral-700 bg-neutral-800/50 px-3.5 py-2 text-sm text-neutral-300 transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                    className="flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-3.5 py-2 text-sm text-muted-foreground transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
                   >
                     <TrendingUp className="size-3" />
                     {term}
@@ -329,19 +329,19 @@ export function SearchResultsPage() {
           transition={{ duration: 0.35 }}
           className="flex flex-col items-center justify-center py-16 text-center"
         >
-          <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-800">
-            <Package className="size-8 text-neutral-600" />
+          <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-muted">
+            <Package className="size-8 text-muted-foreground" />
           </div>
-          <h2 className="mb-2 text-xl font-semibold text-white">
+          <h2 className="mb-2 text-xl font-semibold text-foreground">
             No products found
           </h2>
-          <p className="mb-6 max-w-md text-sm text-neutral-400">
+          <p className="mb-6 max-w-md text-sm text-muted-foreground">
             We couldn&apos;t find any products matching your search. Try different keywords or browse our suggestions below.
           </p>
 
           {/* Suggestions */}
           <div className="mb-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Try searching for
             </p>
             <div className="flex flex-wrap justify-center gap-2">
@@ -349,7 +349,7 @@ export function SearchResultsPage() {
                 <button
                   key={term}
                   onClick={() => handleTrendingClick(term)}
-                  className="rounded-full border border-neutral-700 bg-neutral-800/50 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                  className="rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs text-muted-foreground transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
                 >
                   {term}
                 </button>
@@ -372,7 +372,7 @@ export function SearchResultsPage() {
         <div className="mt-12">
           <div className="mb-4 flex items-center gap-2">
             <Sparkles className="size-4 text-cyan-400" />
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-300">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Recent Searches
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
@@ -382,7 +382,7 @@ export function SearchResultsPage() {
               <button
                 key={term}
                 onClick={() => handleRecentClick(term)}
-                className="rounded-full border border-neutral-700 bg-neutral-800/50 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                className="rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs text-muted-foreground transition-all hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
               >
                 {term}
               </button>

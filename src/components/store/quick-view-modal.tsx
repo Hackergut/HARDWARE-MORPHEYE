@@ -125,7 +125,7 @@ export function QuickViewModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) close() }}>
-      <DialogContent className="border-neutral-800 bg-[#111111] text-white sm:max-w-2xl">
+      <DialogContent className="border-border bg-card text-card-foreground sm:max-w-2xl">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="size-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
@@ -139,7 +139,7 @@ export function QuickViewModal() {
 
             <div className="grid gap-6 sm:grid-cols-2">
               {/* Product Image */}
-              <div className="relative aspect-square overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
+              <div className="relative aspect-square overflow-hidden rounded-xl border border-border bg-card">
                 {mainImage && !imgError ? (
                   <Image
                     src={mainImage}
@@ -151,7 +151,7 @@ export function QuickViewModal() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
-                    <Package className="size-16 text-neutral-600" />
+                    <Package className="size-16 text-muted-foreground" />
                   </div>
                 )}
 
@@ -160,7 +160,7 @@ export function QuickViewModal() {
                   {product.brand && (
                     <Badge
                       variant="secondary"
-                      className="border-neutral-700 bg-neutral-900/90 text-[10px] text-neutral-300 backdrop-blur-sm"
+                      className="border-border bg-card/90 text-[10px] text-muted-foreground backdrop-blur-sm"
                     >
                       {product.brand}
                     </Badge>
@@ -183,7 +183,7 @@ export function QuickViewModal() {
               {/* Product Details */}
               <div className="flex flex-col">
                 {/* Name */}
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-foreground">
                   {product.name}
                 </h2>
 
@@ -202,11 +202,11 @@ export function QuickViewModal() {
                         />
                       ))}
                     </div>
-                    <span className="text-xs text-neutral-400">
+                    <span className="text-xs text-muted-foreground">
                       {product.rating?.toFixed(1)}
                     </span>
                     {product.reviewCount ? (
-                      <span className="text-xs text-neutral-500">
+                      <span className="text-xs text-muted-foreground">
                         ({product.reviewCount} reviews)
                       </span>
                     ) : null}
@@ -215,7 +215,7 @@ export function QuickViewModal() {
 
                 {/* Short Description */}
                 {product.shortDesc && (
-                  <p className="mt-3 line-clamp-3 text-sm text-neutral-400">
+                  <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
                     {product.shortDesc}
                   </p>
                 )}
@@ -225,14 +225,14 @@ export function QuickViewModal() {
                   <div className="mt-3">
                     <Badge
                       variant="outline"
-                      className="border-neutral-700 text-[10px] text-neutral-500"
+                      className="border-border text-[10px] text-muted-foreground"
                     >
                       {product.category.name}
                     </Badge>
                   </div>
                 )}
 
-                <Separator className="my-4 bg-neutral-800" />
+                <Separator className="my-4 bg-muted" />
 
                 {/* Price */}
                 <div className="flex items-baseline gap-2">
@@ -257,7 +257,7 @@ export function QuickViewModal() {
                   )}
                 </div>
 
-                <Separator className="my-4 bg-neutral-800" />
+                <Separator className="my-4 bg-muted" />
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-2">
@@ -266,7 +266,7 @@ export function QuickViewModal() {
                     disabled={stockStatus === 'out-of-stock'}
                     className={`w-full ${
                       stockStatus === 'out-of-stock'
-                        ? 'bg-neutral-700 text-neutral-400 cursor-not-allowed'
+                        ? 'bg-neutral-700 text-muted-foreground cursor-not-allowed'
                         : 'bg-cyan-500 text-black hover:bg-cyan-400 cyan-glow-hover'
                     }`}
                   >
@@ -276,7 +276,7 @@ export function QuickViewModal() {
                   <Button
                     onClick={handleViewFullDetails}
                     variant="outline"
-                    className="w-full border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white hover:border-neutral-600"
+                    className="w-full border-border text-muted-foreground hover:bg-muted hover:text-white hover:border-border"
                   >
                     <Eye className="mr-2 size-4" />
                     View Full Details
@@ -287,7 +287,7 @@ export function QuickViewModal() {
           </div>
         ) : (
           <div className="flex items-center justify-center py-16">
-            <p className="text-neutral-500">Product not found</p>
+            <p className="text-muted-foreground">Product not found</p>
           </div>
         )}
       </DialogContent>

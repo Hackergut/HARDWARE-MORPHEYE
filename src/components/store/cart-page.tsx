@@ -218,17 +218,17 @@ export function CartPage() {
       >
         {/* Better empty cart state */}
         <div className="relative mb-8">
-          <div className="flex size-28 items-center justify-center rounded-full bg-neutral-800/80">
-            <ShoppingBag className="size-14 text-neutral-500" />
+          <div className="flex size-28 items-center justify-center rounded-full bg-muted/80">
+            <ShoppingBag className="size-14 text-muted-foreground" />
           </div>
           <div className="absolute -right-2 -top-2 flex size-8 items-center justify-center rounded-full bg-cyan-500/10">
             <Sparkles className="size-4 text-cyan-400" />
           </div>
         </div>
-        <h2 className="mb-2 text-2xl font-bold text-white">
+        <h2 className="mb-2 text-2xl font-bold text-foreground">
           Your cart is empty
         </h2>
-        <p className="mb-8 max-w-sm text-neutral-400">
+        <p className="mb-8 max-w-sm text-muted-foreground">
           Looks like you haven&apos;t added anything yet. Explore our premium collection of hardware wallets and security devices.
         </p>
         <div className="flex gap-3">
@@ -242,7 +242,7 @@ export function CartPage() {
           <Button
             variant="outline"
             onClick={() => navigate('wishlist')}
-            className="border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-600"
+            className="border-border text-muted-foreground hover:text-foreground hover:border-border"
           >
             <Heart className="mr-2 size-4" />
             View Wishlist
@@ -261,19 +261,19 @@ export function CartPage() {
       {/* Breadcrumb */}
       <button
         onClick={() => navigate('shop')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
+        className="mb-6 flex items-center gap-1 text-sm text-muted-foreground hover:text-cyan-400"
       >
         <ArrowLeft className="size-4" />
         Continue Shopping
       </button>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Shopping Cart</h1>
+        <h1 className="text-2xl font-bold text-foreground">Shopping Cart</h1>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleClearCart}
-          className="text-neutral-400 hover:text-red-500"
+          className="text-muted-foreground hover:text-red-500"
         >
           <Trash2 className="mr-1 size-4" />
           Clear Cart
@@ -306,19 +306,19 @@ export function CartPage() {
       </div>
 
       {/* Free Shipping Progress Bar */}
-      <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+      <div className="mt-6 rounded-xl border border-border bg-card p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Truck className="size-4 text-cyan-400" />
-            <span className="text-sm text-neutral-300">
+            <span className="text-sm text-muted-foreground">
               {remainingForFreeShipping > 0
                 ? `Add $${remainingForFreeShipping.toFixed(2)} more for free shipping`
                 : 'You qualify for free shipping!'}
             </span>
           </div>
-          <span className="text-xs text-neutral-500">$150 minimum</span>
+          <span className="text-xs text-muted-foreground">$150 minimum</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-neutral-800">
+        <div className="h-2 overflow-hidden rounded-full bg-muted">
           <div
             className={`h-full rounded-full transition-all duration-700 ease-out ${
               shippingProgress >= 100
@@ -340,11 +340,11 @@ export function CartPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="flex gap-4 rounded-xl border border-neutral-800 border-l-2 border-l-cyan-500 bg-neutral-900 p-3 sm:p-4 transition-all duration-200 hover:border-neutral-700 hover:border-l-cyan-400"
+              className="flex gap-4 rounded-xl border border-border border-l-2 border-l-cyan-500 bg-card p-3 sm:p-4 transition-all duration-200 hover:border-border hover:border-l-cyan-400"
             >
               {/* Item Image */}
               <div
-                className="relative size-20 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-neutral-800"
+                className="relative size-20 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-muted"
                 onClick={() => navigate('product', { productId: item.id })}
               >
                 {item.image ? (
@@ -355,7 +355,7 @@ export function CartPage() {
                   />
                 ) : (
                   <div className="flex size-full items-center justify-center">
-                    <ShoppingBag className="size-6 text-neutral-600" />
+                    <ShoppingBag className="size-6 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -365,12 +365,12 @@ export function CartPage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3
-                      className="cursor-pointer text-sm font-semibold text-white transition-colors hover:text-cyan-400"
+                      className="cursor-pointer text-sm font-semibold text-foreground transition-colors hover:text-cyan-400"
                       onClick={() => navigate('product', { productId: item.id })}
                     >
                       {item.name}
                     </h3>
-                    <p className="mt-0.5 text-xs text-neutral-400">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       ${item.price.toFixed(2)} each
                     </p>
                   </div>
@@ -378,7 +378,7 @@ export function CartPage() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleRemoveClick(item.id)}
-                    className="size-8 text-neutral-400 hover:text-red-500 transition-colors"
+                    className="size-8 text-muted-foreground hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="size-4" />
                   </Button>
@@ -386,19 +386,19 @@ export function CartPage() {
 
                 <div className="flex items-center justify-between">
                   {/* Premium Quantity Selector matching product detail */}
-                  <div className="flex items-center overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900">
+                  <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card">
                     <button
                       onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                      className="flex size-8 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                      className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                     >
                       <Minus className="size-3" />
                     </button>
-                    <span className="flex w-8 items-center justify-center text-xs font-semibold text-white">
+                    <span className="flex w-8 items-center justify-center text-xs font-semibold text-foreground">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                      className="flex size-8 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                      className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                     >
                       <Plus className="size-3" />
                     </button>
@@ -414,28 +414,28 @@ export function CartPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-xl border border-neutral-800 bg-neutral-900 p-4 sm:p-6">
-            <h2 className="mb-4 text-base sm:text-lg font-semibold text-white">
+          <div className="sticky top-24 rounded-xl border border-border bg-card p-4 sm:p-6">
+            <h2 className="mb-4 text-base sm:text-lg font-semibold text-foreground">
               Order Summary
             </h2>
 
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-400">Subtotal</span>
-                <span className="text-white">${subtotal.toFixed(2)}</span>
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-foreground">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-400">Shipping</span>
+                <span className="text-muted-foreground">Shipping</span>
                 <span
                   className={
-                    shipping === 0 ? 'text-cyan-400' : 'text-white'
+                    shipping === 0 ? 'text-cyan-400' : 'text-foreground'
                   }
                 >
                   {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                 </span>
               </div>
               {shipping > 0 && (
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-muted-foreground">
                   Free shipping on orders over $150
                 </p>
               )}
@@ -457,10 +457,10 @@ export function CartPage() {
                 </div>
               )}
 
-              <Separator className="bg-neutral-800" />
+              <Separator className="bg-muted" />
 
               <div className="flex justify-between">
-                <span className="text-base font-semibold text-white">
+                <span className="text-base font-semibold text-foreground">
                   Total
                 </span>
                 <span className="text-lg font-bold text-cyan-400">
@@ -474,12 +474,12 @@ export function CartPage() {
               <div className="mt-4">
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-neutral-500" />
+                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input
                       value={promoInput}
                       onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                       placeholder="Promo code"
-                      className="border-neutral-700 bg-neutral-800 pl-9 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
+                      className="border-border bg-muted pl-9 text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') handleApplyPromo()
                       }}
@@ -508,7 +508,7 @@ export function CartPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-cyan-400">{appliedPromo.code}</span>
-                    <span className="text-[10px] text-neutral-500">
+                    <span className="text-[10px] text-muted-foreground">
                       {appliedPromo.type === 'percentage'
                         ? `${appliedPromo.value}% off`
                         : `$${appliedPromo.value} off`}
@@ -535,18 +535,18 @@ export function CartPage() {
             </Button>
 
             {/* Order Protection Badge */}
-            <div className="mt-4 flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-800/50 px-3 py-2.5">
+            <div className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2.5">
               <Lock className="size-4 text-cyan-400 shrink-0" />
               <div className="text-left">
-                <p className="text-[10px] font-semibold text-white">Order Protection</p>
-                <p className="text-[9px] text-neutral-500">256-bit SSL encrypted checkout</p>
+                <p className="text-[10px] font-semibold text-foreground">Order Protection</p>
+                <p className="text-[9px] text-muted-foreground">256-bit SSL encrypted checkout</p>
               </div>
               <ShieldCheck className="ml-auto size-4 text-emerald-400 shrink-0" />
             </div>
 
             <button
               onClick={() => navigate('shop')}
-              className="mt-3 w-full text-center text-sm text-neutral-400 hover:text-cyan-400"
+              className="mt-3 w-full text-center text-sm text-muted-foreground hover:text-cyan-400"
             >
               Continue Shopping
             </button>
@@ -559,18 +559,18 @@ export function CartPage() {
         <div className="mt-12">
           <div className="mb-4 flex items-center gap-3">
             <Heart className="size-5 text-red-400" />
-            <h2 className="text-lg font-bold text-white">Saved for Later</h2>
-            <span className="text-xs text-neutral-500">({wishlistItems.length} items)</span>
+            <h2 className="text-lg font-bold text-foreground">Saved for Later</h2>
+            <span className="text-xs text-muted-foreground">({wishlistItems.length} items)</span>
             <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {wishlistItems.slice(0, 4).map((item) => (
               <div
                 key={item.id}
-                className="group flex cursor-pointer flex-col rounded-xl border border-neutral-800 bg-neutral-900/50 p-3 transition-all hover:border-cyan-500/20"
+                className="group flex cursor-pointer flex-col rounded-xl border border-border bg-card/50 p-3 transition-all hover:border-cyan-500/20"
                 onClick={() => navigate('product', { productId: item.id })}
               >
-                <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-neutral-800">
+                <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-muted">
                   {item.image ? (
                     <Image
                       src={item.image}
@@ -581,11 +581,11 @@ export function CartPage() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <Package className="size-8 text-neutral-600" />
+                      <Package className="size-8 text-muted-foreground" />
                     </div>
                   )}
                 </div>
-                <h3 className="mb-1 line-clamp-1 text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                <h3 className="mb-1 line-clamp-1 text-xs font-semibold text-foreground group-hover:text-cyan-400 transition-colors">
                   {item.name}
                 </h3>
                 <p className="text-sm font-bold text-cyan-400">${item.price.toFixed(2)}</p>
@@ -593,7 +593,7 @@ export function CartPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 flex-1 border-neutral-700 text-[10px] text-neutral-400 hover:border-cyan-500/40 hover:text-cyan-400"
+                    className="h-7 flex-1 border-border text-[10px] text-muted-foreground hover:border-cyan-500/40 hover:text-cyan-400"
                     onClick={(e) => {
                       e.stopPropagation()
                       const cartStore = useCartStore.getState()
@@ -613,7 +613,7 @@ export function CartPage() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-7 size-7 text-neutral-400 hover:text-red-400"
+                    className="h-7 size-7 text-muted-foreground hover:text-red-400"
                     onClick={(e) => {
                       e.stopPropagation()
                       toggleWishlistItem(item)
@@ -634,17 +634,17 @@ export function CartPage() {
         <div className="mt-12">
           <div className="mb-4 flex items-center gap-3">
             <Sparkles className="size-5 text-cyan-400" />
-            <h2 className="text-lg font-bold text-white">You Might Also Like</h2>
+            <h2 className="text-lg font-bold text-foreground">You Might Also Like</h2>
             <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {suggestedProducts.map((product) => (
               <div
                 key={product.id}
-                className="group flex cursor-pointer flex-col rounded-xl border border-neutral-800 bg-neutral-900/50 p-3 transition-all hover:border-cyan-500/20"
+                className="group flex cursor-pointer flex-col rounded-xl border border-border bg-card/50 p-3 transition-all hover:border-cyan-500/20"
                 onClick={() => navigate('product', { productId: product.id })}
               >
-                <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-neutral-800">
+                <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-muted">
                   {product.images?.[0] ? (
                     <Image
                       src={product.images[0]}
@@ -655,16 +655,16 @@ export function CartPage() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <Package className="size-8 text-neutral-600" />
+                      <Package className="size-8 text-muted-foreground" />
                     </div>
                   )}
                   {product.brand && (
-                    <div className="absolute left-2 top-2 rounded-md border border-neutral-600/50 bg-neutral-900/80 px-1.5 py-0.5 text-[8px] text-neutral-300 backdrop-blur-sm">
+                    <div className="absolute left-2 top-2 rounded-md border border-neutral-600/50 bg-card/80 px-1.5 py-0.5 text-[8px] text-muted-foreground backdrop-blur-sm">
                       {product.brand}
                     </div>
                   )}
                 </div>
-                <h3 className="mb-1 line-clamp-1 text-xs font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                <h3 className="mb-1 line-clamp-1 text-xs font-semibold text-foreground group-hover:text-cyan-400 transition-colors">
                   {product.name}
                 </h3>
                 <div className="flex items-center justify-between">
@@ -672,7 +672,7 @@ export function CartPage() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="size-7 text-neutral-400 hover:text-cyan-400"
+                    className="size-7 text-muted-foreground hover:text-cyan-400"
                     onClick={(e) => {
                       e.stopPropagation()
                       handleAddSuggestedToCart(product)
@@ -689,10 +689,10 @@ export function CartPage() {
 
       {/* Remove Confirmation Dialog */}
       <Dialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
-        <DialogContent className="border-neutral-800 bg-neutral-900 text-white">
+        <DialogContent className="border-border bg-card text-foreground">
           <DialogHeader>
-            <DialogTitle className="text-white">Remove Item</DialogTitle>
-            <DialogDescription className="text-neutral-400">
+            <DialogTitle className="text-foreground">Remove Item</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Are you sure you want to remove this item from your cart? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
@@ -700,7 +700,7 @@ export function CartPage() {
             <Button
               variant="outline"
               onClick={() => setRemoveDialogOpen(false)}
-              className="border-neutral-700 text-neutral-400 hover:text-white"
+              className="border-border text-muted-foreground hover:text-foreground"
             >
               Cancel
             </Button>

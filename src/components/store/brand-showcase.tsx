@@ -96,7 +96,7 @@ export function BrandShowcase() {
   })
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white py-20">
+    <section className="relative overflow-hidden bg-background py-20">
       {/* Subtle background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-cyan-500/5 rounded-full blur-[120px]" />
 
@@ -109,11 +109,11 @@ export function BrandShowcase() {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-3 text-3xl font-bold text-white dark:text-white text-neutral-900 sm:text-4xl">
+          <h2 className="mb-3 text-3xl font-bold text-foreground sm:text-4xl">
             Authorized{' '}
             <span className="text-gradient-cyan">Brands</span>
           </h2>
-          <p className="mx-auto max-w-xl text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 sm:text-base">
+          <p className="mx-auto max-w-xl text-sm text-muted-foreground sm:text-base">
             We only sell genuine, factory-sealed devices from authorized manufacturers
           </p>
           {/* Gradient separator */}
@@ -126,7 +126,7 @@ export function BrandShowcase() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-56 animate-pulse rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900 dark:bg-neutral-900 bg-neutral-100"
+                className="h-56 animate-pulse rounded-xl border border-border bg-card"
               />
             ))}
           </div>
@@ -152,7 +152,7 @@ export function BrandShowcase() {
                   onClick={() =>
                     navigate('shop', { category: undefined, query: undefined, brand: brand.name })
                   }
-                  className="group relative cursor-pointer overflow-hidden rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-gradient-to-br p-6 transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
+                  className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-gradient-to-br p-6 transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
                   style={{
                     backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`,
                   }}
@@ -165,7 +165,7 @@ export function BrandShowcase() {
 
                   <div className="relative">
                     {/* Logo placeholder: first letter in gradient circle */}
-                    <div className="mb-4 flex size-14 items-center justify-center rounded-2xl border border-neutral-700/50 dark:border-neutral-700/50 border-neutral-300 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white shadow-lg transition-all duration-300 group-hover:border-cyan-500/30 group-hover:shadow-cyan-500/10">
+                    <div className="mb-4 flex size-14 items-center justify-center rounded-2xl border border-border/50 dark:border-border/50 border-neutral-300 bg-card/80 dark:bg-card/80 bg-white shadow-lg transition-all duration-300 group-hover:border-cyan-500/30 group-hover:shadow-cyan-500/10">
                       <span
                         className={`bg-gradient-to-br ${meta.letterGradient} bg-clip-text text-2xl font-black text-transparent`}
                       >
@@ -174,18 +174,18 @@ export function BrandShowcase() {
                     </div>
 
                     {/* Brand name */}
-                    <h3 className="mb-1 text-lg font-bold text-white dark:text-white text-neutral-900 transition-colors group-hover:text-cyan-400">
+                    <h3 className="mb-1 text-lg font-bold text-foreground transition-colors group-hover:text-cyan-400">
                       {brand.name}
                     </h3>
 
                     {/* Tagline */}
-                    <p className="mb-4 text-xs leading-relaxed text-neutral-400 dark:text-neutral-400 text-neutral-600">
+                    <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
                       {meta.tagline}
                     </p>
 
                     {/* Product count badge + Shop link */}
                     <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700/50 dark:border-neutral-700/50 border-neutral-300 bg-neutral-800/60 dark:bg-neutral-800/60 bg-neutral-100 px-2.5 py-1 text-[10px] font-medium text-neutral-300 dark:text-neutral-300 text-neutral-600">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border/50 dark:border-border/50 border-neutral-300 bg-muted/60 dark:bg-muted/60 bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
                         <Package className="size-3" />
                         {brand.productCount} product{brand.productCount !== 1 ? 's' : ''}
                       </span>

@@ -175,10 +175,10 @@ export function CheckoutPage() {
         animate={{ opacity: 1 }}
         className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center"
       >
-        <h2 className="mb-2 text-2xl font-bold text-white">
+        <h2 className="mb-2 text-2xl font-bold text-foreground">
           Your cart is empty
         </h2>
-        <p className="mb-8 text-neutral-400">
+        <p className="mb-8 text-muted-foreground">
           Add some items before checking out.
         </p>
         <Button
@@ -192,7 +192,7 @@ export function CheckoutPage() {
   }
 
   const inputClass = (field: string) =>
-    `border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 transition-all duration-300 ${
+    `border-border bg-card text-foreground placeholder:text-muted-foreground transition-all duration-300 ${
       focusedField === field
         ? 'border-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/20'
         : 'focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30'
@@ -224,7 +224,7 @@ export function CheckoutPage() {
     >
       <button
         onClick={() => navigate('cart')}
-        className="mb-6 flex items-center gap-1 text-sm text-neutral-400 hover:text-cyan-400"
+        className="mb-6 flex items-center gap-1 text-sm text-muted-foreground hover:text-cyan-400"
       >
         <ArrowLeft className="size-4" />
         Return to Cart
@@ -239,17 +239,17 @@ export function CheckoutPage() {
         </div>
       </div>
 
-      <h1 className="mb-8 text-center text-2xl font-bold text-white">Checkout</h1>
+      <h1 className="mb-8 text-center text-2xl font-bold text-foreground">Checkout</h1>
 
       {/* Returning Customer Prompt */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6 flex items-center justify-between rounded-xl border border-neutral-800 bg-neutral-900/50 px-5 py-3"
+        className="mb-6 flex items-center justify-between rounded-xl border border-border bg-card/50 px-5 py-3"
       >
         <div className="flex items-center gap-2">
-          <User className="size-4 text-neutral-400" />
-          <span className="text-sm text-neutral-400">Returning customer?</span>
+          <User className="size-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Returning customer?</span>
         </div>
         <Button
           variant="outline"
@@ -266,18 +266,18 @@ export function CheckoutPage() {
           {/* Form Fields */}
           <div className="space-y-8 lg:col-span-2">
             {/* Customer Info */}
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+            <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <div className="flex size-7 items-center justify-center rounded-lg bg-cyan-500/10">
                   <User className="size-4 text-cyan-400" />
                 </div>
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-foreground">
                   Customer Information
                 </h2>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-neutral-300">Full Name *</Label>
+                  <Label className="text-muted-foreground">Full Name *</Label>
                   <Input
                     value={form.customerName}
                     onChange={(e) => updateField('customerName', e.target.value)}
@@ -291,7 +291,7 @@ export function CheckoutPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-neutral-300">Email *</Label>
+                  <Label className="text-muted-foreground">Email *</Label>
                   <Input
                     type="email"
                     value={form.customerEmail}
@@ -306,7 +306,7 @@ export function CheckoutPage() {
                   )}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label className="text-neutral-300">Phone</Label>
+                  <Label className="text-muted-foreground">Phone</Label>
                   <Input
                     type="tel"
                     value={form.customerPhone}
@@ -321,18 +321,18 @@ export function CheckoutPage() {
             </div>
 
             {/* Shipping Address */}
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
+            <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <div className="flex size-7 items-center justify-center rounded-lg bg-cyan-500/10">
                   <MapPin className="size-4 text-cyan-400" />
                 </div>
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-foreground">
                   Shipping Address
                 </h2>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
-                  <Label className="text-neutral-300">Street Address *</Label>
+                  <Label className="text-muted-foreground">Street Address *</Label>
                   <Input
                     value={form.shippingAddr}
                     onChange={(e) => updateField('shippingAddr', e.target.value)}
@@ -346,7 +346,7 @@ export function CheckoutPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-neutral-300">City *</Label>
+                  <Label className="text-muted-foreground">City *</Label>
                   <Input
                     value={form.shippingCity}
                     onChange={(e) => updateField('shippingCity', e.target.value)}
@@ -360,7 +360,7 @@ export function CheckoutPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-neutral-300">Country *</Label>
+                  <Label className="text-muted-foreground">Country *</Label>
                   <Input
                     value={form.shippingCountry}
                     onChange={(e) => updateField('shippingCountry', e.target.value)}
@@ -374,7 +374,7 @@ export function CheckoutPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-neutral-300">ZIP Code *</Label>
+                  <Label className="text-muted-foreground">ZIP Code *</Label>
                   <Input
                     value={form.shippingZip}
                     onChange={(e) => updateField('shippingZip', e.target.value)}
@@ -393,8 +393,8 @@ export function CheckoutPage() {
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 rounded-xl border border-neutral-800 bg-neutral-900 p-6">
-              <h2 className="mb-4 text-lg font-semibold text-white">
+            <div className="sticky top-24 rounded-xl border border-border bg-card p-6">
+              <h2 className="mb-4 text-lg font-semibold text-foreground">
                 Order Summary
               </h2>
 
@@ -402,10 +402,10 @@ export function CheckoutPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-3 rounded-lg bg-neutral-800/30 p-2"
+                    className="flex items-center gap-3 rounded-lg bg-muted/30 p-2"
                   >
                     {/* Item thumbnail */}
-                    <div className="relative size-10 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                    <div className="relative size-10 shrink-0 overflow-hidden rounded-md bg-muted">
                       {item.image ? (
                         <img
                           src={item.image}
@@ -414,39 +414,39 @@ export function CheckoutPage() {
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center">
-                          <span className="text-[8px] text-neutral-500">No img</span>
+                          <span className="text-[8px] text-muted-foreground">No img</span>
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate text-xs font-medium text-white">{item.name}</p>
+                      <p className="truncate text-xs font-medium text-foreground">{item.name}</p>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-neutral-500">×{item.quantity}</span>
-                        <span className="text-[10px] text-neutral-600">•</span>
+                        <span className="text-[10px] text-muted-foreground">×{item.quantity}</span>
+                        <span className="text-[10px] text-muted-foreground">•</span>
                         <div className="flex items-center gap-0.5">
-                          <Calendar className="size-2.5 text-neutral-600" />
-                          <span className="text-[9px] text-neutral-500">{getEstimatedDelivery()}</span>
+                          <Calendar className="size-2.5 text-muted-foreground" />
+                          <span className="text-[9px] text-muted-foreground">{getEstimatedDelivery()}</span>
                         </div>
                       </div>
                     </div>
-                    <span className="shrink-0 text-xs font-semibold text-white">
+                    <span className="shrink-0 text-xs font-semibold text-foreground">
                       ${(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <Separator className="my-4 bg-neutral-800" />
+              <Separator className="my-4 bg-muted" />
 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-400">Subtotal</span>
-                  <span className="text-white">${subtotal.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-foreground">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-400">Shipping</span>
+                  <span className="text-muted-foreground">Shipping</span>
                   <span
-                    className={shipping === 0 ? 'text-cyan-400' : 'text-white'}
+                    className={shipping === 0 ? 'text-cyan-400' : 'text-foreground'}
                   >
                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                   </span>
@@ -469,9 +469,9 @@ export function CheckoutPage() {
                   </div>
                 )}
 
-                <Separator className="bg-neutral-800" />
+                <Separator className="bg-muted" />
                 <div className="flex justify-between">
-                  <span className="text-base font-semibold text-white">
+                  <span className="text-base font-semibold text-foreground">
                     Total
                   </span>
                   <span className="text-lg font-bold text-cyan-400">
@@ -483,17 +483,17 @@ export function CheckoutPage() {
               {/* Promo Code Input - Dashed border style */}
               {!appliedPromo && (
                 <div className="mt-4">
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Have a promo code?
                   </p>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-neutral-500" />
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                       <Input
                         value={promoInput}
                         onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                         placeholder="Enter code"
-                        className="border-dashed border-neutral-600 bg-neutral-800 pl-9 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-9 text-sm"
+                        className="border-dashed border-neutral-600 bg-muted pl-9 text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-9 text-sm"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault()
@@ -527,7 +527,7 @@ export function CheckoutPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-cyan-400">{appliedPromo.code}</span>
-                      <span className="text-[10px] text-neutral-500">
+                      <span className="text-[10px] text-muted-foreground">
                         {appliedPromo.type === 'percentage'
                           ? `${appliedPromo.value}% off`
                           : `$${appliedPromo.value} off`}
@@ -566,21 +566,21 @@ export function CheckoutPage() {
 
               {/* Trust badges */}
               <div className="mt-4 flex items-center justify-center gap-4">
-                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                   <Lock className="size-3 text-cyan-400" />
                   SSL Encrypted
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                   <ShieldCheck className="size-3 text-emerald-400" />
                   Money-Back
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                   <Truck className="size-3 text-cyan-400" />
                   Insured
                 </div>
               </div>
 
-              <p className="mt-3 text-center text-xs text-neutral-500">
+              <p className="mt-3 text-center text-xs text-muted-foreground">
                 Your payment information is secure and encrypted.
               </p>
             </div>

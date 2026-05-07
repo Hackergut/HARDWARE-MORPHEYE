@@ -153,8 +153,8 @@ export function ContactPage() {
             <CheckCircle2 className="size-10 text-cyan-500" />
           </motion.div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white">Message Sent!</h2>
-            <p className="text-neutral-400">
+            <h2 className="text-2xl font-bold text-foreground">Message Sent!</h2>
+            <p className="text-muted-foreground">
               Thank you for reaching out. Our team will review your message and get back to you within 24 hours.
             </p>
           </div>
@@ -181,7 +181,7 @@ export function ContactPage() {
         <h1 className="text-3xl font-bold text-white sm:text-4xl">
           Get in Touch
         </h1>
-        <p className="mt-3 text-neutral-400 max-w-xl mx-auto">
+        <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
           Have a question about our products or need support? We&apos;re here to help. 
           Fill out the form below and we&apos;ll get back to you as soon as possible.
         </p>
@@ -195,14 +195,14 @@ export function ContactPage() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="lg:col-span-2"
         >
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6 sm:p-8">
+          <div className="rounded-xl border border-border bg-card/50 p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20">
                 <MessageSquare className="size-5 text-cyan-500" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">Send us a Message</h2>
-                <p className="text-xs text-neutral-500">All fields are required</p>
+                <h2 className="text-lg font-semibold text-foreground">Send us a Message</h2>
+                <p className="text-xs text-muted-foreground">All fields are required</p>
               </div>
             </div>
 
@@ -210,7 +210,7 @@ export function ContactPage() {
               <div className="grid gap-5 sm:grid-cols-2">
                 {/* Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="contact-name" className="text-sm text-neutral-300">
+                  <Label htmlFor="contact-name" className="text-sm text-muted-foreground">
                     Name
                   </Label>
                   <Input
@@ -219,7 +219,7 @@ export function ContactPage() {
                     placeholder="Your name"
                     value={formData.name}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    className="border-neutral-700 bg-neutral-800/50 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
+                    className="border-border bg-muted/50 text-white placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
                   />
                   {errors.name && (
                     <p className="text-xs text-red-400">{errors.name}</p>
@@ -228,7 +228,7 @@ export function ContactPage() {
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="contact-email" className="text-sm text-neutral-300">
+                  <Label htmlFor="contact-email" className="text-sm text-muted-foreground">
                     Email
                   </Label>
                   <Input
@@ -237,7 +237,7 @@ export function ContactPage() {
                     placeholder="you@email.com"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className="border-neutral-700 bg-neutral-800/50 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
+                    className="border-border bg-muted/50 text-white placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
                   />
                   {errors.email && (
                     <p className="text-xs text-red-400">{errors.email}</p>
@@ -247,7 +247,7 @@ export function ContactPage() {
 
               {/* Subject */}
               <div className="space-y-2">
-                <Label htmlFor="contact-subject" className="text-sm text-neutral-300">
+                <Label htmlFor="contact-subject" className="text-sm text-muted-foreground">
                   Subject
                 </Label>
                 <Select
@@ -255,11 +255,11 @@ export function ContactPage() {
                   onValueChange={(value) => handleChange('subject', value)}
                 >
                   <SelectTrigger
-                    className="w-full border-neutral-700 bg-neutral-800/50 text-white focus:border-cyan-500 focus:ring-cyan-500/20"
+                    className="w-full border-border bg-muted/50 text-white focus:border-cyan-500 focus:ring-cyan-500/20"
                   >
                     <SelectValue placeholder="Select a subject" />
                   </SelectTrigger>
-                  <SelectContent className="border-neutral-700 bg-neutral-900 text-white">
+                  <SelectContent className="border-border bg-card text-white">
                     {subjectOptions.map((option) => (
                       <SelectItem
                         key={option}
@@ -278,7 +278,7 @@ export function ContactPage() {
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="contact-message" className="text-sm text-neutral-300">
+                <Label htmlFor="contact-message" className="text-sm text-muted-foreground">
                   Message
                 </Label>
                 <Textarea
@@ -287,7 +287,7 @@ export function ContactPage() {
                   rows={5}
                   value={formData.message}
                   onChange={(e) => handleChange('message', e.target.value)}
-                  className="border-neutral-700 bg-neutral-800/50 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20 resize-none"
+                  className="border-border bg-muted/50 text-white placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20 resize-none"
                 />
                 {errors.message && (
                   <p className="text-xs text-red-400">{errors.message}</p>
@@ -327,8 +327,8 @@ export function ContactPage() {
           className="space-y-6"
         >
           {/* Contact Info Card */}
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6 space-y-5">
-            <h3 className="text-lg font-semibold text-white">Contact Information</h3>
+          <div className="rounded-xl border border-border bg-card/50 p-6 space-y-5">
+            <h3 className="text-lg font-semibold text-foreground">Contact Information</h3>
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -352,44 +352,44 @@ export function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-white">Response Time</p>
-                  <p className="text-sm text-neutral-400">Within 24 hours</p>
+                  <p className="text-sm text-muted-foreground">Within 24 hours</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* FAQ Card */}
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6 space-y-4">
+          <div className="rounded-xl border border-border bg-card/50 p-6 space-y-4">
             <div className="flex items-center gap-2">
               <div className="flex size-9 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20">
                 <Shield className="size-4 text-cyan-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Frequently Asked Questions</h3>
+              <h3 className="text-lg font-semibold text-foreground">Frequently Asked Questions</h3>
             </div>
 
             <div className="space-y-2">
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className="rounded-lg border border-neutral-800 bg-neutral-800/30 overflow-hidden"
+                  className="rounded-lg border border-border bg-muted/30 overflow-hidden"
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                    className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-sm text-neutral-300 hover:text-white transition-colors"
+                    className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      {index === 0 && <Shield className="size-3.5 shrink-0 text-neutral-500" />}
-                      {index === 1 && <Truck className="size-3.5 shrink-0 text-neutral-500" />}
-                      {index === 2 && <RotateCcw className="size-3.5 shrink-0 text-neutral-500" />}
-                      {index === 3 && <Shield className="size-3.5 shrink-0 text-neutral-500" />}
-                      {index === 4 && <Truck className="size-3.5 shrink-0 text-neutral-500" />}
-                      {index === 5 && <MessageSquare className="size-3.5 shrink-0 text-neutral-500" />}
+                      {index === 0 && <Shield className="size-3.5 shrink-0 text-muted-foreground" />}
+                      {index === 1 && <Truck className="size-3.5 shrink-0 text-muted-foreground" />}
+                      {index === 2 && <RotateCcw className="size-3.5 shrink-0 text-muted-foreground" />}
+                      {index === 3 && <Shield className="size-3.5 shrink-0 text-muted-foreground" />}
+                      {index === 4 && <Truck className="size-3.5 shrink-0 text-muted-foreground" />}
+                      {index === 5 && <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />}
                       {faq.question}
                     </span>
                     {openFaq === index ? (
-                      <ChevronUp className="size-4 shrink-0 text-neutral-500" />
+                      <ChevronUp className="size-4 shrink-0 text-muted-foreground" />
                     ) : (
-                      <ChevronDown className="size-4 shrink-0 text-neutral-500" />
+                      <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
                     )}
                   </button>
                   {openFaq === index && (
@@ -399,7 +399,7 @@ export function ContactPage() {
                       transition={{ duration: 0.2 }}
                       className="px-4 pb-3"
                     >
-                      <p className="text-xs text-neutral-400 leading-relaxed">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
                         {faq.answer}
                       </p>
                     </motion.div>

@@ -95,7 +95,7 @@ export function CookieConsent() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 left-0 right-0 z-[100] border-t border-cyan-500/20 bg-[#0d0d0d]/95 px-4 py-5 backdrop-blur-xl sm:px-6"
+          className="fixed bottom-0 left-0 right-0 z-[100] border-t border-cyan-500/20 bg-background/95 px-4 py-5 backdrop-blur-xl sm:px-6"
         >
           <div className="mx-auto max-w-5xl">
             {!showCustomize ? (
@@ -106,10 +106,10 @@ export function CookieConsent() {
                     <Cookie className="size-5 text-cyan-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       We value your privacy
                     </p>
-                    <p className="mt-0.5 text-xs text-neutral-400">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic.{' '}
                       <button
                         onClick={() => setShowCustomize(true)}
@@ -127,7 +127,7 @@ export function CookieConsent() {
                     onClick={handleRejectAll}
                     variant="outline"
                     size="sm"
-                    className="border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white hover:bg-neutral-800"
+                    className="border-border text-muted-foreground hover:border-border hover:text-foreground hover:bg-muted"
                   >
                     Reject All
                   </Button>
@@ -156,38 +156,38 @@ export function CookieConsent() {
                     <div className="flex size-8 items-center justify-center rounded-lg border border-cyan-500/20 bg-cyan-500/10">
                       <ShieldCheck className="size-4 text-cyan-400" />
                     </div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-semibold text-foreground">
                       Cookie Preferences
                     </h3>
                   </div>
                   <button
                     onClick={() => setShowCustomize(false)}
-                    className="text-neutral-500 hover:text-white transition-colors"
+                    className="text-neutral-500 hover:text-foreground transition-colors"
                   >
                     <X className="size-4" />
                   </button>
                 </div>
 
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-muted-foreground">
                   Manage your cookie preferences. Essential cookies cannot be disabled as they are required for the website to function properly.
                 </p>
 
                 {/* Cookie Categories */}
                 <div className="space-y-3">
                   {/* Essential - Always on */}
-                  <div className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Checkbox checked disabled className="border-cyan-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500" />
                       <div>
-                        <p className="text-sm font-medium text-white">Essential</p>
-                        <p className="text-[11px] text-neutral-500">Required for basic site functionality</p>
+                        <p className="text-sm font-medium text-foreground">Essential</p>
+                        <p className="text-[11px] text-muted-foreground">Required for basic site functionality</p>
                       </div>
                     </div>
                     <span className="text-[10px] font-medium uppercase tracking-wider text-cyan-400/60">Always Active</span>
                   </div>
 
                   {/* Analytics */}
-                  <div className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3">
                     <button
                       onClick={() => togglePreference('analytics')}
                       className="flex items-center gap-3 text-left"
@@ -197,14 +197,14 @@ export function CookieConsent() {
                         className="border-neutral-600 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
                       />
                       <div>
-                        <p className="text-sm font-medium text-white">Analytics</p>
-                        <p className="text-[11px] text-neutral-500">Help us improve by tracking usage patterns</p>
+                        <p className="text-sm font-medium text-foreground">Analytics</p>
+                        <p className="text-[11px] text-muted-foreground">Help us improve by tracking usage patterns</p>
                       </div>
                     </button>
                   </div>
 
                   {/* Marketing */}
-                  <div className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3">
                     <button
                       onClick={() => togglePreference('marketing')}
                       className="flex items-center gap-3 text-left"
@@ -214,14 +214,14 @@ export function CookieConsent() {
                         className="border-neutral-600 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
                       />
                       <div>
-                        <p className="text-sm font-medium text-white">Marketing</p>
-                        <p className="text-[11px] text-neutral-500">Personalized ads and promotional content</p>
+                        <p className="text-sm font-medium text-foreground">Marketing</p>
+                        <p className="text-[11px] text-muted-foreground">Personalized ads and promotional content</p>
                       </div>
                     </button>
                   </div>
 
                   {/* Functional */}
-                  <div className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900/50 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-card/50 px-4 py-3">
                     <button
                       onClick={() => togglePreference('functional')}
                       className="flex items-center gap-3 text-left"
@@ -231,8 +231,8 @@ export function CookieConsent() {
                         className="border-neutral-600 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
                       />
                       <div>
-                        <p className="text-sm font-medium text-white">Functional</p>
-                        <p className="text-[11px] text-neutral-500">Enhanced features and preferences</p>
+                        <p className="text-sm font-medium text-foreground">Functional</p>
+                        <p className="text-[11px] text-muted-foreground">Enhanced features and preferences</p>
                       </div>
                     </button>
                   </div>
@@ -242,7 +242,7 @@ export function CookieConsent() {
                 <div className="flex items-center justify-between pt-1">
                   <button
                     onClick={() => setShowCustomize(false)}
-                    className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+                    className="text-xs text-neutral-500 hover:text-foreground transition-colors"
                   >
                     Back
                   </button>
@@ -251,7 +251,7 @@ export function CookieConsent() {
                       onClick={handleRejectAll}
                       variant="outline"
                       size="sm"
-                      className="border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white hover:bg-neutral-800"
+                      className="border-border text-muted-foreground hover:border-border hover:text-foreground hover:bg-muted"
                     >
                       Reject All
                     </Button>

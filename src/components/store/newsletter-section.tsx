@@ -119,10 +119,10 @@ export function NewsletterSection() {
             </div>
           </div>
 
-          <h2 className="mb-2 text-3xl font-bold text-white dark:text-white text-neutral-900">
+          <h2 className="mb-2 text-3xl font-bold text-foreground">
             Stay Ahead in Crypto Security
           </h2>
-          <p className="mb-3 text-neutral-400 dark:text-neutral-400 text-neutral-600">
+          <p className="mb-3 text-muted-foreground">
             Get exclusive deals, security tips, and early access to new products.
           </p>
 
@@ -148,17 +148,17 @@ export function NewsletterSection() {
                 ].map((avatar, i) => (
                   <div
                     key={i}
-                    className={`flex size-7 items-center justify-center rounded-full border-2 border-[#0a0a0a] dark:border-[#0a0a0a] border-white text-[10px] font-bold text-white ${avatar.color}`}
+                    className={`flex size-7 items-center justify-center rounded-full border-2 border-background dark:border-background border-card text-[10px] font-bold text-white ${avatar.color}`}
                   >
                     {avatar.initial}
                   </div>
                 ))}
               </div>
-              <span className="text-sm font-semibold text-neutral-300 dark:text-neutral-300 text-neutral-700">
+              <span className="text-sm font-semibold text-muted-foreground">
                 Join <span className="text-cyan-400">12,847+</span> subscribers
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Clock className="size-3" />
               <span>Latest issue sent 2 days ago</span>
             </div>
@@ -176,7 +176,7 @@ export function NewsletterSection() {
               <p className="text-base font-semibold text-cyan-400">
                 You&apos;re subscribed!
               </p>
-              <p className="mt-1 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Check your inbox for your 10% discount code.
               </p>
             </motion.div>
@@ -186,7 +186,7 @@ export function NewsletterSection() {
               className="flex flex-col gap-3 sm:flex-row"
             >
               <div className="relative flex-1">
-                <Mail className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+                <Mail className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="email"
                   value={email}
@@ -198,7 +198,7 @@ export function NewsletterSection() {
                   onBlur={() => setFocused(false)}
                   placeholder="Enter your email address"
                   disabled={submitting}
-                  className={`h-12 border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white/80 pl-10 pr-4 text-white dark:text-white text-neutral-900 placeholder:text-neutral-500 transition-all duration-300 ${
+                  className={`h-12 border-border bg-card/80 pl-10 pr-4 text-foreground placeholder:text-muted-foreground transition-all duration-300 ${
                     focused
                       ? 'border-cyan-500/60 shadow-[0_0_16px_rgba(6,182,212,0.12)] ring-1 ring-cyan-500/20'
                       : ''
@@ -226,7 +226,7 @@ export function NewsletterSection() {
           )}
 
           {/* Privacy Note */}
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-600 dark:text-neutral-600 text-neutral-400">
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <ShieldCheck className="size-3" />
             <span>
               No spam. Unsubscribe anytime.

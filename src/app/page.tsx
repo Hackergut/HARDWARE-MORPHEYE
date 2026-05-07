@@ -17,6 +17,7 @@ import { WishlistPage } from '@/components/store/wishlist-page'
 import { ComparisonPage } from '@/components/store/comparison-page'
 import { RecentlyViewedSection } from '@/components/store/recently-viewed-section'
 import { BrandShowcase } from '@/components/store/brand-showcase'
+import { DealOfTheDay } from '@/components/store/deal-of-the-day'
 import { OrderTrackingPage } from '@/components/store/order-tracking-page'
 import { ContactPage } from '@/components/store/contact-page'
 import { SearchResultsPage } from '@/components/store/search-results-page'
@@ -38,6 +39,7 @@ function HomePage() {
       <FeaturedSection />
       <RecentlyViewedSection />
       <CategoriesSection />
+      <DealOfTheDay />
       <BrandShowcase />
       <TrustSection />
       <NewsletterSection />

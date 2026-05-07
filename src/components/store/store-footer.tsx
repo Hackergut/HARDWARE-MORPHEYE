@@ -107,7 +107,7 @@ export function StoreFooter() {
   }
 
   return (
-    <footer className="relative mt-auto border-t border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white">
+    <footer className="relative mt-auto border-t border-border bg-background">
       {/* Gradient top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
 
@@ -124,29 +124,29 @@ export function StoreFooter() {
                 className="rounded dark:invert"
               />
               <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-white dark:text-white text-neutral-900">MORPHEYE</span>
+                <span className="text-lg font-bold tracking-tight text-foreground">MORPHEYE</span>
                 <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
                   Official Reseller
                 </span>
               </div>
             </div>
-            <p className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
+            <p className="text-sm text-muted-foreground">
               Authorized Hardware Wallet Reseller
             </p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
+            <p className="text-xs text-muted-foreground">
               Your trusted source for certified crypto security hardware. We
               only sell genuine, factory-sealed devices.
             </p>
             {/* Trust badge */}
-            <div className="flex items-center gap-2 rounded-lg border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-card/50 px-3 py-2">
               <ShieldCheck className="size-4 text-cyan-400" />
-              <span className="text-[10px] font-medium text-neutral-400 dark:text-neutral-400 text-neutral-600">Verified Authentic Reseller</span>
+              <span className="text-[10px] font-medium text-muted-foreground">Verified Authentic Reseller</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">
+            <h4 className="mb-4 text-sm font-semibold text-foreground">
               Quick Links
             </h4>
             <ul className="space-y-2.5">
@@ -155,12 +155,12 @@ export function StoreFooter() {
                   {link.page ? (
                     <button
                       onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
-                      className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                      className="text-sm text-muted-foreground transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
                     >
                       {link.label}
                     </button>
                   ) : (
-                    <span className="cursor-pointer text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400">
+                    <span className="cursor-pointer text-sm text-muted-foreground transition-colors duration-200 hover:text-cyan-400">
                       {link.label}
                     </span>
                   )}
@@ -171,19 +171,19 @@ export function StoreFooter() {
 
           {/* Support */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">Support</h4>
+            <h4 className="mb-4 text-sm font-semibold text-foreground">Support</h4>
             <ul className="space-y-2.5">
               {supportLinks.map((link) => (
                 <li key={link.label}>
                   {link.page ? (
                     <button
                       onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
-                      className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                      className="text-sm text-muted-foreground transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
                     >
                       {link.label}
                     </button>
                   ) : (
-                    <span className="cursor-pointer text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400">
+                    <span className="cursor-pointer text-sm text-muted-foreground transition-colors duration-200 hover:text-cyan-400">
                       {link.label}
                     </span>
                   )}
@@ -194,10 +194,10 @@ export function StoreFooter() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">
+            <h4 className="mb-4 text-sm font-semibold text-foreground">
               Stay Updated
             </h4>
-            <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-400 text-neutral-600">
+            <p className="mb-3 text-xs text-muted-foreground">
               Get exclusive deals and security tips delivered to your inbox.
             </p>
             {subscribed ? (
@@ -220,7 +220,7 @@ export function StoreFooter() {
                       }}
                       placeholder="you@email.com"
                       disabled={submitting}
-                      className={`h-8 border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900 dark:bg-neutral-900 bg-white text-xs text-white dark:text-white text-neutral-900 placeholder:text-neutral-500 focus-visible:border-cyan-500 ${
+                      className={`h-8 border-border bg-card text-xs text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 ${
                         emailError ? 'border-red-500 dark:border-red-500' : ''
                       }`}
                     />
@@ -246,11 +246,11 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <Separator className="my-8 sm:my-10 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+        <Separator className="my-8 sm:my-10 bg-muted" />
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
+          <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Morpheye. All rights reserved.
           </p>
 
@@ -261,7 +261,7 @@ export function StoreFooter() {
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="flex size-8 items-center justify-center rounded-full border border-neutral-800 dark:border-neutral-800 border-neutral-200 text-neutral-500 transition-all duration-200 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5"
+                className="flex size-8 items-center justify-center rounded-full border border-border text-neutral-500 transition-all duration-200 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5"
               >
                 <social.icon className="size-3.5" />
               </a>
@@ -269,13 +269,13 @@ export function StoreFooter() {
           </div>
 
           {/* Payment Methods */}
-          <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-500 text-neutral-400">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <span className="text-xs">We accept:</span>
             <div className="flex items-center gap-1.5">
               {paymentMethods.map((method) => (
                 <div
                   key={method.label}
-                  className="flex items-center gap-1 rounded border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 px-2 py-1 transition-colors duration-200 hover:border-neutral-700 dark:hover:border-neutral-700 hover:border-neutral-300"
+                  className="flex items-center gap-1 rounded border border-border bg-card/50 px-2 py-1 transition-colors duration-200 hover:border-border dark:hover:border-border hover:border-neutral-300"
                 >
                   <method.icon className={`size-3 ${method.color}`} />
                   <span className="text-[10px] font-medium">{method.label}</span>
@@ -290,7 +290,7 @@ export function StoreFooter() {
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="back-to-top-visible fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900/90 dark:bg-neutral-900/90 bg-white/90 text-cyan-400 shadow-lg shadow-cyan-500/10 backdrop-blur-sm transition-all duration-300 hover:bg-cyan-500 hover:text-black hover:border-cyan-400 hover:shadow-cyan-500/20"
+          className="back-to-top-visible fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full border border-border bg-card/90 dark:bg-card/90 bg-white/90 text-cyan-400 shadow-lg shadow-cyan-500/10 backdrop-blur-sm transition-all duration-300 hover:bg-cyan-500 hover:text-black hover:border-cyan-400 hover:shadow-cyan-500/20"
           aria-label="Back to top"
         >
           <ArrowUp className="size-4" />

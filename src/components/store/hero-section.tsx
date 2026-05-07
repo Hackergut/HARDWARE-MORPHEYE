@@ -79,7 +79,7 @@ export function HeroSection() {
   const nextProduct = products[(currentIndex + 1) % products.length]
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white grid-pattern hero-particles">
+    <section className="relative overflow-hidden bg-background grid-pattern hero-particles">
       {/* Animated gradient mesh background - 4 overlapping radial gradients that shift */}
       <div className="absolute inset-0 overflow-hidden">
         <div
@@ -113,7 +113,7 @@ export function HeroSection() {
       </div>
 
       {/* Background gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/40 dark:from-[#0a0a0a]/40 from-white/40 via-[#0a0a0a]/70 dark:via-[#0a0a0a]/70 via-white/70 to-[#0a0a0a] dark:to-[#0a0a0a] to-white" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5" />
 
       {/* Decorative circuit/tech pattern SVG - grid with dots at intersections */}
@@ -163,7 +163,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
-          className="mb-6 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-white dark:text-white text-neutral-900 sm:text-5xl lg:text-7xl"
+          className="mb-6 max-w-5xl text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-7xl"
         >
           Secure Your Crypto{' '}
           <br className="hidden sm:block" />
@@ -174,7 +174,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-          className="mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base lg:text-lg text-neutral-300/80 dark:text-neutral-300/80 text-neutral-600 leading-relaxed"
+          className="mb-8 sm:mb-10 max-w-2xl text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed"
         >
           Authorized reseller of Ledger, Trezor &amp; Keystone. Free shipping on
           orders over $150. Every device certified authentic.
@@ -215,10 +215,10 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 + badge.delay }}
-              className="flex items-center gap-2.5 rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white/80 px-5 py-3 backdrop-blur-sm transition-colors hover:border-cyan-500/30"
+              className="flex items-center gap-2.5 rounded-xl border border-border bg-card/80 px-5 py-3 backdrop-blur-sm transition-colors hover:border-cyan-500/30"
             >
               <badge.icon className="size-4 text-cyan-400" />
-              <span className="text-sm font-medium text-neutral-300 dark:text-neutral-300 text-neutral-600">
+              <span className="text-sm font-medium text-muted-foreground">
                 {badge.label}
               </span>
             </motion.div>
@@ -235,13 +235,13 @@ export function HeroSection() {
           {stats.map((stat, i) => (
             <div key={stat.label} className="flex items-center gap-3">
               {i > 0 && (
-                <div className="h-8 w-px bg-neutral-700 dark:bg-neutral-700 bg-neutral-300 -ml-3 sm:-ml-5" />
+                <div className="h-8 w-px bg-border -ml-3 sm:-ml-5" />
               )}
               <div className="flex items-center gap-2">
                 <stat.icon className="size-4 text-cyan-400/60" />
                 <div className="text-left">
-                  <span className="text-sm font-bold text-white dark:text-white text-neutral-900 sm:text-base">{stat.value}</span>
-                  <span className="ml-1.5 text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400 sm:text-sm">{stat.label}</span>
+                  <span className="text-sm font-bold text-foreground sm:text-base">{stat.value}</span>
+                  <span className="ml-1.5 text-xs text-muted-foreground sm:text-sm">{stat.label}</span>
                 </div>
               </div>
             </div>
@@ -260,9 +260,9 @@ export function HeroSection() {
           {loading ? (
             // Loading skeleton
             <div className="flex items-center justify-center gap-4 sm:gap-8">
-              <div className="hidden sm:block w-36 h-44 rounded-xl bg-neutral-800/50 dark:bg-neutral-800/50 bg-neutral-200/50 animate-pulse" />
-              <div className="w-56 sm:w-72 h-72 sm:h-96 rounded-2xl bg-neutral-800/50 dark:bg-neutral-800/50 bg-neutral-200/50 animate-pulse" />
-              <div className="hidden sm:block w-36 h-44 rounded-xl bg-neutral-800/50 dark:bg-neutral-800/50 bg-neutral-200/50 animate-pulse" />
+              <div className="hidden sm:block w-36 h-44 rounded-xl bg-muted/50 animate-pulse" />
+              <div className="w-56 sm:w-72 h-72 sm:h-96 rounded-2xl bg-muted/50 animate-pulse" />
+              <div className="hidden sm:block w-36 h-44 rounded-xl bg-muted/50 animate-pulse" />
             </div>
           ) : products.length > 0 ? (
             <div className="relative flex items-center justify-center">
@@ -274,7 +274,7 @@ export function HeroSection() {
                   animate={{ opacity: 0.5, x: 0 }}
                   className="hidden sm:block absolute -left-2 lg:left-4"
                 >
-                  <div className="relative w-32 lg:w-40 overflow-hidden rounded-xl border border-neutral-800/50 dark:border-neutral-800/50 border-neutral-200 bg-neutral-900/40 dark:bg-neutral-900/40 bg-white/40 backdrop-blur-sm cursor-pointer hover:opacity-70 transition-all duration-300"
+                  <div className="relative w-32 lg:w-40 overflow-hidden rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm cursor-pointer hover:opacity-70 transition-all duration-300"
                     onClick={goPrev}
                   >
                     <div className="aspect-[3/4] relative">
@@ -288,7 +288,7 @@ export function HeroSection() {
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center">
-                          <Package className="size-8 text-neutral-600" />
+                          <Package className="size-8 text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -311,7 +311,7 @@ export function HeroSection() {
                   <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-400/10 blur-xl" />
                   <div className="absolute inset-0 -m-2 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/8 blur-lg" />
 
-                  <div className="relative w-64 sm:w-72 lg:w-80 overflow-hidden rounded-2xl border border-neutral-700/40 dark:border-neutral-700/40 border-neutral-300 bg-neutral-900/50 dark:bg-neutral-900/50 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/30">
+                  <div className="relative w-64 sm:w-72 lg:w-80 overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/30">
                     {/* Product Image */}
                     <div className="relative aspect-square">
                       {currentProduct?.images?.[0] ? (
@@ -323,8 +323,8 @@ export function HeroSection() {
                           sizes="320px"
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center bg-neutral-800/30 dark:bg-neutral-800/30 bg-neutral-100">
-                          <Package className="size-16 text-neutral-600" />
+                        <div className="flex h-full items-center justify-center bg-muted/30">
+                          <Package className="size-16 text-muted-foreground" />
                         </div>
                       )}
                       {/* Discount badge */}
@@ -342,7 +342,7 @@ export function HeroSection() {
                           {currentProduct.brand}
                         </span>
                       )}
-                      <h3 className="mt-1 text-sm sm:text-base font-bold text-white dark:text-white text-neutral-900 line-clamp-1">
+                      <h3 className="mt-1 text-sm sm:text-base font-bold text-foreground line-clamp-1">
                         {currentProduct?.name}
                       </h3>
                       <div className="mt-2 flex items-center gap-2">
@@ -375,7 +375,7 @@ export function HeroSection() {
                   animate={{ opacity: 0.5, x: 0 }}
                   className="hidden sm:block absolute -right-2 lg:right-4"
                 >
-                  <div className="relative w-32 lg:w-40 overflow-hidden rounded-xl border border-neutral-800/50 dark:border-neutral-800/50 border-neutral-200 bg-neutral-900/40 dark:bg-neutral-900/40 bg-white/40 backdrop-blur-sm cursor-pointer hover:opacity-70 transition-all duration-300"
+                  <div className="relative w-32 lg:w-40 overflow-hidden rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm cursor-pointer hover:opacity-70 transition-all duration-300"
                     onClick={goNext}
                   >
                     <div className="aspect-[3/4] relative">
@@ -389,7 +389,7 @@ export function HeroSection() {
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center">
-                          <Package className="size-8 text-neutral-600" />
+                          <Package className="size-8 text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -402,14 +402,14 @@ export function HeroSection() {
                 <>
                   <button
                     onClick={goPrev}
-                    className="absolute left-0 sm:-left-12 lg:-left-16 top-1/2 -translate-y-1/2 z-20 flex size-10 sm:size-12 items-center justify-center rounded-full border border-neutral-700/50 dark:border-neutral-700/50 border-neutral-300 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white/80 text-white dark:text-white text-neutral-700 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                    className="absolute left-0 sm:-left-12 lg:-left-16 top-1/2 -translate-y-1/2 z-20 flex size-10 sm:size-12 items-center justify-center rounded-full border border-border/50 bg-card/80 text-foreground backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
                     aria-label="Previous product"
                   >
                     <ChevronLeft className="size-5" />
                   </button>
                   <button
                     onClick={goNext}
-                    className="absolute right-0 sm:-right-12 lg:-right-16 top-1/2 -translate-y-1/2 z-20 flex size-10 sm:size-12 items-center justify-center rounded-full border border-neutral-700/50 dark:border-neutral-700/50 border-neutral-300 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white/80 text-white dark:text-white text-neutral-700 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                    className="absolute right-0 sm:-right-12 lg:-right-16 top-1/2 -translate-y-1/2 z-20 flex size-10 sm:size-12 items-center justify-center rounded-full border border-border/50 bg-card/80 text-foreground backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
                     aria-label="Next product"
                   >
                     <ChevronRight className="size-5" />
@@ -420,7 +420,7 @@ export function HeroSection() {
           ) : (
             // Fallback when no products
             <div className="flex items-center justify-center gap-6">
-              <div className="relative rounded-2xl border border-neutral-700/40 dark:border-neutral-700/40 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-white/50 backdrop-blur-sm p-6 float-animation">
+              <div className="relative rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 float-animation">
                 <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-500/10 blur-xl" />
                 <Image
                   src="/images/ledger-nano-x.jpg"
@@ -443,7 +443,7 @@ export function HeroSection() {
                   className={`transition-all duration-300 rounded-full ${
                     i === currentIndex
                       ? 'w-8 h-2.5 bg-cyan-500 shadow-md shadow-cyan-500/30'
-                      : 'w-2.5 h-2.5 bg-neutral-600 dark:bg-neutral-600 bg-neutral-300 hover:bg-neutral-500 dark:hover:bg-neutral-500 hover:bg-neutral-400'
+                      : 'w-2.5 h-2.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                   }`}
                   aria-label={`Go to slide ${i + 1}`}
                 />

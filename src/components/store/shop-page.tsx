@@ -36,7 +36,7 @@ export function ShopPage() {
   const activeCategory = selectedCategory || 'all'
 
   return (
-    <div className="min-h-screen dark:bg-[#0a0a0a] bg-white">
+    <div className="min-h-screen bg-background">
       {/* Decorative Header Banner */}
       <div className="shop-banner">
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -45,18 +45,18 @@ export function ShopPage() {
             <nav className="flex items-center gap-1.5 text-sm">
               <button
                 onClick={() => navigate('home')}
-                className="dark:text-neutral-500 text-neutral-400 transition-colors hover:text-cyan-400"
+                className="dark:text-neutral-500 text-muted-foreground transition-colors hover:text-cyan-400"
               >
                 Home
               </button>
-              <ChevronRight className="size-3.5 dark:text-neutral-600 text-neutral-300" />
-              <span className="dark:text-white text-neutral-900 font-medium">Shop</span>
+              <ChevronRight className="size-3.5 dark:text-neutral-600 text-muted-foreground" />
+              <span className="text-foreground font-medium">Shop</span>
             </nav>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold dark:text-white text-neutral-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
             Browse Hardware Wallets
           </h1>
-          <p className="mt-1 text-sm dark:text-neutral-400 text-neutral-500">
+          <p className="mt-1 text-sm dark:text-neutral-400 text-muted-foreground">
             Explore our curated collection of certified crypto security devices
           </p>
           {/* Ambient glow */}
@@ -72,7 +72,7 @@ export function ShopPage() {
             className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
               activeCategory === 'all'
                 ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                : 'dark:bg-neutral-800 bg-neutral-100 dark:text-neutral-400 text-neutral-600 hover:dark:bg-neutral-700 hover:bg-neutral-200 hover:dark:text-white hover:text-neutral-900'
+                : 'bg-muted text-muted-foreground hover:bg-muted hover:text-foreground'
             }`}
           >
             All
@@ -84,7 +84,7 @@ export function ShopPage() {
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 activeCategory === cat.slug
                   ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
-                  : 'dark:bg-neutral-800 bg-neutral-100 dark:text-neutral-400 text-neutral-600 hover:dark:bg-neutral-700 hover:bg-neutral-200 hover:dark:text-white hover:text-neutral-900'
+                  : 'bg-muted text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
             >
               {cat.name}

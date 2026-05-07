@@ -201,7 +201,7 @@ export function StoreHeader() {
               className="rounded-lg dark:invert"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight dark:text-white text-neutral-900">
+              <span className="text-lg font-bold tracking-tight text-foreground">
                 MORPHEYE
               </span>
               <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
@@ -221,7 +221,7 @@ export function StoreHeader() {
                 className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   currentPage === link.page || (link.page === 'contact' && currentPage === 'contact')
                     ? 'text-cyan-500 dark:text-cyan-400'
-                    : 'dark:text-neutral-400 text-neutral-600 hover:dark:text-white hover:text-neutral-900'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {link.label === 'Support' && <Headphones className="inline size-3.5 mr-1 -mt-0.5" />}
@@ -238,7 +238,7 @@ export function StoreHeader() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="relative text-neutral-400 hover:text-white dark:text-neutral-400 dark:hover:text-white"
+                className="relative text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground"
                 title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -288,7 +288,7 @@ export function StoreHeader() {
                         }
                       }}
                       placeholder="Search products..."
-                      className="h-8 dark:border-neutral-700 border-neutral-300 dark:bg-neutral-900 bg-neutral-50 text-sm dark:text-white text-neutral-900 placeholder:text-neutral-500 focus-visible:border-cyan-500"
+                      className="h-8 dark:border-border border-neutral-300 dark:bg-card bg-muted/50 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500"
                     />
                     <button
                       type="button"
@@ -297,7 +297,7 @@ export function StoreHeader() {
                         setSearchValue('')
                         setShowSuggestions(false)
                       }}
-                      className="dark:text-neutral-400 text-neutral-600 hover:dark:text-white hover:text-neutral-900"
+                      className="text-muted-foreground hover:text-foreground"
                     >
                       <X className="size-4" />
                     </button>
@@ -308,7 +308,7 @@ export function StoreHeader() {
                       variant="ghost"
                       size="icon"
                       onClick={() => setSearchOpen(true)}
-                      className="dark:text-neutral-400 text-neutral-600 hover:dark:text-white hover:text-neutral-900"
+                      className="text-muted-foreground hover:text-foreground"
                     >
                       <Search className="size-4" />
                     </Button>
@@ -324,7 +324,7 @@ export function StoreHeader() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full z-[60] mt-2 w-80 overflow-hidden rounded-lg border dark:border-neutral-800 border-neutral-200 dark:bg-[#111111] bg-white shadow-xl dark:shadow-black/40 shadow-lg"
+                    className="absolute right-0 top-full z-[60] mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-xl dark:shadow-black/40 shadow-lg"
                   >
                     <div className="max-h-96 overflow-y-auto custom-scrollbar">
                       {/* Loading indicator */}
@@ -341,7 +341,7 @@ export function StoreHeader() {
                             <div>
                               <div className="flex items-center gap-2 px-4 pt-3 pb-1.5">
                                 <Tag className="size-3 text-cyan-400" />
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                                   Categories
                                 </span>
                               </div>
@@ -351,10 +351,10 @@ export function StoreHeader() {
                                   onClick={() => handleCategoryClick(cat.slug)}
                                   className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-cyan-500/10"
                                 >
-                                  <div className="flex size-7 items-center justify-center rounded-md bg-neutral-800">
+                                  <div className="flex size-7 items-center justify-center rounded-md bg-muted">
                                     <Tag className="size-3.5 text-cyan-400" />
                                   </div>
-                                  <span className="text-sm text-neutral-300 group-hover:text-cyan-400">
+                                  <span className="text-sm text-muted-foreground group-hover:text-cyan-400">
                                     {cat.name}
                                   </span>
                                 </button>
@@ -364,7 +364,7 @@ export function StoreHeader() {
 
                           {/* Divider between categories and products */}
                           {suggestions.categories.length > 0 && suggestions.products.length > 0 && (
-                            <div className="mx-4 border-t border-neutral-800" />
+                            <div className="mx-4 border-t border-border" />
                           )}
 
                           {/* Product Suggestions */}
@@ -372,7 +372,7 @@ export function StoreHeader() {
                             <div>
                               <div className="flex items-center gap-2 px-4 pt-3 pb-1.5">
                                 <Package className="size-3 text-cyan-400" />
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                                   Products
                                 </span>
                               </div>
@@ -382,7 +382,7 @@ export function StoreHeader() {
                                   onClick={() => handleProductClick(prod.id)}
                                   className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-cyan-500/10"
                                 >
-                                  <div className="relative size-10 shrink-0 overflow-hidden rounded-md border border-neutral-800 bg-neutral-800">
+                                  <div className="relative size-10 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
                                     {prod.images?.[0] ? (
                                       <Image
                                         src={prod.images[0]}
@@ -393,12 +393,12 @@ export function StoreHeader() {
                                       />
                                     ) : (
                                       <div className="flex h-full items-center justify-center">
-                                        <Package className="size-4 text-neutral-600" />
+                                        <Package className="size-4 text-muted-foreground" />
                                       </div>
                                     )}
                                   </div>
                                   <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm text-neutral-300">
+                                    <p className="truncate text-sm text-muted-foreground">
                                       {prod.name}
                                     </p>
                                     <p className="text-xs font-semibold text-cyan-400">
@@ -413,7 +413,7 @@ export function StoreHeader() {
                           {/* No results */}
                           {!hasSuggestions && !suggestionsLoading && (
                             <div className="px-4 py-6 text-center">
-                              <p className="text-sm text-neutral-500">
+                              <p className="text-sm text-muted-foreground">
                                 No results for &ldquo;{searchValue}&rdquo;
                               </p>
                             </div>
@@ -421,7 +421,7 @@ export function StoreHeader() {
 
                           {/* Footer link */}
                           {hasSuggestions && (
-                            <div className="border-t border-neutral-800">
+                            <div className="border-t border-border">
                               <button
                                 onClick={handleSearch}
                                 className="flex w-full items-center justify-center gap-2 px-4 py-3 text-xs font-medium text-cyan-400 transition-colors hover:bg-cyan-500/10"
@@ -444,11 +444,11 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('wishlist')}
-              className="relative text-neutral-400 hover:text-red-400 dark:hover:text-red-400"
+              className="relative text-muted-foreground hover:text-red-400 dark:hover:text-red-400"
             >
               <Heart className="size-4" />
               {wishlistCount > 0 && (
-                <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-white">
+                <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-foreground">
                   {wishlistCount}
                 </Badge>
               )}
@@ -459,7 +459,7 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('comparison')}
-              className="relative text-neutral-400 hover:text-cyan-400 dark:hover:text-cyan-400"
+              className="relative text-muted-foreground hover:text-cyan-400 dark:hover:text-cyan-400"
             >
               <ArrowLeftRight className="size-4" />
               {comparisonCount > 0 && (
@@ -475,7 +475,7 @@ export function StoreHeader() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative text-neutral-400 hover:text-white dark:text-neutral-400 dark:hover:text-white"
+                  className="relative text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground"
                 >
                   <ShoppingCart className="size-4" />
                   {itemCount > 0 && (
@@ -489,7 +489,7 @@ export function StoreHeader() {
                 align="end"
                 side="bottom"
                 sideOffset={8}
-                className="w-auto border-neutral-800 bg-transparent p-0 shadow-none"
+                className="w-auto border-border bg-transparent p-0 shadow-none"
               >
                 <MiniCart onClose={() => setCartOpen(false)} />
               </PopoverContent>
@@ -500,7 +500,7 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('admin')}
-              className="text-neutral-400 hover:text-cyan-400 dark:hover:text-cyan-400"
+              className="text-muted-foreground hover:text-cyan-400 dark:hover:text-cyan-400"
               title="Admin Panel"
             >
               <Shield className="size-4" />
@@ -515,7 +515,7 @@ export function StoreHeader() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="dark:text-neutral-400 text-neutral-600"
+                className="text-muted-foreground"
               >
                 {theme === 'dark' ? <Sun className="size-5" /> : <Moon className="size-5" />}
               </Button>
@@ -524,11 +524,11 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('wishlist')}
-              className="relative dark:text-neutral-400 text-neutral-600"
+              className="relative text-muted-foreground"
             >
               <Heart className="size-5" />
               {wishlistCount > 0 && (
-                <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-white">
+                <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-foreground">
                   {wishlistCount}
                 </Badge>
               )}
@@ -537,7 +537,7 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('comparison')}
-              className="relative dark:text-neutral-400 text-neutral-600"
+              className="relative text-muted-foreground"
               title="Compare Products"
             >
               <ArrowLeftRight className="size-5" />
@@ -551,7 +551,7 @@ export function StoreHeader() {
               variant="ghost"
               size="icon"
               onClick={() => navigate('cart')}
-              className="relative dark:text-neutral-400 text-neutral-600"
+              className="relative text-muted-foreground"
             >
               <ShoppingCart className="size-5" />
               {itemCount > 0 && (
@@ -563,16 +563,16 @@ export function StoreHeader() {
 
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="dark:text-neutral-400 text-neutral-600">
+                <Button variant="ghost" size="icon" className="text-muted-foreground">
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="dark:border-neutral-800 border-neutral-200 dark:bg-[#0a0a0a] bg-white dark:text-white text-neutral-900"
+                className="border-border bg-background text-foreground"
               >
                 <SheetHeader>
-                  <SheetTitle className="text-left dark:text-white text-neutral-900 flex items-center gap-2">
+                  <SheetTitle className="text-left text-foreground flex items-center gap-2">
                     <Image
                       src="/images/logo.png"
                       alt="Morpheye"
@@ -597,20 +597,20 @@ export function StoreHeader() {
                       className={`flex items-center gap-2 rounded-md px-3 py-2.5 text-left text-sm font-medium transition-colors ${
                         currentPage === link.page
                           ? 'bg-cyan-500/10 text-cyan-500 dark:text-cyan-400'
-                          : 'dark:text-neutral-400 text-neutral-600 dark:hover:bg-neutral-900 hover:bg-neutral-100 dark:hover:text-white hover:text-neutral-900'
+                          : 'text-muted-foreground dark:hover:bg-card hover:bg-muted hover:text-foreground'
                       }`}
                     >
                       {link.label === 'Support' && <Headphones className="size-4" />}
                       {link.label}
                     </button>
                   ))}
-                  <div className="my-2 border-t border-neutral-800" />
+                  <div className="my-2 border-t border-border" />
                   <form onSubmit={handleSearch} className="flex gap-2">
                     <Input
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       placeholder="Search products..."
-                      className="dark:border-neutral-700 border-neutral-300 dark:bg-neutral-900 bg-neutral-50 text-sm dark:text-white text-neutral-900 placeholder:text-neutral-500"
+                      className="dark:border-border border-neutral-300 dark:bg-card bg-muted/50 text-sm text-foreground placeholder:text-muted-foreground"
                     />
                     <Button
                       type="submit"
@@ -628,13 +628,13 @@ export function StoreHeader() {
                     className={`flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                       currentPage === 'wishlist'
                         ? 'bg-red-500/10 text-red-500 dark:text-red-400'
-                        : 'dark:text-neutral-400 text-neutral-600 dark:hover:bg-neutral-900 hover:bg-neutral-100 dark:hover:text-white hover:text-neutral-900'
+                        : 'text-muted-foreground dark:hover:bg-card hover:bg-muted hover:text-foreground'
                     }`}
                   >
                     <Heart className="size-4" />
                     Wishlist
                     {wishlistCount > 0 && (
-                      <Badge className="ml-auto bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                      <Badge className="ml-auto bg-red-500 px-1.5 text-[10px] font-bold text-foreground">
                         {wishlistCount}
                       </Badge>
                     )}
@@ -647,7 +647,7 @@ export function StoreHeader() {
                     className={`flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                       currentPage === 'comparison'
                         ? 'bg-cyan-500/10 text-cyan-500 dark:text-cyan-400'
-                        : 'dark:text-neutral-400 text-neutral-600 dark:hover:bg-neutral-900 hover:bg-neutral-100 dark:hover:text-white hover:text-neutral-900'
+                        : 'text-muted-foreground dark:hover:bg-card hover:bg-muted hover:text-foreground'
                     }`}
                   >
                     <ArrowLeftRight className="size-4" />
@@ -663,18 +663,18 @@ export function StoreHeader() {
                       navigate('admin')
                       setMobileOpen(false)
                     }}
-                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium dark:text-neutral-400 text-neutral-600 transition-colors dark:hover:bg-neutral-900 hover:bg-neutral-100 dark:hover:text-white hover:text-neutral-900"
+                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors dark:hover:bg-card hover:bg-muted hover:text-foreground"
                   >
                     <Shield className="size-4" />
                     Admin
                   </button>
-                  <div className="my-2 border-t dark:border-neutral-800 border-neutral-200" />
+                  <div className="my-2 border-t border-border" />
                   <button
                     onClick={() => {
                       setTheme(theme === 'dark' ? 'light' : 'dark')
                       setMobileOpen(false)
                     }}
-                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium dark:text-neutral-400 text-neutral-600 transition-colors dark:hover:bg-neutral-900 hover:bg-neutral-100 dark:hover:text-white hover:text-neutral-900"
+                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors dark:hover:bg-card hover:bg-muted hover:text-foreground"
                   >
                     {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}

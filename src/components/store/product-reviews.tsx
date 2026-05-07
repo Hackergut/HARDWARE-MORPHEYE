@@ -179,7 +179,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       className="mt-16"
     >
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-bold text-white">Customer Reviews</h2>
+        <h2 className="text-xl font-bold text-foreground">Customer Reviews</h2>
         <Button
           onClick={() => setShowForm(true)}
           className="bg-cyan-500 text-black hover:bg-cyan-400"
@@ -192,18 +192,18 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       {/* Review Summary */}
       <div className="grid gap-6 lg:grid-cols-2 mb-8">
         {/* Average Rating */}
-        <div className="flex flex-col items-center justify-center rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
-          <div className="text-5xl font-bold text-white mb-2">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card/50 p-6">
+          <div className="text-5xl font-bold text-foreground mb-2">
             {summary.average.toFixed(1)}
           </div>
           <StarRating rating={Math.round(summary.average)} size="lg" />
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             Based on {summary.total} review{summary.total !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Rating Distribution */}
-        <div className="space-y-3 rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
+        <div className="space-y-3 rounded-xl border border-border bg-card/50 p-6">
           {[5, 4, 3, 2, 1].map((star) => {
             const count = summary.distribution[star] || 0
             const pct = summary.total > 0 ? (count / summary.total) * 100 : 0
@@ -211,10 +211,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             return (
               <div key={star} className="flex items-center gap-3">
                 <div className="flex items-center gap-1 w-16 shrink-0">
-                  <span className="text-sm text-neutral-300">{star}</span>
+                  <span className="text-sm text-muted-foreground">{star}</span>
                   <Star className="size-3 fill-amber-500 text-amber-500" />
                 </div>
-                <div className="flex-1 h-2.5 rounded-full bg-neutral-800 overflow-hidden">
+                <div className="flex-1 h-2.5 rounded-full bg-muted overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
@@ -222,7 +222,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                     className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400"
                   />
                 </div>
-                <span className="w-8 text-right text-xs text-neutral-500">
+                <span className="w-8 text-right text-xs text-muted-foreground">
                   {count}
                 </span>
               </div>
@@ -233,7 +233,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
       {/* Sort Options */}
       <div className="flex items-center gap-2 mb-6">
-        <span className="text-sm text-neutral-400">Sort by:</span>
+        <span className="text-sm text-muted-foreground">Sort by:</span>
         {(['newest', 'highest', 'lowest'] as SortOption[]).map((option) => (
           <button
             key={option}
@@ -244,7 +244,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
               sort === option
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                : 'text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700'
+                : 'text-muted-foreground hover:text-foreground border border-border hover:border-border'
             }`}
           >
             {option === 'newest' ? 'Newest' : option === 'highest' ? 'Highest Rating' : 'Lowest Rating'}
@@ -263,10 +263,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="rounded-xl border border-neutral-800 bg-neutral-900/30 py-12 text-center"
+              className="rounded-xl border border-border bg-card/30 py-12 text-center"
             >
-              <MessageSquarePlus className="mx-auto mb-3 size-10 text-neutral-600" />
-              <p className="text-neutral-400">No reviews yet. Be the first to review!</p>
+              <MessageSquarePlus className="mx-auto mb-3 size-10 text-muted-foreground" />
+              <p className="text-muted-foreground">No reviews yet. Be the first to review!</p>
             </motion.div>
           ) : (
             reviews.map((review) => (
@@ -276,16 +276,16 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5"
+                className="rounded-xl border border-border bg-card/50 p-5"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-full bg-neutral-800">
-                      <User className="size-4 text-neutral-500" />
+                    <div className="flex size-9 items-center justify-center rounded-full bg-muted">
+                      <User className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-white">
+                        <span className="text-sm font-semibold text-foreground">
                           {review.author}
                         </span>
                         {review.verified && (
@@ -295,7 +295,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-neutral-500">
+                      <span className="text-xs text-muted-foreground">
                         {formatDate(review.createdAt)}
                       </span>
                     </div>
@@ -304,13 +304,13 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                 </div>
 
                 {review.title && (
-                  <h4 className="mt-3 text-sm font-semibold text-white">
+                  <h4 className="mt-3 text-sm font-semibold text-foreground">
                     {review.title}
                   </h4>
                 )}
 
                 {review.comment && (
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {review.comment}
                   </p>
                 )}
@@ -328,11 +328,11 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             size="sm"
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="border-neutral-700 text-neutral-400 hover:text-white"
+            className="border-border text-muted-foreground hover:text-foreground"
           >
             Previous
           </Button>
-          <span className="text-sm text-neutral-400">
+          <span className="text-sm text-muted-foreground">
             Page {page} of {totalPages}
           </span>
           <Button
@@ -340,7 +340,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
             size="sm"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="border-neutral-700 text-neutral-400 hover:text-white"
+            className="border-border text-muted-foreground hover:text-foreground"
           >
             Next
           </Button>
@@ -362,14 +362,14 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="w-full max-w-lg rounded-2xl border border-neutral-800 bg-[#111111] p-6"
+              className="w-full max-w-lg rounded-2xl border border-border dark:bg-card bg-white p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-white">Write a Review</h3>
+                <h3 className="text-lg font-bold text-foreground">Write a Review</h3>
                 <button
                   onClick={() => setShowForm(false)}
-                  className="text-neutral-400 hover:text-white transition"
+                  className="text-muted-foreground hover:text-foreground transition"
                 >
                   <X className="size-5" />
                 </button>
@@ -378,7 +378,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
               <form onSubmit={handleSubmitReview} className="space-y-5">
                 {/* Author Name */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-neutral-300">
+                  <label className="text-sm font-medium text-muted-foreground">
                     Your Name *
                   </label>
                   <Input
@@ -388,7 +388,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                       if (formErrors.author) setFormErrors((p) => { const n = { ...p }; delete n.author; return n })
                     }}
                     placeholder="John Doe"
-                    className="border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
+                    className="border-border bg-card text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
                   />
                   {formErrors.author && (
                     <p className="text-xs text-red-500">{formErrors.author}</p>
@@ -397,7 +397,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
                 {/* Star Rating */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-neutral-300">
+                  <label className="text-sm font-medium text-muted-foreground">
                     Rating *
                   </label>
                   <div className="flex items-center gap-1">
@@ -423,7 +423,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                       </button>
                     ))}
                     {formRating > 0 && (
-                      <span className="ml-2 text-sm text-neutral-400">
+                      <span className="ml-2 text-sm text-muted-foreground">
                         {formRating} star{formRating !== 1 ? 's' : ''}
                       </span>
                     )}
@@ -435,20 +435,20 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
                 {/* Title */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-neutral-300">
+                  <label className="text-sm font-medium text-muted-foreground">
                     Review Title
                   </label>
                   <Input
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
                     placeholder="Summarize your experience"
-                    className="border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
+                    className="border-border bg-card text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30"
                   />
                 </div>
 
                 {/* Comment */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-neutral-300">
+                  <label className="text-sm font-medium text-muted-foreground">
                     Your Review
                   </label>
                   <textarea
@@ -456,18 +456,18 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                     onChange={(e) => setFormComment(e.target.value)}
                     placeholder="Share your experience with this product..."
                     rows={4}
-                    className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 resize-none"
+                    className="w-full rounded-lg border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 resize-none"
                   />
                 </div>
 
-                <Separator className="bg-neutral-800" />
+                <Separator className="bg-muted" />
 
                 <div className="flex items-center gap-3 justify-end">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setShowForm(false)}
-                    className="border-neutral-700 text-neutral-400 hover:text-white"
+                    className="border-border text-muted-foreground hover:text-foreground"
                   >
                     Cancel
                   </Button>

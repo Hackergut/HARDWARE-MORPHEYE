@@ -64,13 +64,13 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
 
 export function TrustSection() {
   return (
-    <section id="why-choose-morpheye" className="border-y border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/30 dark:bg-neutral-900/30 bg-neutral-50 py-16">
+    <section id="why-choose-morpheye" className="border-y border-border bg-card/30 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-white dark:text-white text-neutral-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Why Choose Morpheye?
           </h2>
-          <p className="mt-1 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
+          <p className="mt-1 text-sm text-muted-foreground">
             Your security is our top priority
           </p>
         </div>
@@ -85,7 +85,7 @@ export function TrustSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="gradient-border-top group flex flex-col items-center rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900 dark:bg-neutral-900 bg-white p-6 text-center transition-all duration-300 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/5"
+              className="gradient-border-top group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all duration-300 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/5"
             >
               <div className="icon-pulse-hover mb-4 flex size-12 items-center justify-center rounded-lg bg-cyan-500/10 transition-all duration-300 group-hover:bg-cyan-500/15">
                 <pillar.icon className="size-6 text-cyan-400" />
@@ -99,10 +99,10 @@ export function TrustSection() {
                 {pillar.statLabel}
               </p>
 
-              <h3 className="mb-2 text-sm font-semibold text-white dark:text-white text-neutral-900">
+              <h3 className="mb-2 text-sm font-semibold text-foreground">
                 {pillar.title}
               </h3>
-              <p className="text-xs text-neutral-400 dark:text-neutral-400 text-neutral-600">{pillar.description}</p>
+              <p className="text-xs text-muted-foreground">{pillar.description}</p>
             </motion.div>
           ))}
         </div>

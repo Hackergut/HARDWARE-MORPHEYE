@@ -106,11 +106,11 @@ export function ComparisonPage() {
         animate={{ opacity: 1 }}
         className="mx-auto flex min-h-[60vh] max-w-7xl flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8"
       >
-        <div className="flex size-20 items-center justify-center rounded-2xl bg-neutral-800/50">
-          <ArrowLeftRight className="size-10 text-neutral-600" />
+        <div className="flex size-20 items-center justify-center rounded-2xl bg-muted/50">
+          <ArrowLeftRight className="size-10 text-muted-foreground" />
         </div>
-        <h2 className="mt-6 text-xl font-bold text-white">No Products to Compare</h2>
-        <p className="mt-2 max-w-sm text-center text-sm text-neutral-400">
+        <h2 className="mt-6 text-xl font-bold text-foreground">No Products to Compare</h2>
+        <p className="mt-2 max-w-sm text-center text-sm text-muted-foreground">
           Add up to 3 products to compare their features, prices, and specifications side by side.
         </p>
         <Button
@@ -127,13 +127,13 @@ export function ComparisonPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8 h-8 w-64 animate-pulse rounded bg-neutral-800" />
+        <div className="mb-8 h-8 w-64 animate-pulse rounded bg-muted" />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {Array.from({ length: items.length }).map((_, i) => (
-            <div key={i} className="space-y-4 rounded-xl border border-neutral-800 bg-[#111111] p-4">
-              <div className="aspect-square animate-pulse rounded-lg bg-neutral-800" />
-              <div className="h-5 w-3/4 animate-pulse rounded bg-neutral-800" />
-              <div className="h-6 w-1/2 animate-pulse rounded bg-neutral-800" />
+            <div key={i} className="space-y-4 rounded-xl border border-border dark:bg-card bg-white p-4">
+              <div className="aspect-square animate-pulse rounded-lg bg-muted" />
+              <div className="h-5 w-3/4 animate-pulse rounded bg-muted" />
+              <div className="h-6 w-1/2 animate-pulse rounded bg-muted" />
             </div>
           ))}
         </div>
@@ -155,8 +155,8 @@ export function ComparisonPage() {
             <ArrowLeftRight className="size-5 text-cyan-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Compare Products</h1>
-            <p className="text-sm text-neutral-500">
+            <h1 className="text-2xl font-bold text-foreground">Compare Products</h1>
+            <p className="text-sm text-muted-foreground">
               Comparing {products.length} of 3 products
             </p>
           </div>
@@ -167,7 +167,7 @@ export function ComparisonPage() {
               variant="outline"
               size="sm"
               onClick={clearAll}
-              className="border-neutral-700 text-neutral-400 hover:border-red-500/30 hover:text-red-400"
+              className="border-border text-muted-foreground hover:border-red-500/30 hover:text-red-400"
             >
               <Trash2 className="mr-2 size-4" />
               Clear All
@@ -198,15 +198,15 @@ export function ComparisonPage() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="relative flex flex-col items-center rounded-xl border border-neutral-800 bg-[#111111] p-4"
+                className="relative flex flex-col items-center rounded-xl border border-border dark:bg-card bg-white p-4"
               >
                 <button
                   onClick={() => handleRemove(product.id)}
-                  className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-neutral-800 text-neutral-400 transition hover:bg-red-500/20 hover:text-red-400"
+                  className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-muted text-muted-foreground transition hover:bg-red-500/20 hover:text-red-400"
                 >
                   <X className="size-3" />
                 </button>
-                <div className="relative mb-3 size-24 overflow-hidden rounded-lg bg-neutral-800">
+                <div className="relative mb-3 size-24 overflow-hidden rounded-lg bg-muted">
                   {product.images?.[0] ? (
                     <Image
                       src={product.images[0]}
@@ -217,18 +217,18 @@ export function ComparisonPage() {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">
-                      <Package className="size-8 text-neutral-600" />
+                      <Package className="size-8 text-muted-foreground" />
                     </div>
                   )}
                 </div>
                 <h3
-                  className="mb-1 line-clamp-2 text-center text-sm font-semibold text-white cursor-pointer hover:text-cyan-400 transition"
+                  className="mb-1 line-clamp-2 text-center text-sm font-semibold text-foreground cursor-pointer hover:text-cyan-400 transition"
                   onClick={() => navigate('product', { productId: product.id })}
                 >
                   {product.name}
                 </h3>
                 {product.brand && (
-                  <Badge variant="outline" className="mt-1 border-neutral-700 text-[10px] text-neutral-400">
+                  <Badge variant="outline" className="mt-1 border-border text-[10px] text-muted-foreground">
                     {product.brand}
                   </Badge>
                 )}
@@ -237,14 +237,14 @@ export function ComparisonPage() {
           </div>
 
           {/* Comparison rows */}
-          <div className="mt-4 space-y-0 overflow-hidden rounded-xl border border-neutral-800">
+          <div className="mt-4 space-y-0 overflow-hidden rounded-xl border border-border">
             {/* Price Row */}
-            <div className="grid border-b border-neutral-800" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
-              <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+            <div className="grid border-b border-border" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
+              <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                 Price
               </div>
               {products.map((product) => (
-                <div key={product.id} className="flex flex-col items-center justify-center border-l border-neutral-800 px-4 py-3">
+                <div key={product.id} className="flex flex-col items-center justify-center border-l border-border px-4 py-3">
                   <span className="text-lg font-bold text-cyan-400">${product.price.toFixed(2)}</span>
                   {product.comparePrice && product.comparePrice > product.price && (
                     <span className="text-xs text-neutral-500 line-through">${product.comparePrice.toFixed(2)}</span>
@@ -254,20 +254,20 @@ export function ComparisonPage() {
             </div>
 
             {/* Brand Row */}
-            <div className="grid border-b border-neutral-800" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
-              <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+            <div className="grid border-b border-border" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
+              <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                 Brand
               </div>
               {products.map((product) => (
-                <div key={product.id} className="flex items-center justify-center border-l border-neutral-800 px-4 py-3 text-sm text-neutral-400">
+                <div key={product.id} className="flex items-center justify-center border-l border-border px-4 py-3 text-sm text-muted-foreground">
                   {product.brand || '—'}
                 </div>
               ))}
             </div>
 
             {/* Stock Row */}
-            <div className="grid border-b border-neutral-800" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
-              <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+            <div className="grid border-b border-border" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
+              <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                 Availability
               </div>
               {products.map((product) => {
@@ -278,7 +278,7 @@ export function ComparisonPage() {
                       ? 'low_stock'
                       : 'in_stock'
                 return (
-                  <div key={product.id} className="flex items-center justify-center gap-2 border-l border-neutral-800 px-4 py-3">
+                  <div key={product.id} className="flex items-center justify-center gap-2 border-l border-border px-4 py-3">
                     <div
                       className={`size-2 rounded-full ${
                         stockStatus === 'in_stock'
@@ -309,12 +309,12 @@ export function ComparisonPage() {
             </div>
 
             {/* Rating Row */}
-            <div className="grid border-b border-neutral-800" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
-              <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+            <div className="grid border-b border-border" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
+              <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                 Rating
               </div>
               {products.map((product) => (
-                <div key={product.id} className="flex items-center justify-center gap-1 border-l border-neutral-800 px-4 py-3">
+                <div key={product.id} className="flex items-center justify-center gap-1 border-l border-border px-4 py-3">
                   {product.rating > 0 ? (
                     <>
                       <div className="flex items-center">
@@ -329,12 +329,12 @@ export function ComparisonPage() {
                           />
                         ))}
                       </div>
-                      <span className="text-xs text-neutral-400">
+                      <span className="text-xs text-muted-foreground">
                         {product.rating.toFixed(1)} ({product.reviewCount})
                       </span>
                     </>
                   ) : (
-                    <span className="text-sm text-neutral-500">—</span>
+                    <span className="text-sm text-muted-foreground">—</span>
                   )}
                 </div>
               ))}
@@ -344,16 +344,16 @@ export function ComparisonPage() {
             {allSpecKeys.map((key, idx) => (
               <div
                 key={key}
-                className={`grid ${idx === allSpecKeys.length - 1 ? '' : 'border-b border-neutral-800'}`}
+                className={`grid ${idx === allSpecKeys.length - 1 ? '' : 'border-b border-border'}`}
                 style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}
               >
-                <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+                <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                   {key}
                 </div>
                 {products.map((product) => (
                   <div
                     key={product.id}
-                    className="flex items-center justify-center border-l border-neutral-800 px-4 py-3 text-sm text-neutral-400"
+                    className="flex items-center justify-center border-l border-border px-4 py-3 text-sm text-muted-foreground"
                   >
                     {product.specs?.[key] || '—'}
                   </div>
@@ -363,11 +363,11 @@ export function ComparisonPage() {
 
             {/* Add to Cart Row */}
             <div className="grid" style={{ gridTemplateColumns: `160px repeat(${products.length}, 1fr)` }}>
-              <div className="flex items-center bg-neutral-900/80 px-4 py-3 text-sm font-medium text-neutral-300">
+              <div className="flex items-center bg-card/80 px-4 py-3 text-sm font-medium text-muted-foreground">
                 Actions
               </div>
               {products.map((product) => (
-                <div key={product.id} className="flex items-center justify-center border-l border-neutral-800 px-4 py-3">
+                <div key={product.id} className="flex items-center justify-center border-l border-border px-4 py-3">
                   <Button
                     size="sm"
                     onClick={() => handleAddToCart(product)}
@@ -403,11 +403,11 @@ export function ComparisonPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="overflow-hidden rounded-xl border border-neutral-800 bg-[#111111]"
+                className="overflow-hidden rounded-xl border border-border dark:bg-card bg-white"
               >
                 {/* Product header */}
-                <div className="flex items-start gap-3 border-b border-neutral-800 p-4">
-                  <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-neutral-800">
+                <div className="flex items-start gap-3 border-b border-border p-4">
+                  <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
                     {product.images?.[0] ? (
                       <Image
                         src={product.images[0]}
@@ -418,24 +418,24 @@ export function ComparisonPage() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <Package className="size-6 text-neutral-600" />
+                        <Package className="size-6 text-muted-foreground" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3
-                      className="text-sm font-semibold text-white cursor-pointer hover:text-cyan-400 transition"
+                      className="text-sm font-semibold text-foreground cursor-pointer hover:text-cyan-400 transition"
                       onClick={() => navigate('product', { productId: product.id })}
                     >
                       {product.name}
                     </h3>
                     {product.brand && (
-                      <span className="text-xs text-neutral-400">{product.brand}</span>
+                      <span className="text-xs text-muted-foreground">{product.brand}</span>
                     )}
                   </div>
                   <button
                     onClick={() => handleRemove(product.id)}
-                    className="flex size-7 items-center justify-center rounded-full bg-neutral-800 text-neutral-400 transition hover:bg-red-500/20 hover:text-red-400"
+                    className="flex size-7 items-center justify-center rounded-full bg-muted text-muted-foreground transition hover:bg-red-500/20 hover:text-red-400"
                   >
                     <X className="size-3.5" />
                   </button>
@@ -445,7 +445,7 @@ export function ComparisonPage() {
                 <div className="divide-y divide-neutral-800/50">
                   {/* Price */}
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-sm text-neutral-400">Price</span>
+                    <span className="text-sm text-muted-foreground">Price</span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-base font-bold text-cyan-400">${product.price.toFixed(2)}</span>
                       {product.comparePrice && product.comparePrice > product.price && (
@@ -456,7 +456,7 @@ export function ComparisonPage() {
 
                   {/* Availability */}
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-sm text-neutral-400">Availability</span>
+                    <span className="text-sm text-muted-foreground">Availability</span>
                     <div className="flex items-center gap-2">
                       <div
                         className={`size-2 rounded-full ${
@@ -487,7 +487,7 @@ export function ComparisonPage() {
 
                   {/* Rating */}
                   <div className="flex items-center justify-between px-4 py-3">
-                    <span className="text-sm text-neutral-400">Rating</span>
+                    <span className="text-sm text-muted-foreground">Rating</span>
                     <div className="flex items-center gap-1">
                       {product.rating > 0 ? (
                         <>
@@ -503,12 +503,12 @@ export function ComparisonPage() {
                               />
                             ))}
                           </div>
-                          <span className="text-xs text-neutral-400">
+                          <span className="text-xs text-muted-foreground">
                             {product.rating.toFixed(1)}
                           </span>
                         </>
                       ) : (
-                        <span className="text-sm text-neutral-500">—</span>
+                        <span className="text-sm text-muted-foreground">—</span>
                       )}
                     </div>
                   </div>
@@ -518,8 +518,8 @@ export function ComparisonPage() {
                     typeof product.specs === 'object' &&
                     Object.entries(product.specs).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between px-4 py-3">
-                        <span className="text-sm text-neutral-400">{key}</span>
-                        <span className="text-sm text-neutral-300">{value}</span>
+                        <span className="text-sm text-muted-foreground">{key}</span>
+                        <span className="text-sm text-muted-foreground">{value}</span>
                       </div>
                     ))}
 

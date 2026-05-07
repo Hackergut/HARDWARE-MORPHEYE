@@ -104,7 +104,7 @@ export function SocialProofNotification() {
             animate={{ x: 0, opacity: 1, scale: 1 }}
             exit={{ x: -120, opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="pointer-events-auto max-w-[320px] overflow-hidden rounded-xl border border-cyan-500/20 bg-[#111111]/95 px-4 py-3 shadow-xl shadow-cyan-500/5 backdrop-blur-xl"
+            className="pointer-events-auto max-w-[320px] overflow-hidden rounded-xl border border-cyan-500/20 bg-card/95 px-4 py-3 shadow-xl shadow-cyan-500/5 backdrop-blur-xl"
           >
             <div className="flex items-start gap-3">
               {/* Avatar */}
@@ -115,14 +115,14 @@ export function SocialProofNotification() {
               {/* Message */}
               <div className="min-w-0 flex-1">
                 <p className="text-sm leading-snug text-neutral-200">
-                  <span className="font-semibold text-white">{currentMessage.name}</span>
+                  <span className="font-semibold text-foreground">{currentMessage.name}</span>
                   {' from '}
                   <span className="font-medium text-cyan-400">{currentMessage.city}</span>
                   {' purchased '}
-                  <span className="font-semibold text-white">{currentMessage.product}</span>
+                  <span className="font-semibold text-foreground">{currentMessage.product}</span>
                 </p>
                 <div className="mt-1.5 flex items-center gap-2">
-                  <span className="text-[10px] text-neutral-500">{currentMessage.timeAgo}</span>
+                  <span className="text-[10px] text-muted-foreground">{currentMessage.timeAgo}</span>
                   <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400">
                     <CheckCircle2 className="size-3" />
                     Verified Purchase

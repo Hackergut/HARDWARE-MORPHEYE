@@ -39,11 +39,11 @@ export function WishlistPage() {
         animate={{ opacity: 1 }}
         className="flex min-h-[60vh] flex-col items-center justify-center px-4"
       >
-        <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-neutral-900">
-          <Heart className="size-10 text-neutral-600" />
+        <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-card">
+          <Heart className="size-10 text-muted-foreground" />
         </div>
-        <h2 className="mb-2 text-xl font-bold text-white">Your wishlist is empty</h2>
-        <p className="mb-6 text-center text-sm text-neutral-400">
+        <h2 className="mb-2 text-xl font-bold text-foreground">Your wishlist is empty</h2>
+        <p className="mb-6 text-center text-sm text-muted-foreground">
           Save items you love for later. Browse our collection and tap the heart icon to add items.
         </p>
         <Button
@@ -67,17 +67,17 @@ export function WishlistPage() {
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
             My Wishlist
           </h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             {items.length} {items.length === 1 ? 'item' : 'items'} saved
           </p>
         </div>
         <Button
           variant="ghost"
           onClick={() => navigate('shop')}
-          className="text-neutral-400 hover:text-cyan-400"
+          className="text-muted-foreground hover:text-cyan-400"
         >
           Continue Shopping
           <ArrowRight className="ml-1 size-4" />
@@ -95,12 +95,12 @@ export function WishlistPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.2 }}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-[#111111] transition-all hover:border-cyan-500/20 hover:shadow-lg hover:shadow-cyan-500/5"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-border dark:bg-card bg-white transition-all hover:border-cyan-500/20 hover:shadow-lg hover:shadow-cyan-500/5"
             >
               {/* Image */}
               <button
                 onClick={() => navigate('product', { productId: item.id })}
-                className="relative aspect-square w-full overflow-hidden bg-neutral-800"
+                className="relative aspect-square w-full overflow-hidden bg-muted"
               >
                 {item.image ? (
                   <Image
@@ -112,7 +112,7 @@ export function WishlistPage() {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
-                    <Package className="size-12 text-neutral-600" />
+                    <Package className="size-12 text-muted-foreground" />
                   </div>
                 )}
               </button>
@@ -121,7 +121,7 @@ export function WishlistPage() {
               <div className="flex flex-1 flex-col p-4">
                 <button
                   onClick={() => navigate('product', { productId: item.id })}
-                  className="mb-2 text-left text-sm font-semibold text-white transition-colors hover:text-cyan-400 line-clamp-2"
+                  className="mb-2 text-left text-sm font-semibold text-foreground transition-colors hover:text-cyan-400 line-clamp-2"
                 >
                   {item.name}
                 </button>

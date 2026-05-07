@@ -21,7 +21,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className="text-neutral-400 hover:text-white"
+        className="text-muted-foreground hover:text-foreground"
       >
         <Sun className="size-4" />
       </Button>
@@ -35,7 +35,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="relative text-neutral-400 hover:text-white dark:text-neutral-400 dark:hover:text-white light:text-neutral-600 light:hover:text-neutral-900"
+      className="relative text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-foreground"
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       <AnimatePresence mode="wait" initial={false}>

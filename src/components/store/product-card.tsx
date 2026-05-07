@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle, Flame, Sparkles } from 'lucide-react'
+import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle, Flame, Sparkles, Truck } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
@@ -65,6 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const [imgError, setImgError] = useState(false)
   const [heartAnimating, setHeartAnimating] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const { navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
@@ -80,6 +81,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const stockStatus = getStockStatus(product.stock)
   const stockConfig = getStockConfig(stockStatus)
   const isNew = isNewProduct(product.createdAt)
+  const hasFreeShipping = product.price >= 150
 
   // IntersectionObserver for viewport entrance animation
   useEffect(() => {
@@ -140,6 +142,11 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   }
 
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    openQuickView(product.id)
+  }
+
   // Stock level for progress bar (0-100)
   const stockLevel = product.stock !== undefined && product.stock !== null
     ? Math.min(100, (product.stock / 50) * 100)
@@ -155,15 +162,40 @@ export function ProductCard({ product }: ProductCardProps) {
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       whileHover={{ scale: 1.02 }}
-      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border dark:bg-[#111111] bg-white transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/5 shine-effect ${
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-xl bg-card transition-all duration-300 shine-effect ${
         inComparison
-          ? 'border-cyan-500/50 shadow-lg shadow-cyan-500/10'
-          : 'dark:border-neutral-800 border-neutral-200 hover:border-cyan-500/20'
+          ? 'border-2 border-cyan-500/50 shadow-lg shadow-cyan-500/10'
+          : 'border border-border'
       }`}
       onClick={() => navigate('product', { productId: product.id })}
+      style={{
+        position: 'relative',
+      }}
     >
+      {/* Animated gradient border on hover */}
+      <AnimatePresence>
+        {isHovered && !inComparison && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="pointer-events-none absolute inset-0 rounded-xl z-0"
+            style={{
+              padding: '1px',
+              background: 'linear-gradient(135deg, rgba(6,182,212,0.5), rgba(20,184,166,0.3), rgba(6,182,212,0.5))',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-neutral-800">
+      <div className="relative aspect-square overflow-hidden bg-muted">
         {mainImage && !imgError ? (
           <Image
             src={mainImage}
@@ -175,29 +207,46 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <Package className="size-12 text-neutral-600" />
+            <Package className="size-12 text-muted-foreground" />
           </div>
         )}
 
         {/* Gradient overlay at bottom for better text readability */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t dark:from-[#111111] from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent" />
 
-        {/* Badges */}
-        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-          {product.brand && (
+        {/* NEW Ribbon - wraps top-left corner */}
+        {isNew && (
+          <div className="absolute -left-0 -top-0 z-10">
+            <div className="relative overflow-hidden" style={{ width: 72, height: 72 }}>
+              <motion.div
+                initial={{ x: -30, y: -30, opacity: 0 }}
+                animate={{ x: 0, y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.4, type: 'spring', stiffness: 200 }}
+                className="absolute -left-px -top-px flex origin-top-left items-center bg-gradient-to-r from-cyan-500 to-teal-400 px-5 py-1.5 shadow-md shadow-cyan-500/20"
+                style={{ transform: 'rotate(0deg)' }}
+              >
+                <span className="whitespace-nowrap text-[9px] font-bold uppercase tracking-wider text-black">
+                  <Sparkles className="mr-0.5 inline size-2.5" />
+                  New
+                </span>
+              </motion.div>
+              {/* Ribbon fold */}
+              <div
+                className="absolute left-0 top-0 h-3 w-3 bg-cyan-700"
+                style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Badges (top-right) */}
+        <div className="absolute right-3 top-3 flex flex-col gap-1.5">
+          {product.brand && !isNew && (
             <Badge
               variant="secondary"
-              className="border-neutral-600/50 bg-neutral-900/80 text-[10px] text-neutral-300 backdrop-blur-sm shadow-sm"
+              className="border-border/50 bg-card/80 text-[10px] text-muted-foreground backdrop-blur-sm shadow-sm"
             >
               {product.brand}
-            </Badge>
-          )}
-        </div>
-        <div className="absolute right-3 top-3 flex flex-col gap-1.5">
-          {isNew && (
-            <Badge className="bg-gradient-to-r from-cyan-500 to-teal-400 text-[10px] font-bold text-black shadow-md shadow-cyan-500/20">
-              <Sparkles className="mr-0.5 size-3" />
-              New
             </Badge>
           )}
           {product.featured && (
@@ -218,6 +267,23 @@ export function ProductCard({ product }: ProductCardProps) {
             </Badge>
           )}
         </div>
+
+        {/* Quick View Button - appears on image hover */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.button
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              onClick={handleQuickView}
+              className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full bg-black/70 px-4 py-2 backdrop-blur-sm transition-colors hover:bg-cyan-500/90 hover:text-black"
+            >
+              <Eye className="size-4 text-white group-hover/btn:text-black" />
+              <span className="text-xs font-semibold text-white">Quick View</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         {/* Wishlist Heart Button */}
         <button
@@ -260,11 +326,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="mb-1 line-clamp-1 text-sm font-semibold dark:text-white text-neutral-900 transition-colors duration-300 group-hover:text-cyan-400">
+        <h3 className="mb-1 line-clamp-1 text-sm font-semibold text-card-foreground transition-colors duration-300 group-hover:text-cyan-400">
           {product.name}
         </h3>
         {product.shortDesc && (
-          <p className="mb-3 line-clamp-2 text-xs text-neutral-400">
+          <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">
             {product.shortDesc}
           </p>
         )}
@@ -279,18 +345,18 @@ export function ProductCard({ product }: ProductCardProps) {
                   className={`size-3 ${
                     i < Math.floor(product.rating || 0)
                       ? 'fill-amber-500 text-amber-500'
-                      : 'text-neutral-600'
+                      : 'text-muted-foreground/50'
                   }`}
                 />
               ))}
               {product.reviewCount ? (
-                <span className="ml-1 text-[10px] text-neutral-500">
+                <span className="ml-1 text-[10px] text-muted-foreground">
                   ({product.reviewCount})
                 </span>
               ) : null}
             </div>
             {/* Rating progress bar */}
-            <div className="mt-1.5 h-1 overflow-hidden rounded-full dark:bg-neutral-800 bg-neutral-100">
+            <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${ratingPercent}%` }}
@@ -298,6 +364,14 @@ export function ProductCard({ product }: ProductCardProps) {
                 className="h-full rounded-full bg-gradient-to-r from-amber-500/80 to-amber-400"
               />
             </div>
+          </div>
+        )}
+
+        {/* Free Shipping Badge */}
+        {hasFreeShipping && (
+          <div className="mb-2 flex items-center gap-1.5">
+            <Truck className="size-3 text-cyan-400" />
+            <span className="text-[10px] font-medium text-cyan-400">Free Shipping</span>
           </div>
         )}
 
@@ -309,7 +383,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 ${product.price.toFixed(2)}
               </span>
               {product.comparePrice && product.comparePrice > product.price && (
-                <span className="text-xs text-neutral-500 line-through">
+                <span className="text-xs text-muted-foreground line-through">
                   ${product.comparePrice.toFixed(2)}
                 </span>
               )}
@@ -344,7 +418,7 @@ export function ProductCard({ product }: ProductCardProps) {
               variant="ghost"
               onClick={handleAddToCart}
               disabled={stockStatus === 'out-of-stock'}
-              className={`size-8 text-neutral-400 transition-all duration-300 ${
+              className={`size-8 text-muted-foreground transition-all duration-300 ${
                 stockStatus === 'out-of-stock'
                   ? 'opacity-40 cursor-not-allowed'
                   : 'hover:bg-cyan-500/10 hover:text-cyan-400 cyan-glow-hover'
@@ -356,11 +430,8 @@ export function ProductCard({ product }: ProductCardProps) {
             <Button
               size="icon"
               variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation()
-                openQuickView(product.id)
-              }}
-              className="size-8 text-neutral-400 transition-all duration-300 hover:text-cyan-400"
+              onClick={handleQuickView}
+              className="size-8 text-muted-foreground transition-all duration-300 hover:text-cyan-400"
               title="Quick View"
             >
               <Eye className="size-4" />
@@ -369,20 +440,37 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
 
-      {/* Stock level progress bar at bottom */}
-      <div className="h-1 w-full dark:bg-neutral-800 bg-neutral-100">
+      {/* Stock level progress bar at bottom - gradient + pulse for low stock */}
+      <div className="h-1 w-full bg-muted">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${stockLevel}%` }}
           transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-          className={`h-full ${
+          className={`relative h-full overflow-hidden ${
             stockStatus === 'out-of-stock'
               ? 'bg-red-500'
               : stockStatus === 'low-stock'
                 ? 'bg-amber-500'
                 : 'bg-gradient-to-r from-cyan-500 to-emerald-500'
           }`}
-        />
+        >
+          {/* Pulse animation for low stock */}
+          {stockStatus === 'low-stock' && (
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-500"
+              animate={{ opacity: [0, 0.5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          )}
+          {/* Shimmer effect for in-stock */}
+          {stockStatus === 'in-stock' && (
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear', repeatDelay: 3 }}
+            />
+          )}
+        </motion.div>
       </div>
     </motion.div>
   )

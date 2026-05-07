@@ -33,6 +33,8 @@ import {
   Maximize2,
   RotateCw,
   MoveHorizontal,
+  HelpCircle,
+  MessageCircleQuestion,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -173,7 +175,7 @@ function LightboxOverlay({
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+        className="absolute right-4 top-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/80 text-foreground transition-colors hover:bg-muted"
         aria-label="Close lightbox"
       >
         <X className="size-5" />
@@ -191,7 +193,7 @@ function LightboxOverlay({
             e.stopPropagation()
             onPrev()
           }}
-          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-card/80 text-foreground transition-colors hover:bg-muted"
           aria-label="Previous image"
         >
           <ChevronLeft className="size-6" />
@@ -205,7 +207,7 @@ function LightboxOverlay({
             e.stopPropagation()
             onNext()
           }}
-          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-neutral-800/80 text-white transition-colors hover:bg-neutral-700"
+          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex size-12 items-center justify-center rounded-full bg-card/80 text-foreground transition-colors hover:bg-muted"
           aria-label="Next image"
         >
           <ChevronRight className="size-6" />
@@ -235,6 +237,150 @@ function LightboxOverlay({
       </motion.div>
     </motion.div>,
     document.body
+  )
+}
+
+function getProductFAQs(product: Product): { question: string; answer: string }[] {
+  const brand = (product.brand || '').toLowerCase()
+  const category = (product.category?.name || '').toLowerCase()
+  const isHardwareWallet = category.includes('hardware') || category.includes('wallet') || brand.includes('ledger') || brand.includes('trezor') || brand.includes('keystone')
+  const isSeedStorage = category.includes('seed') || category.includes('backup') || category.includes('steel') || brand.includes('cryptosteel')
+  const isAccessory = category.includes('accessory') || category.includes('cable') || category.includes('case')
+
+  const faqs: { question: string; answer: string }[] = []
+
+  if (isHardwareWallet) {
+    faqs.push(
+      {
+        question: 'Is this compatible with my crypto?',
+        answer: `Yes, the ${product.name} supports 1,000+ cryptocurrencies including Bitcoin, Ethereum, Solana, and all ERC-20 tokens. You can check the full list of supported assets on the manufacturer's official website. The device connects via USB-C or Bluetooth (model dependent) and works with both desktop and mobile apps.`
+      },
+      {
+        question: 'Does it come with a warranty?',
+        answer: `Yes, the ${product.name} comes with a manufacturer's warranty. ${brand.includes('ledger') ? 'Ledger offers a 2-year warranty on all devices.' : brand.includes('trezor') ? 'Trezor provides a 2-year warranty covering manufacturing defects.' : brand.includes('keystone') ? 'Keystone offers a 1-year warranty on their hardware wallets.' : 'The standard warranty is 1-2 years, covering manufacturing defects.'} Make sure to register your device after purchase to activate the warranty.`
+      },
+      {
+        question: 'How do I set it up?',
+        answer: 'Setting up your hardware wallet is straightforward: (1) Unbox and verify the tamper-evident seal is intact. (2) Connect to your computer or phone. (3) Initialize the device and create a new wallet. (4) Write down your 24-word recovery phrase on the provided card — store it offline and never share it. (5) Install the companion app and you\'re ready to send, receive, and manage your crypto securely.'
+      },
+      {
+        question: 'Is it safe to buy a hardware wallet online?',
+        answer: `When purchased from an authorized reseller like Morpheye, your device is 100% safe. We source directly from manufacturers, and every device ships in tamper-evident packaging. Always verify the holographic seal upon receipt. Never use a device if the packaging appears tampered with.`
+      },
+      {
+        question: 'What happens if I lose my device?',
+        answer: 'If you lose your hardware wallet, your funds are still safe as long as you have your recovery phrase. Simply purchase a new device (any compatible wallet) and restore your wallet using the 24-word recovery phrase. This is why it\'s critical to store your recovery phrase in a secure location — consider using a metal backup solution for fire and water protection.'
+      },
+      {
+        question: 'Can I use this with multiple devices?',
+        answer: 'Yes, you can connect your hardware wallet to multiple computers and phones. The wallet itself stores your private keys securely — you simply connect it to whichever device you want to use for transactions. The companion software is available for Windows, macOS, Linux, iOS, and Android.'
+      }
+    )
+  } else if (isSeedStorage) {
+    faqs.push(
+      {
+        question: 'What is a seed phrase backup?',
+        answer: 'A seed phrase backup is a physical, offline record of your cryptocurrency wallet\'s recovery phrase. Unlike paper, metal backups like the ' + product.name + ' are resistant to fire, water, and corrosion, ensuring your recovery phrase survives extreme conditions.'
+      },
+      {
+        question: 'How do I set it up?',
+        answer: 'Setting up your ' + product.name + ' is simple: (1) Use the included engraving tool or letter tiles to stamp each word of your 24-word recovery phrase. (2) Double-check each word for accuracy. (3) Store the completed backup in a secure, hidden location. The process typically takes 15-30 minutes.'
+      },
+      {
+        question: 'Is it really fire and water proof?',
+        answer: `Yes, the ${product.name} is designed to withstand extreme conditions. It can survive temperatures up to 2100°F (1149°C) and prolonged water submersion. This far exceeds the protection offered by paper backups, which can be destroyed by a simple house fire or water damage.`
+      },
+      {
+        question: 'How many words can it store?',
+        answer: `The ${product.name} can store a complete 24-word recovery phrase (or 12-word for wallets that use shorter seeds). Each word is represented by its first 4 letters, which is sufficient to uniquely identify each word in the BIP-39 wordlist.`
+      },
+      {
+        question: 'Should I use this instead of a hardware wallet?',
+        answer: 'No — you should use both. A hardware wallet secures your private keys for daily transactions, while a metal seed backup protects your recovery phrase for disaster recovery. They complement each other: the hardware wallet is for active use, and the metal backup is your insurance policy.'
+      }
+    )
+  } else if (isAccessory) {
+    faqs.push(
+      {
+        question: 'Is this compatible with my device?',
+        answer: `The ${product.name} is designed to be compatible with popular hardware wallets including Ledger, Trezor, and Keystone models. Check the product specifications above for exact compatibility details. If you're unsure, feel free to contact our support team.`
+      },
+      {
+        question: 'Does it come with a warranty?',
+        answer: `Yes, the ${product.name} comes with a manufacturer's warranty covering defects in materials and workmanship. Accessories typically carry a 1-year warranty period.`
+      },
+      {
+        question: 'What\'s included in the package?',
+        answer: `The ${product.name} ships with everything shown in the product images. Please refer to the specifications section above for detailed package contents. All our products are brand new and come in original manufacturer packaging.`
+      }
+    )
+  }
+
+  // Generic FAQs that apply to all products
+  faqs.push(
+    {
+      question: 'What is your return policy?',
+      answer: 'We offer a 30-day return policy for unused products in their original, unopened packaging. Due to the security-sensitive nature of hardware wallets, opened devices cannot be returned. If your device arrives damaged or defective, contact us immediately for a replacement.'
+    },
+    {
+      question: 'How long does shipping take?',
+      answer: 'Standard shipping takes 5-7 business days and is free for orders over $150. Express shipping is available for $9.99 and arrives in 2-3 business days. All orders include tracking and insurance.'
+    }
+  )
+
+  return faqs
+}
+
+function ProductFAQ({ product }: { product: Product }) {
+  const faqs = getProductFAQs(product)
+  const [openItems, setOpenItems] = useState<string[]>([])
+
+  if (faqs.length === 0) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="mt-16"
+    >
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex size-9 items-center justify-center rounded-lg bg-cyan-500/10">
+          <MessageCircleQuestion className="size-5 text-cyan-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-foreground">Customers Ask</h2>
+          <p className="text-xs text-muted-foreground">Common questions about this product</p>
+        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
+      </div>
+
+      <div className="rounded-xl border border-border bg-card/50 overflow-hidden">
+        <Accordion
+          type="multiple"
+          value={openItems}
+          onValueChange={setOpenItems}
+        >
+          {faqs.map((faq, i) => (
+            <AccordionItem
+              key={i}
+              value={`faq-${i}`}
+              className="border-border/60 px-5 hover:bg-muted/20 transition-colors"
+            >
+              <AccordionTrigger className="text-sm font-medium text-neutral-200 hover:text-cyan-400 hover:no-underline py-4">
+                <div className="flex items-center gap-3 text-left">
+                  <HelpCircle className="size-4 shrink-0 text-cyan-500/60" />
+                  <span>{faq.question}</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="text-sm leading-relaxed text-muted-foreground pb-4 pl-7">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </motion.div>
   )
 }
 
@@ -479,12 +625,12 @@ export function ProductDetail() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2">
-          <div className="aspect-square animate-pulse rounded-xl bg-neutral-800" />
+          <div className="aspect-square animate-pulse rounded-xl bg-muted" />
           <div className="space-y-4">
-            <div className="h-8 w-3/4 animate-pulse rounded bg-neutral-800" />
-            <div className="h-4 w-1/2 animate-pulse rounded bg-neutral-800" />
-            <div className="h-6 w-1/3 animate-pulse rounded bg-neutral-800" />
-            <div className="h-20 w-full animate-pulse rounded bg-neutral-800" />
+            <div className="h-8 w-3/4 animate-pulse rounded bg-muted" />
+            <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+            <div className="h-6 w-1/3 animate-pulse rounded bg-muted" />
+            <div className="h-20 w-full animate-pulse rounded bg-muted" />
           </div>
         </div>
       </div>
@@ -495,7 +641,7 @@ export function ProductDetail() {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <h2 className="mb-2 text-xl font-semibold text-white">
+          <h2 className="mb-2 text-xl font-semibold text-foreground">
             Product not found
           </h2>
           <Button
@@ -618,7 +764,7 @@ export function ProductDetail() {
       className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
     >
       {/* Breadcrumb */}
-      <nav className="mb-4 sm:mb-6 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-neutral-500" aria-label="Breadcrumb">
+      <nav className="mb-4 sm:mb-6 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Breadcrumb">
         <button
           onClick={() => navigate('home')}
           className="flex items-center gap-1 transition-colors hover:text-cyan-400"
@@ -645,45 +791,52 @@ export function ProductDetail() {
           </>
         )}
         <ChevronDown className="-rotate-90 size-3" />
-        <span className="max-w-[200px] truncate text-neutral-300">{product.name}</span>
+        <span className="max-w-[200px] truncate text-muted-foreground">{product.name}</span>
       </nav>
 
       <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
         {/* Image Gallery */}
         <div className="space-y-3">
           <div
-            className="relative aspect-square overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900"
+            className="relative aspect-square overflow-hidden rounded-xl border border-border bg-card"
             onMouseEnter={handleGalleryMouseEnter}
             onMouseLeave={handleGalleryMouseLeave}
             onMouseMove={handleImageMouseMove}
             style={{ cursor: imageZoom ? 'crosshair' : undefined }}
           >
             {product.images?.[activeImage] && !imgErrors[activeImage] ? (
-              <motion.div
-                animate={{
-                  x: imageZoom ? 0 : parallaxOffset.x,
-                  y: imageZoom ? 0 : parallaxOffset.y,
-                }}
-                transition={{ type: 'tween', duration: 0.15, ease: 'easeOut' }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={product.images[activeImage]}
-                  alt={product.name}
-                  fill
-                  className={`object-cover transition-transform duration-200 ${
-                    imageZoom ? 'scale-150' : 'scale-100'
-                  }`}
-                  style={imageZoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  onError={() =>
-                    setImgErrors((prev) => ({ ...prev, [activeImage]: true }))
-                  }
-                />
-              </motion.div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeImage}
+                  initial={{ opacity: 0, scale: 0.97 }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    x: imageZoom ? 0 : parallaxOffset.x,
+                    y: imageZoom ? 0 : parallaxOffset.y,
+                  }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={product.images[activeImage]}
+                    alt={product.name}
+                    fill
+                    className={`object-cover transition-transform duration-200 ${
+                      imageZoom ? 'scale-150' : 'scale-100'
+                    }`}
+                    style={imageZoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    onError={() =>
+                      setImgErrors((prev) => ({ ...prev, [activeImage]: true }))
+                    }
+                  />
+                </motion.div>
+              </AnimatePresence>
             ) : (
               <div className="flex h-full items-center justify-center">
-                <Package className="size-20 text-neutral-700" />
+                <Package className="size-20 text-muted-foreground" />
               </div>
             )}
 
@@ -709,7 +862,7 @@ export function ProductDetail() {
             {/* 360° View Placeholder Button */}
             {product.images && product.images.length > 2 && (
               <button
-                className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg bg-black/60 px-2.5 py-1.5 text-[10px] font-medium text-neutral-300 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:text-white"
+                className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg bg-black/60 px-2.5 py-1.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:text-foreground"
                 aria-label="360 degree view (coming soon)"
                 title="Coming soon"
               >
@@ -720,7 +873,7 @@ export function ProductDetail() {
 
             {/* Zoom indicator */}
             {imageZoom && product.images?.[activeImage] && !imgErrors[activeImage] && (
-              <div className="pointer-events-none absolute bottom-3 right-3 rounded-lg bg-black/70 px-2.5 py-1 text-[10px] text-neutral-300 backdrop-blur-sm">
+              <div className="pointer-events-none absolute bottom-3 right-3 rounded-lg bg-black/70 px-2.5 py-1 text-[10px] text-muted-foreground backdrop-blur-sm">
                 Zoom
               </div>
             )}
@@ -762,7 +915,7 @@ export function ProductDetail() {
 
             {/* Swipe hint on mobile */}
             {isMobile && product.images && product.images.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[10px] font-medium text-neutral-300 backdrop-blur-sm sm:hidden">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm sm:hidden">
                 <MoveHorizontal className="size-3" />
                 Swipe for more
               </div>
@@ -771,15 +924,17 @@ export function ProductDetail() {
 
           {/* Thumbnails */}
           {product.images && product.images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
               {product.images.map((img, i) => (
-                <button
+                <motion.button
                   key={i}
                   onClick={() => setActiveImage(i)}
-                  className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative size-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200 ${
                     i === activeImage
-                      ? 'border-cyan-500'
-                      : 'border-neutral-800 hover:border-neutral-600'
+                      ? 'border-cyan-500 shadow-md shadow-cyan-500/20'
+                      : 'border-border hover:border-border opacity-70 hover:opacity-100'
                   }`}
                 >
                   {!imgErrors[i] ? (
@@ -794,11 +949,19 @@ export function ProductDetail() {
                       }
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center bg-neutral-800">
-                      <Package className="size-4 text-neutral-600" />
+                    <div className="flex h-full items-center justify-center bg-muted">
+                      <Package className="size-4 text-muted-foreground" />
                     </div>
                   )}
-                </button>
+                  {/* Active indicator line */}
+                  {i === activeImage && (
+                    <motion.div
+                      layoutId="thumbnail-indicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-cyan-500"
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                </motion.button>
               ))}
             </div>
           )}
@@ -811,7 +974,7 @@ export function ProductDetail() {
             {product.brand && (
               <button
                 onClick={() => navigate('shop', { brand: product.brand! })}
-                className="rounded-full border border-neutral-700 px-2.5 py-0.5 text-xs text-neutral-400 transition-colors hover:border-cyan-500/40 hover:text-cyan-400"
+                className="rounded-full border border-border px-2.5 py-0.5 text-xs text-muted-foreground transition-colors hover:border-cyan-500/40 hover:text-cyan-400"
               >
                 {product.brand}
               </button>
@@ -826,7 +989,7 @@ export function ProductDetail() {
             )}
           </div>
 
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
             {product.name}
           </h1>
 
@@ -866,7 +1029,7 @@ export function ProductDetail() {
                   />
                 ))}
               </div>
-              <span className="text-sm text-neutral-400">
+              <span className="text-sm text-muted-foreground">
                 {product.rating.toFixed(1)} ({product.reviewCount} reviews)
               </span>
             </div>
@@ -874,16 +1037,16 @@ export function ProductDetail() {
 
           {/* Short Description */}
           {product.shortDesc && (
-            <p className="text-sm leading-relaxed text-neutral-400">{product.shortDesc}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{product.shortDesc}</p>
           )}
 
           {/* Key Features */}
           {features.length > 0 && (
-            <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
-              <h3 className="mb-3 text-sm font-semibold text-white">Key Features</h3>
+            <div className="rounded-lg border border-border bg-card/50 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-foreground">Key Features</h3>
               <ul className="space-y-2">
                 {features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-300">
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-cyan-500" />
                     <span>{feature}</span>
                   </li>
@@ -906,7 +1069,7 @@ export function ProductDetail() {
           </div>
 
           {/* Stock - More Prominent */}
-          <div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-4 py-3">
+          <div className="flex items-center gap-3 rounded-lg border border-border bg-card/30 px-4 py-3">
             <div
               className={`size-3 rounded-full ${
                 stockStatus === 'in_stock'
@@ -958,19 +1121,58 @@ export function ProductDetail() {
             </div>
           )}
 
-          {/* Estimated Delivery */}
+          {/* Estimated Delivery - Enhanced */}
           {stockStatus !== 'out_of_stock' && (
-            <div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-4 py-3">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10">
-                <Truck className="size-4 text-cyan-400" />
+            <div className="rounded-xl border border-border bg-card/50 overflow-hidden">
+              {/* Standard Delivery */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10">
+                  <Truck className="size-4 text-cyan-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-foreground">
+                      Free Standard Shipping
+                    </span>
+                    <span className="rounded-md bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-cyan-400 border border-cyan-500/20">
+                      FREE
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    Estimated delivery: <span className="text-muted-foreground font-medium">{estimatedDelivery.startStr} - {estimatedDelivery.endStr}</span>
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className="text-sm font-medium text-white">
-                  Estimated delivery:
-                </span>{' '}
-                <span className="text-sm text-neutral-300">
-                  {estimatedDelivery.startStr} - {estimatedDelivery.endStr}
+              <div className="mx-4 h-px bg-muted/60" />
+              {/* Free Shipping Threshold */}
+              <div className="flex items-center gap-3 px-4 py-2.5">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-500/10">
+                  <CheckCircle2 className="size-3.5 text-emerald-400" />
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  Orders over <span className="font-semibold text-emerald-400">$150.00</span> qualify for free shipping
+                  {product.price >= 150 ? (
+                    <span className="ml-1 font-semibold text-emerald-400">✓ You qualify!</span>
+                  ) : (
+                    <span className="ml-1 text-muted-foreground">Add ${(150 - product.price).toFixed(2)} more</span>
+                  )}
                 </span>
+              </div>
+              <div className="mx-4 h-px bg-muted/60" />
+              {/* Express Shipping */}
+              <div className="flex items-center gap-3 px-4 py-2.5">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-amber-500/10">
+                  <Zap className="size-3.5 text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-muted-foreground">Express Shipping</span>
+                    <span className="rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-400 border border-amber-500/20">
+                      $9.99
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">2-3 business days</span>
+                </div>
               </div>
             </div>
           )}
@@ -978,23 +1180,23 @@ export function ProductDetail() {
           {/* Quantity + Actions */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-neutral-400">Quantity:</span>
+              <span className="text-sm text-muted-foreground">Quantity:</span>
               {/* Premium Quantity Selector */}
-              <div className="flex items-center overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900">
+              <div className="flex items-center overflow-hidden rounded-xl border border-border bg-card">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="flex size-10 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                  className="flex size-10 items-center justify-center text-muted-foreground transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                 >
                   <Minus className="size-4" />
                 </button>
-                <span className="flex w-12 items-center justify-center border-x border-neutral-700/50 text-sm font-semibold text-white">
+                <span className="flex w-12 items-center justify-center border-x border-border/50 text-sm font-semibold text-foreground">
                   {quantity}
                 </span>
                 <button
                   onClick={() =>
                     setQuantity(Math.min(product.stock || 99, quantity + 1))
                   }
-                  className="flex size-10 items-center justify-center text-neutral-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                  className="flex size-10 items-center justify-center text-muted-foreground transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
                 >
                   <Plus className="size-4" />
                 </button>
@@ -1050,10 +1252,10 @@ export function ProductDetail() {
               <Button
                 variant="outline"
                 onClick={handleWishlistToggle}
-                className={`flex-1 border-neutral-700 ${
+                className={`flex-1 border-border ${
                   inWishlist
                     ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300'
-                    : 'text-neutral-400 hover:border-neutral-600 hover:text-white'
+                    : 'text-muted-foreground hover:border-border hover:text-foreground'
                 }`}
               >
                 <AnimatePresence mode="wait">
@@ -1076,7 +1278,7 @@ export function ProductDetail() {
               <Button
                 variant="outline"
                 onClick={handleShare}
-                className="flex-1 border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white"
+                className="flex-1 border-border text-muted-foreground hover:border-border hover:text-foreground"
               >
                 <Share2 className="mr-2 size-4" />
                 Share
@@ -1089,7 +1291,7 @@ export function ProductDetail() {
             <BadgeCheck className="size-5 shrink-0 text-cyan-400" />
             <div>
               <span className="text-sm font-semibold text-cyan-400">Guaranteed Authentic</span>
-              <p className="text-xs text-neutral-500">100% genuine products with full warranty</p>
+              <p className="text-xs text-muted-foreground">100% genuine products with full warranty</p>
             </div>
           </div>
 
@@ -1098,50 +1300,50 @@ export function ProductDetail() {
             <Lock className="size-5 shrink-0 text-emerald-400" />
             <div>
               <span className="text-sm font-semibold text-emerald-400">Secure Checkout</span>
-              <p className="text-xs text-neutral-500">256-bit SSL encrypted payment processing</p>
+              <p className="text-xs text-muted-foreground">256-bit SSL encrypted payment processing</p>
             </div>
           </div>
 
           {/* Trust Badges */}
-          <div className="flex flex-wrap gap-4 rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
-            <div className="flex items-center gap-2 text-xs text-neutral-400">
+          <div className="flex flex-wrap gap-4 rounded-lg border border-border bg-card/50 p-4">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Shield className="size-4 text-cyan-400" />
               Authorized Reseller
             </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-400">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Truck className="size-4 text-cyan-400" />
               Secure Shipping
             </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-400">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <RotateCcw className="size-4 text-cyan-400" />
               Free Returns
             </div>
           </div>
 
-          <Separator className="bg-neutral-800" />
+          <Separator className="bg-muted" />
 
           {/* Specifications - Always visible, enhanced design */}
           {product.specs &&
             typeof product.specs === 'object' &&
             Object.keys(product.specs).length > 0 && (
               <div>
-                <h3 className="mb-3 text-sm font-semibold text-white">
+                <h3 className="mb-3 text-sm font-semibold text-foreground">
                   Specifications
                 </h3>
-                <div className="overflow-hidden rounded-lg border border-neutral-800">
+                <div className="overflow-hidden rounded-lg border border-border">
                   <table className="w-full text-sm">
                     <tbody>
                       {Object.entries(product.specs).map(([key, value], index) => (
                         <tr
                           key={key}
-                          className={`border-b border-neutral-800/50 last:border-0 ${
-                            index % 2 === 0 ? 'bg-neutral-900/80' : 'bg-neutral-800/40'
+                          className={`border-b border-border/50 last:border-0 ${
+                            index % 2 === 0 ? 'bg-card/80' : 'bg-neutral-800/40'
                           }`}
                         >
-                          <td className="px-4 py-3 font-medium text-neutral-300 w-2/5">
+                          <td className="px-4 py-3 font-medium text-muted-foreground w-2/5">
                             {key}
                           </td>
-                          <td className="px-4 py-3 text-neutral-400">
+                          <td className="px-4 py-3 text-muted-foreground">
                             {value}
                           </td>
                         </tr>
@@ -1155,12 +1357,12 @@ export function ProductDetail() {
           {/* Description Accordion */}
           {product.description && (
             <Accordion type="single" collapsible>
-              <AccordionItem value="description" className="border-neutral-800">
-                <AccordionTrigger className="text-sm font-semibold text-white hover:text-cyan-400">
+              <AccordionItem value="description" className="border-border">
+                <AccordionTrigger className="text-sm font-semibold text-foreground hover:text-cyan-400">
                   Full Description
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="prose prose-invert prose-sm max-w-none text-neutral-400">
+                  <div className="prose prose-invert prose-sm max-w-none text-muted-foreground">
                     {product.description}
                   </div>
                 </AccordionContent>
@@ -1173,7 +1375,7 @@ export function ProductDetail() {
       {/* Related Products */}
       {related.length > 0 && (
         <div className="mt-16">
-          <h2 className="mb-6 text-xl font-bold text-white">
+          <h2 className="mb-6 text-xl font-bold text-foreground">
             Related Products
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -1188,7 +1390,7 @@ export function ProductDetail() {
       {alsoBought.length > 0 && (
         <div className="mt-16">
           <div className="mb-6 flex items-center gap-3">
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-foreground">
               Customers Also Bought
             </h2>
             <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
@@ -1211,7 +1413,7 @@ export function ProductDetail() {
         >
           <div className="mb-6 flex items-center gap-3">
             <Gift className="size-5 text-cyan-400" />
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-foreground">
               Frequently Bought Together
             </h2>
             <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30 text-[10px] font-bold">
@@ -1220,7 +1422,7 @@ export function ProductDetail() {
             <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
           </div>
 
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 sm:p-6">
+          <div className="rounded-xl border border-border bg-card/50 p-4 sm:p-6">
             {/* Product cards with + symbols */}
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-0 sm:justify-center">
               {/* Current Product */}
@@ -1231,7 +1433,7 @@ export function ProductDetail() {
                 className={`flex items-center gap-3 rounded-lg border p-3 transition-all w-full sm:w-auto ${
                   bundleSelections[product.id]
                     ? 'border-cyan-500/30 bg-cyan-500/5'
-                    : 'border-neutral-800 bg-neutral-900/50 opacity-60'
+                    : 'border-border bg-card/50 opacity-60'
                 }`}
               >
                 <Checkbox
@@ -1239,7 +1441,7 @@ export function ProductDetail() {
                   disabled
                   className="border-cyan-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
                 />
-                <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-muted">
                   {product.images?.[0] ? (
                     <img
                       src={product.images[0]}
@@ -1248,12 +1450,12 @@ export function ProductDetail() {
                     />
                   ) : (
                     <div className="flex size-full items-center justify-center">
-                      <Package className="size-5 text-neutral-600" />
+                      <Package className="size-5 text-muted-foreground" />
                     </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-semibold text-white">{product.name}</p>
+                  <p className="truncate text-xs font-semibold text-foreground">{product.name}</p>
                   <p className="text-xs font-bold text-cyan-400">${product.price.toFixed(2)}</p>
                 </div>
               </motion.div>
@@ -1261,7 +1463,7 @@ export function ProductDetail() {
               {/* Bundle Products with + symbols */}
               {bundleProducts.map((bp, idx) => (
                 <div key={bp.id} className="flex items-center gap-3 w-full sm:w-auto">
-                  <PlusCircle className="hidden size-5 shrink-0 text-neutral-600 sm:block" />
+                  <PlusCircle className="hidden size-5 shrink-0 text-muted-foreground sm:block" />
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -1269,7 +1471,7 @@ export function ProductDetail() {
                     className={`flex items-center gap-3 rounded-lg border p-3 transition-all w-full sm:w-auto cursor-pointer ${
                       bundleSelections[bp.id]
                         ? 'border-cyan-500/30 bg-cyan-500/5'
-                        : 'border-neutral-800 bg-neutral-900/50 opacity-60'
+                        : 'border-border bg-card/50 opacity-60'
                     }`}
                     onClick={() => toggleBundleSelection(bp.id)}
                   >
@@ -1278,7 +1480,7 @@ export function ProductDetail() {
                       onCheckedChange={() => toggleBundleSelection(bp.id)}
                       className="border-cyan-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
                     />
-                    <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                    <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-muted">
                       {bp.images?.[0] ? (
                         <img
                           src={bp.images[0]}
@@ -1287,12 +1489,12 @@ export function ProductDetail() {
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center">
-                          <Package className="size-5 text-neutral-600" />
+                          <Package className="size-5 text-muted-foreground" />
                         </div>
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-semibold text-white">{bp.name}</p>
+                      <p className="truncate text-xs font-semibold text-foreground">{bp.name}</p>
                       <p className="text-xs font-bold text-cyan-400">${bp.price.toFixed(2)}</p>
                     </div>
                   </motion.div>
@@ -1301,10 +1503,10 @@ export function ProductDetail() {
             </div>
 
             {/* Bundle Total & Add to Cart */}
-            <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-800/40 p-4 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-border bg-muted/40 p-4 sm:flex-row">
               <div className="flex items-center gap-4">
                 <div>
-                  <p className="text-xs text-neutral-500">Total Price:</p>
+                  <p className="text-xs text-muted-foreground">Total Price:</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-lg text-neutral-500 line-through">
                       ${getBundleTotal().original.toFixed(2)}
@@ -1333,6 +1535,9 @@ export function ProductDetail() {
       {/* Product Reviews */}
       {product && <ProductReviews productId={product.id} />}
 
+      {/* Customers Ask - Product FAQ */}
+      {product && <ProductFAQ product={product} />}
+
       {/* Image Lightbox */}
       {mounted && lightboxOpen && product.images && product.images.length > 0 && (
         <AnimatePresence>
@@ -1357,7 +1562,7 @@ export function ProductDetail() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800/80 bg-[#111111]/95 backdrop-blur-lg"
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/80 dark:bg-card bg-white/95 backdrop-blur-lg"
           >
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
               {/* Product Info */}
@@ -1369,7 +1574,7 @@ export function ProductDetail() {
                       : 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]'
                   }`}
                 />
-                <p className="truncate text-sm font-medium text-white sm:max-w-xs">
+                <p className="truncate text-sm font-medium text-foreground sm:max-w-xs">
                   {product.name}
                 </p>
                 <span className="shrink-0 text-sm font-bold text-cyan-400">
@@ -1398,7 +1603,7 @@ export function ProductDetail() {
                 </Button>
                 <button
                   onClick={() => setStickyBarDismissed(true)}
-                  className="ml-1 flex size-7 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-neutral-300"
+                  className="ml-1 flex size-7 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-muted hover:text-foreground"
                   aria-label="Close sticky bar"
                 >
                   <X className="size-4" />

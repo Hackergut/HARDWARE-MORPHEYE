@@ -55,7 +55,7 @@ export function AnnouncementBar() {
           transition={{ duration: 0.35, ease: 'easeInOut' }}
           className="overflow-hidden"
         >
-          <div className="relative bg-[#0a0a0a] border-b border-neutral-800/50">
+          <div className="relative bg-background border-b border-border/50">
             <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-1.5 sm:px-6 lg:px-8">
               {/* Left spacer for centering */}
               <div className="flex-1" />
@@ -84,7 +84,7 @@ export function AnnouncementBar() {
               <div className="flex flex-1 items-center justify-end">
                 <button
                   onClick={handleDismiss}
-                  className="ml-3 flex size-5 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-neutral-300"
+                  className="ml-3 flex size-5 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-muted hover:text-foreground"
                   aria-label="Dismiss announcement"
                 >
                   <X className="size-3" />

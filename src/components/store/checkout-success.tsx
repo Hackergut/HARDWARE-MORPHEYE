@@ -176,7 +176,7 @@ export function CheckoutSuccess() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
-        className="mb-2 text-3xl font-bold text-white md:text-4xl"
+        className="mb-2 text-3xl font-bold text-foreground md:text-4xl"
       >
         Order Confirmed!
       </motion.h1>
@@ -185,7 +185,7 @@ export function CheckoutSuccess() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className="mb-6 text-neutral-400"
+        className="mb-6 text-muted-foreground"
       >
         Thank you for your purchase. Your order is being processed.
       </motion.p>
@@ -196,11 +196,11 @@ export function CheckoutSuccess() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
-          className="mb-6 w-full max-w-md rounded-xl border border-neutral-800 bg-[#111111] p-6"
+          className="mb-6 w-full max-w-md rounded-xl border border-border dark:bg-card bg-white p-6"
         >
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Order Number
               </p>
               <p className="mt-1 font-mono text-lg font-bold text-cyan-400">
@@ -209,23 +209,23 @@ export function CheckoutSuccess() {
             </div>
             {orderTotal && (
               <div className="text-right">
-                <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Total
                 </p>
-                <p className="mt-1 text-lg font-bold text-white">
+                <p className="mt-1 text-lg font-bold text-foreground">
                   ${parseFloat(orderTotal).toFixed(2)}
                 </p>
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2.5">
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-card/50 px-3 py-2.5">
             <Truck className="size-4 text-cyan-400 flex-shrink-0" />
             <div>
-              <p className="text-xs text-neutral-500">Estimated Delivery</p>
-              <p className="text-sm font-medium text-white">5–7 business days</p>
+              <p className="text-xs text-muted-foreground">Estimated Delivery</p>
+              <p className="text-sm font-medium text-foreground">5–7 business days</p>
             </div>
-            <span className="ml-auto text-xs text-neutral-600">
+            <span className="ml-auto text-xs text-muted-foreground">
               by {getEstimatedDelivery()}
             </span>
           </div>
@@ -239,7 +239,7 @@ export function CheckoutSuccess() {
         transition={{ delay: 1.1 }}
         className="mb-8 w-full max-w-md"
       >
-        <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-neutral-400">
+        <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           What&apos;s Next
         </h3>
         <div className="space-y-3">
@@ -249,16 +249,16 @@ export function CheckoutSuccess() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.2 + i * 0.15 }}
-              className={`flex items-center gap-3 rounded-lg border ${step.borderColor} bg-[#111111] p-3.5`}
+              className={`flex items-center gap-3 rounded-lg border ${step.borderColor} dark:bg-card bg-white p-3.5`}
             >
               <div className={`flex size-9 flex-shrink-0 items-center justify-center rounded-lg ${step.bgColor}`}>
                 <step.icon className={`size-4 ${step.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white">{step.title}</p>
-                <p className="text-xs text-neutral-500">{step.description}</p>
+                <p className="text-sm font-medium text-foreground">{step.title}</p>
+                <p className="text-xs text-muted-foreground">{step.description}</p>
               </div>
-              <div className="flex size-6 flex-shrink-0 items-center justify-center rounded-full bg-neutral-800 text-xs font-bold text-neutral-500">
+              <div className="flex size-6 flex-shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
                 {i + 1}
               </div>
             </motion.div>
@@ -273,15 +273,15 @@ export function CheckoutSuccess() {
         transition={{ delay: 1.5 }}
         className="mb-8 w-full max-w-md"
       >
-        <div className="rounded-xl border border-neutral-800 bg-[#111111] p-5 text-center">
-          <p className="mb-3 text-sm font-medium text-white">
+        <div className="rounded-xl border border-border dark:bg-card bg-white p-5 text-center">
+          <p className="mb-3 text-sm font-medium text-foreground">
             Share your purchase! 🎉
           </p>
           <div className="flex items-center justify-center gap-3">
             <Button
               onClick={handleShare}
               variant="outline"
-              className="border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <Share2 className="mr-2 size-4" />
               {shared ? 'Link Copied!' : 'Share'}
@@ -289,7 +289,7 @@ export function CheckoutSuccess() {
             <Button
               onClick={handleTwitterShare}
               variant="outline"
-              className="border-neutral-700 text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              className="border-border text-muted-foreground hover:bg-muted hover:text-foreground"
             >
               <Twitter className="mr-2 size-4" />
               Tweet
@@ -315,7 +315,7 @@ export function CheckoutSuccess() {
         <Button
           onClick={() => navigate('tracking')}
           variant="outline"
-          className="border-neutral-700 text-white hover:bg-neutral-800 hover:text-white"
+          className="border-border text-foreground hover:bg-muted"
         >
           <ExternalLink className="mr-2 size-4" />
           Track Order

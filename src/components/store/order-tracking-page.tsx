@@ -109,7 +109,7 @@ function getStatusColor(status: string): string {
     case 'shipped': return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
     case 'delivered': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
     case 'cancelled': return 'bg-red-500/10 text-red-400 border-red-500/20'
-    default: return 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20'
+    default: return 'bg-neutral-500/10 text-muted-foreground border-neutral-500/20'
   }
 }
 
@@ -162,7 +162,7 @@ export function OrderTrackingPage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('home')}
-          className="mb-6 flex items-center gap-2 text-sm text-neutral-400 transition-colors hover:text-cyan-400"
+          className="mb-6 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-cyan-400"
         >
           <ArrowLeft className="size-4" />
           Back to Home
@@ -177,10 +177,10 @@ export function OrderTrackingPage() {
           <div className="mb-4 inline-flex size-16 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 shadow-lg shadow-cyan-500/10">
             <Search className="size-7 text-cyan-400" />
           </div>
-          <h1 className="mb-2 text-3xl font-bold text-white md:text-4xl">
+          <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">
             Track Your Order
           </h1>
-          <p className="text-neutral-400">
+          <p className="text-muted-foreground">
             Enter your order number to check the status
           </p>
         </motion.div>
@@ -192,7 +192,7 @@ export function OrderTrackingPage() {
           transition={{ delay: 0.1 }}
           className="mb-8"
         >
-          <Card className="border-neutral-800 bg-[#111111] p-6">
+          <Card className="border-border dark:bg-card bg-white p-6">
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
                 <Input
@@ -200,7 +200,7 @@ export function OrderTrackingPage() {
                   onChange={(e) => setOrderNumber(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="MRP-20250101-ABCD"
-                  className="h-12 border-neutral-700 bg-neutral-900 font-mono text-white placeholder:text-neutral-600 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
+                  className="h-12 border-border bg-card font-mono text-foreground placeholder:text-muted-foreground focus-visible:border-cyan-500 focus-visible:ring-cyan-500/20"
                   disabled={loading}
                 />
               </div>
@@ -222,7 +222,7 @@ export function OrderTrackingPage() {
                 )}
               </Button>
             </div>
-            <p className="mt-3 text-xs text-neutral-500">
+            <p className="mt-3 text-xs text-muted-foreground">
               Order number format: MRP-XXXXXXXX-XXXX (found in your confirmation email)
             </p>
           </Card>
@@ -237,14 +237,14 @@ export function OrderTrackingPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Card className="border-neutral-800 bg-[#111111] p-8 text-center">
+              <Card className="border-border dark:bg-card bg-white p-8 text-center">
                 <div className="mb-4 inline-flex size-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10">
                   <AlertCircle className="size-8 text-red-400" />
                 </div>
-                <h2 className="mb-2 text-xl font-bold text-white">
+                <h2 className="mb-2 text-xl font-bold text-foreground">
                   Order Not Found
                 </h2>
-                <p className="mb-6 text-neutral-400">
+                <p className="mb-6 text-muted-foreground">
                   We couldn&apos;t find an order with that number. Please double-check your order number and try again.
                 </p>
                 <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -255,7 +255,7 @@ export function OrderTrackingPage() {
                       setOrderNumber('')
                     }}
                     variant="outline"
-                    className="border-neutral-700 text-white hover:bg-neutral-800"
+                    className="border-border text-foreground hover:bg-muted"
                   >
                     Try Again
                   </Button>
@@ -281,10 +281,10 @@ export function OrderTrackingPage() {
               className="space-y-6"
             >
               {/* Order Header */}
-              <Card className="border-neutral-800 bg-[#111111] p-6">
+              <Card className="border-border dark:bg-card bg-white p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Order Number
                     </p>
                     <p className="mt-1 font-mono text-xl font-bold text-cyan-400">
@@ -305,26 +305,26 @@ export function OrderTrackingPage() {
                   </div>
                 </div>
 
-                <Separator className="my-4 bg-neutral-800" />
+                <Separator className="my-4 bg-muted" />
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   <div>
-                    <p className="text-xs text-neutral-500">Order Date</p>
-                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-white">
-                      <CalendarDays className="size-3.5 text-neutral-500" />
+                    <p className="text-xs text-muted-foreground">Order Date</p>
+                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      <CalendarDays className="size-3.5 text-muted-foreground" />
                       {formatShortDate(order.createdAt)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Total</p>
-                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-white">
-                      <CreditCard className="size-3.5 text-neutral-500" />
+                    <p className="text-xs text-muted-foreground">Total</p>
+                    <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-foreground">
+                      <CreditCard className="size-3.5 text-muted-foreground" />
                       ${order.total.toFixed(2)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Est. Delivery</p>
-                    <p className="mt-1 text-sm font-medium text-white">
+                    <p className="text-xs text-muted-foreground">Est. Delivery</p>
+                    <p className="mt-1 text-sm font-medium text-foreground">
                       {isCancelled ? 'N/A' : getEstimatedDelivery(order.createdAt, order.status)}
                     </p>
                   </div>
@@ -333,13 +333,13 @@ export function OrderTrackingPage() {
 
               {/* Timeline / Stepper */}
               {!isCancelled && (
-                <Card className="border-neutral-800 bg-[#111111] p-6">
-                  <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+                <Card className="border-border dark:bg-card bg-white p-6">
+                  <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                     Order Progress
                   </h3>
                   <div className="relative">
                     {/* Vertical line connecting steps */}
-                    <div className="absolute left-[19px] top-0 bottom-0 w-[2px] bg-neutral-800 sm:left-1/2 sm:-translate-x-px" />
+                    <div className="absolute left-[19px] top-0 bottom-0 w-[2px] bg-muted sm:left-1/2 sm:-translate-x-px" />
 
                     <div className="space-y-0">
                       {statusSteps.map((step, index) => {
@@ -367,7 +367,7 @@ export function OrderTrackingPage() {
                                       ? 'border-cyan-500 bg-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
                                       : isCompleted
                                         ? 'border-cyan-600/60 bg-cyan-600/20'
-                                        : 'border-neutral-700 bg-neutral-900'
+                                        : 'border-border bg-card'
                                   }`}
                                 >
                                   <StepIcon
@@ -390,7 +390,7 @@ export function OrderTrackingPage() {
                                       isCurrent
                                         ? 'text-cyan-400'
                                         : isCompleted
-                                          ? 'text-white'
+                                          ? 'text-foreground'
                                           : 'text-neutral-600'
                                     }`}
                                   >
@@ -423,7 +423,7 @@ export function OrderTrackingPage() {
                               {/* Date on the right (desktop) */}
                               {isCompleted && (
                                 <div className="hidden flex-shrink-0 sm:block">
-                                  <p className="text-xs text-neutral-500">
+                                  <p className="text-xs text-muted-foreground">
                                     {index === 0 ? formatShortDate(order.createdAt) : 'Completed'}
                                   </p>
                                 </div>
@@ -439,14 +439,14 @@ export function OrderTrackingPage() {
 
               {/* Cancelled State */}
               {isCancelled && (
-                <Card className="border-red-500/20 bg-[#111111] p-6">
+                <Card className="border-red-500/20 dark:bg-card bg-white p-6">
                   <div className="flex items-center gap-4">
                     <div className="flex size-12 flex-shrink-0 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10">
                       <AlertCircle className="size-6 text-red-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-red-400">Order Cancelled</h3>
-                      <p className="text-sm text-neutral-400">
+                      <p className="text-sm text-muted-foreground">
                         This order has been cancelled. If you believe this is an error, please contact support.
                       </p>
                     </div>
@@ -455,8 +455,8 @@ export function OrderTrackingPage() {
               )}
 
               {/* Order Items */}
-              <Card className="border-neutral-800 bg-[#111111] p-6">
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+              <Card className="border-border dark:bg-card bg-white p-6">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   <Box className="size-4" />
                   Order Items ({order.items.length})
                 </h3>
@@ -470,7 +470,7 @@ export function OrderTrackingPage() {
                     >
                       <div className="flex items-center gap-4">
                         {/* Item image or placeholder */}
-                        <div className="flex size-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900">
+                        <div className="flex size-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-card">
                           {item.image ? (
                             <img
                               src={item.image}
@@ -478,76 +478,76 @@ export function OrderTrackingPage() {
                               className="size-full object-cover"
                             />
                           ) : (
-                            <Package className="size-6 text-neutral-600" />
+                            <Package className="size-6 text-muted-foreground" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-white">
+                          <p className="truncate text-sm font-medium text-foreground">
                             {item.name}
                           </p>
-                          <p className="text-xs text-neutral-500">
+                          <p className="text-xs text-muted-foreground">
                             Qty: {item.quantity} × ${item.price.toFixed(2)}
                           </p>
                         </div>
                         <div className="flex-shrink-0 text-right">
-                          <p className="text-sm font-semibold text-white">
+                          <p className="text-sm font-semibold text-foreground">
                             ${(item.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
                       {index < order.items.length - 1 && (
-                        <Separator className="mt-4 bg-neutral-800/50" />
+                        <Separator className="mt-4 bg-muted/50" />
                       )}
                     </motion.div>
                   ))}
                 </div>
 
-                <Separator className="my-4 bg-neutral-800" />
+                <Separator className="my-4 bg-muted" />
 
                 {/* Totals */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-neutral-400">Subtotal</span>
-                    <span className="text-neutral-300">${order.subtotal.toFixed(2)}</span>
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">${order.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-neutral-400">Shipping</span>
-                    <span className="text-neutral-300">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">
                       {order.shipping === 0 ? 'Free' : `$${order.shipping.toFixed(2)}`}
                     </span>
                   </div>
                   {order.tax > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-neutral-400">Tax</span>
-                      <span className="text-neutral-300">${order.tax.toFixed(2)}</span>
+                      <span className="text-muted-foreground">Tax</span>
+                      <span className="text-muted-foreground">${order.tax.toFixed(2)}</span>
                     </div>
                   )}
-                  <Separator className="bg-neutral-800" />
+                  <Separator className="bg-muted" />
                   <div className="flex justify-between">
-                    <span className="font-semibold text-white">Total</span>
+                    <span className="font-semibold text-foreground">Total</span>
                     <span className="text-lg font-bold text-cyan-400">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </Card>
 
               {/* Shipping Address */}
-              <Card className="border-neutral-800 bg-[#111111] p-6">
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+              <Card className="border-border dark:bg-card bg-white p-6">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   <MapPin className="size-4" />
                   Shipping Address
                 </h3>
-                <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
-                  <p className="text-sm font-medium text-white">{order.customerName}</p>
+                <div className="rounded-lg border border-border bg-card/50 p-4">
+                  <p className="text-sm font-medium text-foreground">{order.customerName}</p>
                   {order.shippingAddr && (
-                    <p className="mt-1 text-sm text-neutral-400">{order.shippingAddr}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{order.shippingAddr}</p>
                   )}
-                  <p className="mt-1 text-sm text-neutral-400">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {[order.shippingCity, order.shippingCountry, order.shippingZip]
                       .filter(Boolean)
                       .join(', ')}
                   </p>
                   {order.customerPhone && (
-                    <p className="mt-2 text-xs text-neutral-500">
+                    <p className="mt-2 text-xs text-muted-foreground">
                       Phone: {order.customerPhone}
                     </p>
                   )}
@@ -571,7 +571,7 @@ export function OrderTrackingPage() {
                     setOrderNumber('')
                   }}
                   variant="outline"
-                  className="border-neutral-700 text-white hover:bg-neutral-800"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   <Search className="mr-2 size-4" />
                   Track Another Order
