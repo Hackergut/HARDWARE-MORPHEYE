@@ -7,6 +7,7 @@ export type Page =
   | 'cart' 
   | 'checkout' 
   | 'checkout-success'
+  | 'wishlist'
   | 'admin' 
   | 'admin-products' 
   | 'admin-orders' 

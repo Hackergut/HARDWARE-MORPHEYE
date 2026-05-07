@@ -3,9 +3,10 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ShoppingCart, Menu, Shield, X } from 'lucide-react'
+import { Search, ShoppingCart, Menu, Shield, X, Heart } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
+import { useWishlistStore } from '@/store/wishlist-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +31,7 @@ export function StoreHeader() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { navigate, currentPage } = useNavigationStore()
   const itemCount = useCartStore((s) => s.getItemCount())
+  const wishlistCount = useWishlistStore((s) => s.getItemCount())
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -128,6 +130,21 @@ export function StoreHeader() {
             )}
           </AnimatePresence>
 
+          {/* Wishlist */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('wishlist')}
+            className="relative text-neutral-400 hover:text-red-400"
+          >
+            <Heart className="size-4" />
+            {wishlistCount > 0 && (
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-white">
+                {wishlistCount}
+              </Badge>
+            )}
+          </Button>
+
           {/* Cart */}
           <Button
             variant="ghost"
@@ -157,6 +174,19 @@ export function StoreHeader() {
 
         {/* Mobile Actions */}
         <div className="flex items-center gap-2 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('wishlist')}
+            className="relative text-neutral-400"
+          >
+            <Heart className="size-5" />
+            {wishlistCount > 0 && (
+              <Badge className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 p-0 text-[10px] font-bold text-white">
+                {wishlistCount}
+              </Badge>
+            )}
+          </Button>
           <Button
             variant="ghost"
             size="icon"
@@ -229,6 +259,25 @@ export function StoreHeader() {
                     <Search className="size-4" />
                   </Button>
                 </form>
+                <button
+                  onClick={() => {
+                    navigate('wishlist')
+                    setMobileOpen(false)
+                  }}
+                  className={`flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                    currentPage === 'wishlist'
+                      ? 'bg-red-500/10 text-red-400'
+                      : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
+                  }`}
+                >
+                  <Heart className="size-4" />
+                  Wishlist
+                  {wishlistCount > 0 && (
+                    <Badge className="ml-auto bg-red-500 px-1.5 text-[10px] font-bold text-white">
+                      {wishlistCount}
+                    </Badge>
+                  )}
+                </button>
                 <button
                   onClick={() => {
                     navigate('admin')

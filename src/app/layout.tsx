@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://morpheye.com"),
   title: {
     default: "Morpheye — Authorized Hardware Wallet Reseller | Ledger, Trezor, Keystone",
     template: "%s | Morpheye",

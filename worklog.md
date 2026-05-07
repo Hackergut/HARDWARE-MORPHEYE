@@ -96,3 +96,132 @@ Stage Summary:
 - Meta Pixel: Dynamic initialization from settings, event tracking on key actions
 - SOLID: Service layer with SRP, OCP, ISP, DIP principles applied
 - Cart Calculator: Pure functions with no side effects (SRP)
+
+---
+Task ID: 10a
+Agent: full-stack-developer (Wishlist & Product Detail QA Fixes)
+Task: Add wishlist functionality and enhance product detail page
+
+Work Log:
+- Read worklog.md and all existing files (product-card, product-detail, navigation-store, store-header, page.tsx, cart-store)
+- Created `/src/store/wishlist-store.ts` — Zustand store with persist middleware for wishlist items (addItem, removeItem, toggleItem, isInWishlist, getItemCount)
+- Updated `/src/components/store/product-card.tsx` — Added heart/wishlist toggle button in bottom-left of image area with AnimatePresence scale animation, filled red heart when in wishlist, outline when not
+- Enhanced `/src/components/store/product-detail.tsx`:
+  - Added Key Features section between short description and price (extracted from tags, shortDesc, specs)
+  - Made stock status more prominent with larger indicator dot, glow effect, and descriptive text
+  - Added Wishlist toggle button (Save for Later) with heart icon and animated state
+  - Added Share button that copies URL to clipboard with toast notification
+  - Added "Guaranteed Authentic" badge with BadgeCheck icon near CTAs
+  - Made specs table always visible (not in accordion) with alternating row colors
+  - Kept description accordion for full description only
+- Created `/src/components/store/wishlist-page.tsx` — Full wishlist page with grid layout, empty state with CTA, individual items with image/name/price/Add to Cart/Remove buttons, AnimatePresence for item removal animations
+- Updated `/src/store/navigation-store.ts` — Added 'wishlist' to Page type union
+- Updated `/src/components/store/store-header.tsx` — Added Heart icon button with red count badge in desktop actions, mobile header, and mobile sheet menu with wishlist link and badge
+- Updated `/src/app/page.tsx` — Added WishlistPage import and 'wishlist' case to page router
+- All lint checks passed with no errors
+- Dev server running correctly
+
+Stage Summary:
+- Wishlist Store: Zustand + persist, full CRUD operations (addItem, removeItem, toggleItem, isInWishlist, getItemCount)
+- Product Card: Heart button in image area with animated toggle (filled red = in wishlist)
+- Product Detail: Key Features section, prominent stock status, wishlist/share action buttons, Guaranteed Authentic badge, enhanced specs table with alternating rows
+- Wishlist Page: Grid layout with empty state, Add to Cart and Remove buttons per item
+- Navigation: 'wishlist' page type added, accessible from header Heart icon + mobile menu
+- Header: Heart icon with red badge counter in both desktop and mobile views
+
+---
+Task ID: 10b
+Agent: full-stack-developer (UI Enhancements)
+Task: Enhance shop filter bar, categories, admin dashboard, newsletter, checkout success
+
+Work Log:
+- Read worklog.md and all existing component files
+- Enhanced `/src/components/store/product-grid.tsx`:
+  - Premium filter bar with rounded container, backdrop blur
+  - View toggle (grid/list) with cyan active state
+  - Search input with subtle glow effect on focus (shadow + ring)
+  - Category filter pills with cyan background active state and count badges
+  - Sort dropdown with better styling
+  - "Showing X of Y products" counter with cyan accent
+  - Better empty state with large icon, descriptive text, and CTA button
+  - List view mode with compact horizontal cards
+  - AnimatePresence for grid/list transitions
+  - Clear search button (X icon)
+- Enhanced `/src/components/store/categories-section.tsx`:
+  - Product count badge on each card (top-right, with icon)
+  - Hover effect with cyan glow border and shadow
+  - Unique background gradient per category (radial + linear gradient)
+  - Lucide icons replacing emoji (Shield, Cable, Box, Disc)
+  - Animated corner accent on hover
+  - "Browse category" CTA with arrow on hover
+  - Icon container with hover border/glow transition
+- Enhanced `/src/components/admin/admin-dashboard.tsx`:
+  - Bar chart for "Orders by Status" using recharts (BarChart + Cell with color per status)
+  - Area chart for "Revenue Overview" using recharts (AreaChart with gradient fill)
+  - Stat cards with trend indicators (↑/↓ arrows, color-coded)
+  - Quick Actions card with Add Product, View Orders, Update Settings buttons
+  - Better loading skeleton states (per-card structure)
+  - Low Stock Alert fetching from `/api/products?lowStock=true&sort=stock_asc`
+  - Custom tooltip for recharts
+  - Top Products grid layout with product images
+- Enhanced `/src/components/store/newsletter-section.tsx`:
+  - Gradient background (cyan-950/teal-950 with grid pattern overlay)
+  - Crypto/lock icon with animated floating effect and pulse ring
+  - 10% off incentive text in amber badge
+  - Glow effect on CTA button (shadow-lg + hover shadow)
+  - Search-style glow on email input focus
+  - Privacy note with ShieldCheck icon below form
+  - Subscribed state with ShieldCheck icon and discount code mention
+  - Glow orbs in background
+- Enhanced `/src/components/store/checkout-success.tsx`:
+  - Success animation: checkmark in circle with scale spring + expanding ring
+  - Order details card with number and total side-by-side
+  - Estimated delivery: 5-7 business days with calculated date
+  - "What's Next" steps: Confirmation Email → Order Processing → Shipping Notification
+  - Social sharing CTA: Share (Web Share API / clipboard) + Twitter button
+  - Meta Pixel purchase event fired on mount
+  - Step cards with colored icons and numbered badges
+- Updated `/src/app/api/products/route.ts`:
+  - Added `lowStock` query parameter (filters stock <= 10)
+  - Added `stock_asc` sort option
+- Updated `/src/components/store/checkout-page.tsx`:
+  - Added sessionStorage for `lastOrderTotal` on order success
+- Updated `/src/app/globals.css`:
+  - Added `.custom-scrollbar` styles for overflow containers
+- All lint checks passed with no errors
+- Dev server running correctly
+
+Stage Summary:
+- Product Grid: Premium filter bar, grid/list toggle, search glow, category pills, product counter, enhanced empty state, list view
+- Categories: Count badges, glow hover, gradient backgrounds, Lucide icons, animated accents, CTA arrows
+- Admin Dashboard: Recharts bar/area charts, trend indicators, quick actions, low stock from API, better skeletons, custom tooltips
+- Newsletter: Gradient bg, lock icon animation, 10% off badge, glow CTA, privacy note, glow orbs
+- Checkout Success: Spring animation checkmark, order details card, delivery estimate, "What's Next" steps, share CTA, Meta Pixel event
+- API: lowStock filter + stock_asc sort on products endpoint
+
+---
+Task ID: QA-1
+Agent: Main Agent (QA Round)
+Task: Full QA testing and enhancement round
+
+Work Log:
+- Used agent-browser to test homepage, shop page, product detail, admin panel
+- Used z-ai vision (VLM) to analyze screenshots for visual quality
+- Fixed metadataBase warning in layout.tsx
+- Generated missing ledger-stax.jpg product image
+- VLM rated hero section 8.5/10 (CTAs visible, trust badges, product images)
+- Identified and addressed QA issues:
+  - Product detail: Added Key Features section, prominent stock status, wishlist/share buttons, Guaranteed Authentic badge, enhanced specs table
+  - Shop page: Premium filter bar with grid/list toggle, search glow, category pills, product counter
+  - Categories: Count badges, glow hover effects, gradient backgrounds, Lucide icons
+  - Admin Dashboard: Recharts bar/area charts, trend indicators, quick actions, low stock from API
+  - Newsletter: Gradient bg, animated lock icon, 10% off incentive, glow CTA, privacy note
+  - Checkout Success: Animated checkmark, order details card, delivery estimate, "What's Next" steps, social sharing, Meta Pixel event
+- Added wishlist feature: store, product card heart button, wishlist page, header integration
+- All lint checks pass, dev server running correctly
+
+Stage Summary:
+- QA Rating: 8.5/10 (hero section), improving from initial 7/10
+- Key fixes: metadataBase, missing images, product detail enhancements
+- New features: Wishlist functionality, grid/list view toggle, admin charts, newsletter improvements
+- Remaining opportunities: More product images generation, contact form page, recently viewed products, user account system

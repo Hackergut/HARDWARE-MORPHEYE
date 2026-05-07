@@ -13,6 +13,7 @@ import { ProductDetail } from '@/components/store/product-detail'
 import { CartPage } from '@/components/store/cart-page'
 import { CheckoutPage } from '@/components/store/checkout-page'
 import { CheckoutSuccess } from '@/components/store/checkout-success'
+import { WishlistPage } from '@/components/store/wishlist-page'
 import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
@@ -60,6 +61,8 @@ export default function Home() {
         return <CheckoutPage />
       case 'checkout-success':
         return <CheckoutSuccess />
+      case 'wishlist':
+        return <WishlistPage />
       default:
         return <HomePage />
     }

@@ -84,11 +84,17 @@ export function CheckoutPage() {
         clearCart()
         showNotification('Order placed successfully!', 'success')
         navigate('checkout-success')
-        // Store order number for success page
+        // Store order number and total for success page
         if (data.order?.orderNumber) {
           sessionStorage.setItem(
             'lastOrderNumber',
             data.order.orderNumber
+          )
+        }
+        if (data.order?.total) {
+          sessionStorage.setItem(
+            'lastOrderTotal',
+            String(data.order.total)
           )
         }
       } else {

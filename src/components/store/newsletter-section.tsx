@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, ArrowRight } from 'lucide-react'
+import { Mail, ArrowRight, Lock, ShieldCheck, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export function NewsletterSection() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [focused, setFocused] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,15 +20,22 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] py-20">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-amber-500/5" />
+    <section className="relative overflow-hidden py-20">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-[#0a0a0a] to-teal-950/30" />
+      
+      {/* Animated grid pattern */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundImage: `linear-gradient(rgba(6,182,212,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.3) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
         }}
       />
+
+      {/* Glow orbs */}
+      <div className="absolute left-1/4 top-1/2 -translate-y-1/2 size-96 rounded-full bg-cyan-500/5 blur-[120px]" />
+      <div className="absolute right-1/4 top-1/2 -translate-y-1/2 size-64 rounded-full bg-teal-500/5 blur-[100px]" />
 
       <div className="relative mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
         <motion.div
@@ -35,43 +43,80 @@ export function NewsletterSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="mb-6 flex justify-center">
-            <div className="flex size-14 items-center justify-center rounded-xl bg-cyan-500/10">
-              <Mail className="size-7 text-cyan-400" />
+          {/* Crypto/Lock Icon Visual */}
+          <div className="mb-8 flex justify-center">
+            <div className="relative">
+              <motion.div
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="flex size-16 items-center justify-center rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/15 to-teal-500/10 shadow-lg shadow-cyan-500/10"
+              >
+                <Lock className="size-7 text-cyan-400" />
+              </motion.div>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -inset-2 rounded-2xl border border-cyan-500/10"
+              />
             </div>
           </div>
 
-          <h2 className="mb-3 text-2xl font-bold text-white">
-            Stay Updated on Crypto Security
+          <h2 className="mb-2 text-3xl font-bold text-white">
+            Stay Ahead in Crypto Security
           </h2>
-          <p className="mb-8 text-neutral-400">
-            Get exclusive deals and security tips delivered to your inbox.
+          <p className="mb-3 text-neutral-400">
+            Get exclusive deals, security tips, and early access to new products.
           </p>
+
+          {/* Incentive Text */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-2">
+            <Gift className="size-4 text-amber-400" />
+            <span className="text-sm font-medium text-amber-400">
+              10% off your first order when you subscribe
+            </span>
+          </div>
 
           {subscribed ? (
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-4 text-cyan-400"
+              className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-6 py-5 text-center shadow-lg shadow-cyan-500/5"
             >
-              ✓ You&apos;re subscribed! Check your inbox for a confirmation.
+              <div className="mb-2 flex justify-center">
+                <ShieldCheck className="size-8 text-cyan-400" />
+              </div>
+              <p className="text-base font-semibold text-cyan-400">
+                You&apos;re subscribed!
+              </p>
+              <p className="mt-1 text-sm text-neutral-400">
+                Check your inbox for your 10% discount code.
+              </p>
             </motion.div>
           ) : (
             <form
               onSubmit={handleSubmit}
               className="flex flex-col gap-3 sm:flex-row"
             >
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                required
-                className="h-11 border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
-              />
+              <div className="relative flex-1">
+                <Mail className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-neutral-500" />
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
+                  placeholder="Enter your email address"
+                  required
+                  className={`h-12 border-neutral-700 bg-neutral-900/80 pl-10 pr-4 text-white placeholder:text-neutral-500 transition-all duration-300 ${
+                    focused
+                      ? 'border-cyan-500/60 shadow-[0_0_16px_rgba(6,182,212,0.12)] ring-1 ring-cyan-500/20'
+                      : ''
+                  }`}
+                />
+              </div>
               <Button
                 type="submit"
-                className="h-11 bg-cyan-500 px-6 font-semibold text-black hover:bg-cyan-400"
+                className="h-12 bg-cyan-500 px-8 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:bg-cyan-400 hover:shadow-cyan-500/30 hover:shadow-xl"
               >
                 Subscribe
                 <ArrowRight className="ml-2 size-4" />
@@ -79,9 +124,13 @@ export function NewsletterSection() {
             </form>
           )}
 
-          <p className="mt-4 text-xs text-neutral-500">
-            No spam, unsubscribe anytime. We respect your privacy.
-          </p>
+          {/* Privacy Note */}
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-600">
+            <ShieldCheck className="size-3" />
+            <span>
+              We respect your privacy. Unsubscribe anytime. No spam, ever.
+            </span>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
     const brand = searchParams.get('brand')
+    const lowStock = searchParams.get('lowStock')
     const sort = searchParams.get('sort') || 'newest'
     const page = parseInt(searchParams.get('page') || '1', 10)
     const limit = parseInt(searchParams.get('limit') || '12', 10)
@@ -41,6 +42,10 @@ export async function GET(request: NextRequest) {
       where.brand = brand
     }
 
+    if (lowStock === 'true') {
+      where.stock = { lte: 10 }
+    }
+
     // Build order by
     let orderBy: Record<string, string> = { createdAt: 'desc' }
     switch (sort) {
@@ -55,6 +60,9 @@ export async function GET(request: NextRequest) {
         break
       case 'rating':
         orderBy = { rating: 'desc' }
+        break
+      case 'stock_asc':
+        orderBy = { stock: 'asc' }
         break
     }
 

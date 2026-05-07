@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Star, ShoppingCart, Eye, Package } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Star, ShoppingCart, Eye, Package, Heart } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
+import { useWishlistStore } from '@/store/wishlist-store'
 import { useNotificationStore } from '@/store/notification-store'
 import { trackAddToCart } from '@/components/integrations/meta-pixel'
 import { calculateDiscount } from '@/lib/utils/cart-calculator'
@@ -30,10 +31,13 @@ export interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const [imgError, setImgError] = useState(false)
+  const [heartAnimating, setHeartAnimating] = useState(false)
   const { navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
+  const { toggleItem, isInWishlist } = useWishlistStore()
   const showNotification = useNotificationStore((s) => s.show)
 
+  const inWishlist = isInWishlist(product.id)
   const mainImage = product.images?.[0]
   const discount = calculateDiscount(product.price, product.comparePrice)
 
@@ -48,6 +52,23 @@ export function ProductCard({ product }: ProductCardProps) {
     })
     trackAddToCart(product.price, 'USD', product.name)
     showNotification(`${product.name} added to cart`, 'success')
+  }
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setHeartAnimating(true)
+    setTimeout(() => setHeartAnimating(false), 300)
+    toggleItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0] || '',
+      slug: product.slug,
+    })
+    showNotification(
+      inWishlist ? `${product.name} removed from wishlist` : `${product.name} added to wishlist`,
+      inWishlist ? 'info' : 'success'
+    )
   }
 
   return (
@@ -97,6 +118,31 @@ export function ProductCard({ product }: ProductCardProps) {
             </Badge>
           )}
         </div>
+
+        {/* Wishlist Heart Button */}
+        <button
+          onClick={handleWishlistToggle}
+          className="absolute left-3 bottom-3 z-10 flex size-8 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm transition-all hover:bg-black/70 hover:scale-110"
+          title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={inWishlist ? 'filled' : 'outline'}
+              initial={{ scale: heartAnimating ? 1.4 : 1 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+            >
+              <Heart
+                className={`size-4 ${
+                  inWishlist
+                    ? 'fill-red-500 text-red-500'
+                    : 'text-white/70 hover:text-red-400'
+                }`}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </button>
       </div>
 
       {/* Content */}

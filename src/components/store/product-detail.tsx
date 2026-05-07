@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Star,
   ShoppingCart,
@@ -15,9 +15,14 @@ import {
   ChevronRight,
   Minus,
   Plus,
+  Heart,
+  Share2,
+  CheckCircle2,
+  BadgeCheck,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
+import { useWishlistStore } from '@/store/wishlist-store'
 import { useNotificationStore } from '@/store/notification-store'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -50,6 +55,37 @@ interface Product {
   category?: { name: string; slug: string }
 }
 
+function extractFeatures(product: Product): string[] {
+  const features: string[] = []
+
+  // Extract meaningful tags as features
+  if (product.tags && Array.isArray(product.tags)) {
+    product.tags.forEach((tag) => {
+      if (tag && tag.length > 1) {
+        features.push(tag.charAt(0).toUpperCase() + tag.slice(1).replace(/-/g, ' '))
+      }
+    })
+  }
+
+  // Extract key points from short description
+  if (product.shortDesc) {
+    const sentences = product.shortDesc.split(/[.!]/).filter((s) => s.trim().length > 10)
+    sentences.slice(0, 3).forEach((s) => {
+      features.push(s.trim())
+    })
+  }
+
+  // If still not enough features, extract from specs
+  if (features.length < 3 && product.specs && typeof product.specs === 'object') {
+    const specEntries = Object.entries(product.specs)
+    specEntries.slice(0, 3).forEach(([key, value]) => {
+      features.push(`${key}: ${value}`)
+    })
+  }
+
+  return [...new Set(features)].slice(0, 6)
+}
+
 export function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null)
   const [related, setRelated] = useState<Product[]>([])
@@ -57,9 +93,11 @@ export function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({})
+  const [heartAnimating, setHeartAnimating] = useState(false)
 
   const { selectedProductId, navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
+  const { toggleItem, isInWishlist } = useWishlistStore()
   const showNotification = useNotificationStore((s) => s.show)
 
   useEffect(() => {
@@ -134,6 +172,9 @@ export function ProductDetail() {
     )
   }
 
+  const inWishlist = isInWishlist(product.id)
+  const features = extractFeatures(product)
+
   const stockStatus =
     product.stock <= 0
       ? 'out_of_stock'
@@ -172,6 +213,32 @@ export function ProductDetail() {
       })
     }
     navigate('checkout')
+  }
+
+  const handleWishlistToggle = () => {
+    setHeartAnimating(true)
+    setTimeout(() => setHeartAnimating(false), 300)
+    toggleItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0] || '',
+      slug: product.slug,
+    })
+    showNotification(
+      inWishlist ? `${product.name} removed from wishlist` : `${product.name} saved to wishlist`,
+      inWishlist ? 'info' : 'success'
+    )
+  }
+
+  const handleShare = async () => {
+    const url = window.location.href
+    try {
+      await navigator.clipboard.writeText(url)
+      showNotification('Link copied to clipboard!', 'success')
+    } catch {
+      showNotification('Failed to copy link', 'error')
+    }
   }
 
   return (
@@ -320,6 +387,26 @@ export function ProductDetail() {
             </div>
           )}
 
+          {/* Short Description */}
+          {product.shortDesc && (
+            <p className="text-sm leading-relaxed text-neutral-400">{product.shortDesc}</p>
+          )}
+
+          {/* Key Features */}
+          {features.length > 0 && (
+            <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-white">Key Features</h3>
+              <ul className="space-y-2">
+                {features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-neutral-300">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-cyan-500" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Price */}
           <div className="flex items-baseline gap-3">
             <span className="text-3xl font-bold text-cyan-400">
@@ -333,24 +420,19 @@ export function ProductDetail() {
               )}
           </div>
 
-          {/* Short Description */}
-          {product.shortDesc && (
-            <p className="text-sm text-neutral-400">{product.shortDesc}</p>
-          )}
-
-          {/* Stock */}
-          <div className="flex items-center gap-2">
+          {/* Stock - More Prominent */}
+          <div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-4 py-3">
             <div
-              className={`size-2 rounded-full ${
+              className={`size-3 rounded-full ${
                 stockStatus === 'in_stock'
-                  ? 'bg-cyan-500'
+                  ? 'bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]'
                   : stockStatus === 'low_stock'
-                    ? 'bg-amber-500'
-                    : 'bg-red-500'
+                    ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'
+                    : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'
               }`}
             />
             <span
-              className={`text-sm font-medium ${
+              className={`text-sm font-semibold ${
                 stockStatus === 'in_stock'
                   ? 'text-cyan-400'
                   : stockStatus === 'low_stock'
@@ -359,9 +441,9 @@ export function ProductDetail() {
               }`}
             >
               {stockStatus === 'in_stock'
-                ? 'In Stock'
+                ? 'In Stock — Ready to Ship'
                 : stockStatus === 'low_stock'
-                  ? `Low Stock (${product.stock} left)`
+                  ? `Low Stock — Only ${product.stock} left!`
                   : 'Out of Stock'}
             </span>
           </div>
@@ -411,6 +493,53 @@ export function ProductDetail() {
                 Buy Now
               </Button>
             </div>
+
+            {/* Wishlist + Share Actions */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={handleWishlistToggle}
+                className={`flex-1 border-neutral-700 ${
+                  inWishlist
+                    ? 'border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300'
+                    : 'text-neutral-400 hover:border-neutral-600 hover:text-white'
+                }`}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={inWishlist ? 'filled' : 'outline'}
+                    initial={{ scale: heartAnimating ? 1.3 : 1 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+                    className="flex items-center gap-2"
+                  >
+                    <Heart
+                      className={`size-4 ${
+                        inWishlist ? 'fill-red-500 text-red-500' : ''
+                      }`}
+                    />
+                    {inWishlist ? 'Saved' : 'Save for Later'}
+                  </motion.span>
+                </AnimatePresence>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleShare}
+                className="flex-1 border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white"
+              >
+                <Share2 className="mr-2 size-4" />
+                Share
+              </Button>
+            </div>
+          </div>
+
+          {/* Guaranteed Authentic Badge */}
+          <div className="flex items-center gap-2.5 rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-4 py-3">
+            <BadgeCheck className="size-5 shrink-0 text-cyan-400" />
+            <div>
+              <span className="text-sm font-semibold text-cyan-400">Guaranteed Authentic</span>
+              <p className="text-xs text-neutral-500">100% genuine products with full warranty</p>
+            </div>
           </div>
 
           {/* Trust Badges */}
@@ -431,7 +560,7 @@ export function ProductDetail() {
 
           <Separator className="bg-neutral-800" />
 
-          {/* Specifications */}
+          {/* Specifications - Always visible, enhanced design */}
           {product.specs &&
             typeof product.specs === 'object' &&
             Object.keys(product.specs).length > 0 && (
@@ -442,15 +571,17 @@ export function ProductDetail() {
                 <div className="overflow-hidden rounded-lg border border-neutral-800">
                   <table className="w-full text-sm">
                     <tbody>
-                      {Object.entries(product.specs).map(([key, value]) => (
+                      {Object.entries(product.specs).map(([key, value], index) => (
                         <tr
                           key={key}
-                          className="border-b border-neutral-800 last:border-0"
+                          className={`border-b border-neutral-800/50 last:border-0 ${
+                            index % 2 === 0 ? 'bg-neutral-900/80' : 'bg-neutral-800/40'
+                          }`}
                         >
-                          <td className="bg-neutral-900/50 px-4 py-2.5 font-medium text-neutral-300">
+                          <td className="px-4 py-3 font-medium text-neutral-300 w-2/5">
                             {key}
                           </td>
-                          <td className="px-4 py-2.5 text-neutral-400">
+                          <td className="px-4 py-3 text-neutral-400">
                             {value}
                           </td>
                         </tr>
