@@ -828,3 +828,33 @@ Stage Summary:
 - All new pages verified working via agent-browser testing
 - Admin login bug fixed (credentials mismatch)
 - Project now has comprehensive e-commerce features: storefront, admin, reviews, promo codes, order tracking, wishlist, comparison, FAQ, privacy, terms, 404, gift wrapping, stock notifications
+
+---
+Task ID: QA-4
+Agent: Main Agent
+Task: Fix issues found during VLM-powered QA testing
+
+Work Log:
+- Performed comprehensive VLM-powered QA across homepage, shop, product detail pages
+- Identified 6 issues from VLM analysis and manual testing
+- Fixed all identified issues:
+
+1. **Mini Cart Empty State**: Added both "View Cart" and "Browse Shop" buttons when cart is empty (was only "Browse Shop" which navigates away from cart)
+2. **Cookie Consent Banner**: Changed from full-width bottom overlay to corner-positioned rounded card (bottom-right on desktop, bottom with margin on mobile), added shadow and border, no longer overlaps main content
+3. **Cookie Consent Buttons**: Made buttons more consistent with text-xs sizing, renamed "Reject All" to "Reject" for better fit
+4. **Nav Active State**: Fixed header navigation so Shop is highlighted when on shop/product/comparison pages, and Support is highlighted when on contact/FAQ pages
+5. **Announcement Bar Close Button**: Made larger (size-6 with border), more visible and clickable
+6. **Logo/Tagline Alignment**: Fixed vertical alignment with leading-none and mt-1 spacing in both header and footer
+7. **Cross-Origin Warning**: Added ".space-z.ai" to allowedDevOrigins in next.config.ts
+
+VLM Confirmed Fixes:
+- Cookie banner no longer overlaps content (positioned in bottom-right corner)
+- Logo alignment is good
+
+All lint checks passed with zero errors. Dev server running correctly.
+
+Stage Summary:
+- 7 fixes applied across mini-cart, cookie-consent, store-header, announcement-bar, store-footer, and next.config
+- VLM-powered QA confirmed cookie banner fix working
+- Navigation active state properly highlights current section
+- Overall visual quality improved

@@ -84,10 +84,10 @@ export function AnnouncementBar() {
               <div className="flex flex-1 items-center justify-end">
                 <button
                   onClick={handleDismiss}
-                  className="ml-3 flex size-5 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-muted hover:text-foreground"
+                  className="ml-3 flex size-6 items-center justify-center rounded-full border border-border/50 text-neutral-500 transition-all hover:border-border hover:bg-muted hover:text-foreground"
                   aria-label="Dismiss announcement"
                 >
-                  <X className="size-3" />
+                  <X className="size-3.5" />
                 </button>
               </div>
             </div>

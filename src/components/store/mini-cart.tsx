@@ -75,14 +75,24 @@ export function MiniCart({ onClose }: MiniCartProps) {
             </div>
             <p className="text-sm font-medium dark:text-neutral-300 text-muted-foreground">Your cart is empty</p>
             <p className="mt-1 text-xs dark:text-neutral-500 text-muted-foreground">Add some products to get started</p>
-            <Button
-              onClick={handleViewCart}
-              size="sm"
-              className="mt-4 bg-cyan-500 text-white hover:bg-cyan-400"
-            >
-              Browse Shop
-              <ArrowRight className="ml-1 size-3" />
-            </Button>
+            <div className="mt-4 flex gap-2">
+              <Button
+                onClick={handleViewCart}
+                size="sm"
+                variant="outline"
+                className="flex-1 border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+              >
+                View Cart
+              </Button>
+              <Button
+                onClick={() => { onClose(); navigate('shop'); }}
+                size="sm"
+                className="flex-1 bg-cyan-500 text-white hover:bg-cyan-400"
+              >
+                Browse Shop
+                <ArrowRight className="ml-1 size-3" />
+              </Button>
+            </div>
           </motion.div>
         ) : (
           <motion.div

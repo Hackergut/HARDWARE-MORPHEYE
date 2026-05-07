@@ -200,11 +200,11 @@ export function StoreHeader() {
               height={36}
               className="rounded-lg dark:invert"
             />
-            <div className="flex flex-col">
-              <span className="text-lg font-bold tracking-tight text-foreground">
+            <div className="flex flex-col justify-center">
+              <span className="text-lg font-bold tracking-tight text-foreground leading-none">
                 MORPHEYE
               </span>
-              <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
+              <span className="text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase leading-none mt-1">
                 Official Reseller
               </span>
             </div>
@@ -212,22 +212,27 @@ export function StoreHeader() {
 
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() =>
-                  navigate(link.page, link.category ? { category: link.category } : undefined)
-                }
-                className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  currentPage === link.page || (link.page === 'contact' && currentPage === 'contact')
-                    ? 'text-cyan-500 dark:text-cyan-400'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {link.label === 'Support' && <Headphones className="inline size-3.5 mr-1 -mt-0.5" />}
-                {link.label}
-              </button>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = currentPage === link.page ||
+                (link.page === 'shop' && ['shop', 'product', 'comparison'].includes(currentPage)) ||
+                (link.page === 'contact' && ['contact', 'faq'].includes(currentPage))
+              return (
+                <button
+                  key={link.label}
+                  onClick={() =>
+                    navigate(link.page, link.category ? { category: link.category } : undefined)
+                  }
+                  className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'text-cyan-500 dark:text-cyan-400'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {link.label === 'Support' && <Headphones className="inline size-3.5 mr-1 -mt-0.5" />}
+                  {link.label}
+                </button>
+              )
+            })}
           </nav>
 
           {/* Desktop Actions */}

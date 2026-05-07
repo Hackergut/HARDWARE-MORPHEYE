@@ -123,9 +123,9 @@ export function StoreFooter() {
                 height={28}
                 className="rounded dark:invert"
               />
-              <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-foreground">MORPHEYE</span>
-                <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
+              <div className="flex flex-col justify-center">
+                <span className="text-lg font-bold tracking-tight text-foreground leading-none">MORPHEYE</span>
+                <span className="text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase leading-none mt-1">
                   Official Reseller
                 </span>
               </div>

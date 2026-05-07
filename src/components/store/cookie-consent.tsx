@@ -95,7 +95,7 @@ export function CookieConsent() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 left-0 right-0 z-[100] border-t border-cyan-500/20 bg-background/95 px-4 py-5 backdrop-blur-xl sm:px-6"
+          className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-lg z-[100] rounded-xl border border-cyan-500/20 bg-background/95 px-5 py-4 shadow-2xl shadow-black/40 backdrop-blur-xl"
         >
           <div className="mx-auto max-w-5xl">
             {!showCustomize ? (
@@ -127,22 +127,22 @@ export function CookieConsent() {
                     onClick={handleRejectAll}
                     variant="outline"
                     size="sm"
-                    className="border-border text-muted-foreground hover:border-border hover:text-foreground hover:bg-muted"
+                    className="border-border/60 text-muted-foreground hover:border-border hover:text-foreground hover:bg-muted text-xs"
                   >
-                    Reject All
+                    Reject
                   </Button>
                   <Button
                     onClick={() => setShowCustomize(true)}
                     variant="outline"
                     size="sm"
-                    className="border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300"
+                    className="border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 text-xs"
                   >
                     Customize
                   </Button>
                   <Button
                     onClick={handleAcceptAll}
                     size="sm"
-                    className="bg-cyan-500 text-black hover:bg-cyan-400"
+                    className="bg-cyan-500 text-black hover:bg-cyan-400 text-xs font-semibold"
                   >
                     Accept All
                   </Button>
