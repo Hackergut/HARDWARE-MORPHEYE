@@ -717,6 +717,12 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+/* Shimmer slide animation for skeleton cards */
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* Admin panel accent line at top */
 .admin-accent-line {
   height: 3px;

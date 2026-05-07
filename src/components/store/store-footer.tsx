@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Facebook, Twitter, Instagram, Send, CreditCard, Wallet, ArrowUp, ShieldCheck } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Send, CreditCard, Wallet, ArrowUp, ShieldCheck, Loader2 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
+import { useNotificationStore } from '@/store/notification-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
@@ -39,11 +40,16 @@ const paymentMethods = [
   { icon: Wallet, label: 'Crypto', color: 'text-cyan-400' },
 ]
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export function StoreFooter() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [emailError, setEmailError] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
   const { navigate } = useNavigationStore()
+  const showNotification = useNotificationStore((s) => s.show)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,12 +59,46 @@ export function StoreFooter() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email.trim()) {
-      setSubscribed(true)
-      setEmail('')
-      setTimeout(() => setSubscribed(false), 3000)
+    setEmailError('')
+
+    if (!email.trim()) {
+      setEmailError('Email is required')
+      return
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailError('Please enter a valid email address')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: email.split('@')[0],
+          email,
+          subject: 'Newsletter Subscription',
+          message: `Newsletter subscription request from ${email}`,
+        }),
+      })
+
+      if (res.ok) {
+        setSubscribed(true)
+        setEmail('')
+        showNotification('Successfully subscribed to newsletter!', 'success')
+        setTimeout(() => setSubscribed(false), 5000)
+      } else {
+        const data = await res.json()
+        showNotification(data.error || 'Failed to subscribe. Please try again.', 'error')
+      }
+    } catch {
+      showNotification('Network error. Please try again.', 'error')
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -67,7 +107,7 @@ export function StoreFooter() {
   }
 
   return (
-    <footer className="relative mt-auto border-t border-neutral-800 bg-[#0a0a0a]">
+    <footer className="relative mt-auto border-t border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white">
       {/* Gradient top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
 
@@ -81,32 +121,32 @@ export function StoreFooter() {
                 alt="Morpheye"
                 width={28}
                 height={28}
-                className="rounded invert"
+                className="rounded dark:invert"
               />
               <div className="flex flex-col">
-                <span className="text-lg font-bold tracking-tight text-white">MORPHEYE</span>
+                <span className="text-lg font-bold tracking-tight text-white dark:text-white text-neutral-900">MORPHEYE</span>
                 <span className="-mt-1 text-[9px] font-medium tracking-widest text-cyan-500/80 uppercase">
                   Official Reseller
                 </span>
               </div>
             </div>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
               Authorized Hardware Wallet Reseller
             </p>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
               Your trusted source for certified crypto security hardware. We
               only sell genuine, factory-sealed devices.
             </p>
             {/* Trust badge */}
-            <div className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/50 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-lg border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 px-3 py-2">
               <ShieldCheck className="size-4 text-cyan-400" />
-              <span className="text-[10px] font-medium text-neutral-400">Verified Authentic Reseller</span>
+              <span className="text-[10px] font-medium text-neutral-400 dark:text-neutral-400 text-neutral-600">Verified Authentic Reseller</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white">
+            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">
               Quick Links
             </h4>
             <ul className="space-y-2.5">
@@ -115,12 +155,12 @@ export function StoreFooter() {
                   {link.page ? (
                     <button
                       onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
-                      className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                      className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
                     >
                       {link.label}
                     </button>
                   ) : (
-                    <span className="cursor-pointer text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400">
+                    <span className="cursor-pointer text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400">
                       {link.label}
                     </span>
                   )}
@@ -131,19 +171,19 @@ export function StoreFooter() {
 
           {/* Support */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white">Support</h4>
+            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">Support</h4>
             <ul className="space-y-2.5">
               {supportLinks.map((link) => (
                 <li key={link.label}>
                   {link.page ? (
                     <button
                       onClick={() => navigate(link.page as Parameters<typeof navigate>[0])}
-                      className="text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
+                      className="text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400 hover:translate-x-0.5 transform inline-block"
                     >
                       {link.label}
                     </button>
                   ) : (
-                    <span className="cursor-pointer text-sm text-neutral-400 transition-colors duration-200 hover:text-cyan-400">
+                    <span className="cursor-pointer text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-colors duration-200 hover:text-cyan-400">
                       {link.label}
                     </span>
                   )}
@@ -154,41 +194,63 @@ export function StoreFooter() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-white">
+            <h4 className="mb-4 text-sm font-semibold text-white dark:text-white text-neutral-900">
               Stay Updated
             </h4>
-            <p className="mb-3 text-xs text-neutral-400">
+            <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-400 text-neutral-600">
               Get exclusive deals and security tips delivered to your inbox.
             </p>
-            <form onSubmit={handleSubscribe} className="flex gap-2">
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
-                className="h-8 border-neutral-700 bg-neutral-900 text-xs text-white placeholder:text-neutral-500 focus-visible:border-cyan-500"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                className="bg-cyan-500 text-black hover:bg-cyan-400"
-              >
-                Join
-              </Button>
-            </form>
-            {subscribed && (
-              <p className="mt-2 text-xs text-cyan-400">
-                Thanks for subscribing!
-              </p>
+            {subscribed ? (
+              <div className="flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2.5">
+                <ShieldCheck className="size-4 text-cyan-400 shrink-0" />
+                <span className="text-xs font-medium text-cyan-400">
+                  Subscribed! Check your inbox.
+                </span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="space-y-2">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (emailError) setEmailError('')
+                      }}
+                      placeholder="you@email.com"
+                      disabled={submitting}
+                      className={`h-8 border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900 dark:bg-neutral-900 bg-white text-xs text-white dark:text-white text-neutral-900 placeholder:text-neutral-500 focus-visible:border-cyan-500 ${
+                        emailError ? 'border-red-500 dark:border-red-500' : ''
+                      }`}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={submitting}
+                    className="bg-cyan-500 text-black hover:bg-cyan-400 shrink-0"
+                  >
+                    {submitting ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      'Join'
+                    )}
+                  </Button>
+                </div>
+                {emailError && (
+                  <p className="text-[10px] text-red-400">{emailError}</p>
+                )}
+              </form>
             )}
           </div>
         </div>
 
-        <Separator className="my-8 sm:my-10 bg-neutral-800" />
+        <Separator className="my-8 sm:my-10 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
             &copy; {new Date().getFullYear()} Morpheye. All rights reserved.
           </p>
 
@@ -199,7 +261,7 @@ export function StoreFooter() {
                 key={social.label}
                 href={social.href}
                 aria-label={social.label}
-                className="flex size-8 items-center justify-center rounded-full border border-neutral-800 text-neutral-500 transition-all duration-200 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5"
+                className="flex size-8 items-center justify-center rounded-full border border-neutral-800 dark:border-neutral-800 border-neutral-200 text-neutral-500 transition-all duration-200 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5"
               >
                 <social.icon className="size-3.5" />
               </a>
@@ -207,13 +269,13 @@ export function StoreFooter() {
           </div>
 
           {/* Payment Methods */}
-          <div className="flex items-center gap-2 text-neutral-500">
+          <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-500 text-neutral-400">
             <span className="text-xs">We accept:</span>
             <div className="flex items-center gap-1.5">
               {paymentMethods.map((method) => (
                 <div
                   key={method.label}
-                  className="flex items-center gap-1 rounded border border-neutral-800 bg-neutral-900/50 px-2 py-1 transition-colors duration-200 hover:border-neutral-700"
+                  className="flex items-center gap-1 rounded border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 px-2 py-1 transition-colors duration-200 hover:border-neutral-700 dark:hover:border-neutral-700 hover:border-neutral-300"
                 >
                   <method.icon className={`size-3 ${method.color}`} />
                   <span className="text-[10px] font-medium">{method.label}</span>
@@ -228,7 +290,7 @@ export function StoreFooter() {
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className="back-to-top-visible fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900/90 text-cyan-400 shadow-lg shadow-cyan-500/10 backdrop-blur-sm transition-all duration-300 hover:bg-cyan-500 hover:text-black hover:border-cyan-400 hover:shadow-cyan-500/20"
+          className="back-to-top-visible fixed bottom-6 right-6 z-50 flex size-10 items-center justify-center rounded-full border border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900/90 dark:bg-neutral-900/90 bg-white/90 text-cyan-400 shadow-lg shadow-cyan-500/10 backdrop-blur-sm transition-all duration-300 hover:bg-cyan-500 hover:text-black hover:border-cyan-400 hover:shadow-cyan-500/20"
           aria-label="Back to top"
         >
           <ArrowUp className="size-4" />

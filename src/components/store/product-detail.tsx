@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -29,6 +30,9 @@ import {
   Flame,
   Gift,
   PlusCircle,
+  Maximize2,
+  RotateCw,
+  MoveHorizontal,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -255,6 +259,12 @@ export function ProductDetail() {
   const [recentPurchaseCount, setRecentPurchaseCount] = useState(0)
   const [hoursUntilDispatch, setHoursUntilDispatch] = useState(0)
   const [minutesUntilDispatch, setMinutesUntilDispatch] = useState(0)
+  const [showStickyBar, setShowStickyBar] = useState(false)
+  const [stickyBarDismissed, setStickyBarDismissed] = useState(false)
+  const [isHoveringGallery, setIsHoveringGallery] = useState(false)
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 })
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
   const { selectedProductId, navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
@@ -262,9 +272,31 @@ export function ProductDetail() {
   const showNotification = useNotificationStore((s) => s.show)
   const addRecentlyViewed = useRecentlyViewedStore((s) => s.addProduct)
 
+  // Image auto-rotation (every 3 seconds, pause on hover)
+  useEffect(() => {
+    if (!product?.images || product.images.length <= 1 || isHoveringGallery || lightboxOpen) return
+    const interval = setInterval(() => {
+      setActiveImage((prev) => (prev + 1) % product.images.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [product?.images, isHoveringGallery, lightboxOpen])
+
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // IntersectionObserver for sticky add-to-cart bar
+  useEffect(() => {
+    if (!ctaRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting)
+      },
+      { threshold: 0, rootMargin: '0px 0px -80px 0px' }
+    )
+    observer.observe(ctaRef.current)
+    return () => observer.disconnect()
+  }, [loading])
 
   // Live view count - random 12-47, changes every 30s
   useEffect(() => {
@@ -551,14 +583,34 @@ export function ProductDetail() {
   }
 
   const handleImageMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imageZoom) return
     const rect = e.currentTarget.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * 100
-    const y = ((e.clientY - rect.top) / rect.height) * 100
-    setZoomPos({ x, y })
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2 // -1 to 1
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2 // -1 to 1
+
+    // Parallax effect (subtle movement when not zoomed)
+    if (!imageZoom) {
+      setParallaxOffset({ x: x * 8, y: y * 8 }) // 8px max offset
+    }
+
+    // Zoom effect
+    if (imageZoom) {
+      setZoomPos({ x: ((e.clientX - rect.left) / rect.width) * 100, y: ((e.clientY - rect.top) / rect.height) * 100 })
+    }
+  }
+
+  const handleGalleryMouseEnter = () => {
+    setIsHoveringGallery(true)
+    setImageZoom(true)
+  }
+
+  const handleGalleryMouseLeave = () => {
+    setIsHoveringGallery(false)
+    setImageZoom(false)
+    setParallaxOffset({ x: 0, y: 0 })
   }
 
   return (
+    <>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -601,29 +653,69 @@ export function ProductDetail() {
         <div className="space-y-3">
           <div
             className="relative aspect-square overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900"
-            onMouseEnter={() => setImageZoom(true)}
-            onMouseLeave={() => setImageZoom(false)}
+            onMouseEnter={handleGalleryMouseEnter}
+            onMouseLeave={handleGalleryMouseLeave}
             onMouseMove={handleImageMouseMove}
             style={{ cursor: imageZoom ? 'crosshair' : undefined }}
           >
             {product.images?.[activeImage] && !imgErrors[activeImage] ? (
-              <Image
-                src={product.images[activeImage]}
-                alt={product.name}
-                fill
-                className={`object-cover transition-transform duration-200 ${
-                  imageZoom ? 'scale-150' : 'scale-100'
-                }`}
-                style={imageZoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                onError={() =>
-                  setImgErrors((prev) => ({ ...prev, [activeImage]: true }))
-                }
-              />
+              <motion.div
+                animate={{
+                  x: imageZoom ? 0 : parallaxOffset.x,
+                  y: imageZoom ? 0 : parallaxOffset.y,
+                }}
+                transition={{ type: 'tween', duration: 0.15, ease: 'easeOut' }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={product.images[activeImage]}
+                  alt={product.name}
+                  fill
+                  className={`object-cover transition-transform duration-200 ${
+                    imageZoom ? 'scale-150' : 'scale-100'
+                  }`}
+                  style={imageZoom ? { transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  onError={() =>
+                    setImgErrors((prev) => ({ ...prev, [activeImage]: true }))
+                  }
+                />
+              </motion.div>
             ) : (
               <div className="flex h-full items-center justify-center">
                 <Package className="size-20 text-neutral-700" />
               </div>
+            )}
+
+            {/* Image Count Badge */}
+            {product.images && product.images.length > 1 && (
+              <div className="pointer-events-none absolute top-3 left-3 z-20 rounded-lg bg-black/70 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                {activeImage + 1}/{product.images.length}
+              </div>
+            )}
+
+            {/* Full Screen Button */}
+            {product.images?.[activeImage] && !imgErrors[activeImage] && (
+              <button
+                onClick={() => openLightbox(activeImage)}
+                className="absolute top-3 right-3 z-20 flex size-8 items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:scale-105"
+                aria-label="Open full-screen image view"
+              >
+                <Maximize2 className="size-4" />
+              </button>
+            )
+            }
+
+            {/* 360° View Placeholder Button */}
+            {product.images && product.images.length > 2 && (
+              <button
+                className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 rounded-lg bg-black/60 px-2.5 py-1.5 text-[10px] font-medium text-neutral-300 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:text-white"
+                aria-label="360 degree view (coming soon)"
+                title="Coming soon"
+              >
+                <RotateCw className="size-3" />
+                360° View
+              </button>
             )}
 
             {/* Zoom indicator */}
@@ -633,7 +725,7 @@ export function ProductDetail() {
               </div>
             )}
 
-            {/* Click to open lightbox */}
+            {/* Click to open lightbox on image area (not on buttons) */}
             {product.images?.[activeImage] && !imgErrors[activeImage] && (
               <button
                 onClick={() => openLightbox(activeImage)}
@@ -666,6 +758,14 @@ export function ProductDetail() {
                   <ChevronRight className="size-4" />
                 </button>
               </>
+            )}
+
+            {/* Swipe hint on mobile */}
+            {isMobile && product.images && product.images.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-[10px] font-medium text-neutral-300 backdrop-blur-sm sm:hidden">
+                <MoveHorizontal className="size-3" />
+                Swipe for more
+              </div>
             )}
           </div>
 
@@ -901,7 +1001,7 @@ export function ProductDetail() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div ref={ctaRef} className="flex flex-col gap-3 sm:flex-row">
               <Button
                 onClick={handleAddToCart}
                 disabled={stockStatus === 'out_of_stock'}
@@ -1247,5 +1347,68 @@ export function ProductDetail() {
         </AnimatePresence>
       )}
     </motion.div>
+
+    {/* Sticky Add-to-Cart Bar */}
+    {stockStatus !== 'out_of_stock' && (
+      <AnimatePresence>
+        {showStickyBar && !stickyBarDismissed && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed bottom-0 left-0 right-0 z-50 border-t border-neutral-800/80 bg-[#111111]/95 backdrop-blur-lg"
+          >
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+              {/* Product Info */}
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div
+                  className={`size-2 shrink-0 rounded-full ${
+                    stockStatus === 'in_stock'
+                      ? 'bg-cyan-500 shadow-[0_0_6px_rgba(6,182,212,0.5)]'
+                      : 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]'
+                  }`}
+                />
+                <p className="truncate text-sm font-medium text-white sm:max-w-xs">
+                  {product.name}
+                </p>
+                <span className="shrink-0 text-sm font-bold text-cyan-400">
+                  ${product.price.toFixed(2)}
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex shrink-0 items-center gap-2">
+                <Button
+                  onClick={handleAddToCart}
+                  size="sm"
+                  className="bg-cyan-500 text-sm font-semibold text-black hover:bg-cyan-400"
+                >
+                  <ShoppingCart className="mr-1.5 size-4" />
+                  Add to Cart
+                </Button>
+                <Button
+                  onClick={handleBuyNow}
+                  size="sm"
+                  variant="outline"
+                  className="border-cyan-500/40 text-sm font-semibold text-cyan-400 hover:bg-cyan-500/10"
+                >
+                  <Zap className="mr-1.5 size-4" />
+                  Buy Now
+                </Button>
+                <button
+                  onClick={() => setStickyBarDismissed(true)}
+                  className="ml-1 flex size-7 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-neutral-300"
+                  aria-label="Close sticky bar"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    )}
+    </>
   )
 }

@@ -69,13 +69,13 @@ export function CategoriesSection() {
   if (!loading && categories.length === 0) return null
 
   return (
-    <section className="bg-[#0a0a0a] py-16">
+    <section className="bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-bold text-white"
+            className="text-2xl font-bold text-white dark:text-white text-neutral-900"
           >
             Shop by Category
           </motion.h2>
@@ -83,7 +83,7 @@ export function CategoriesSection() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-2 text-sm text-neutral-400"
+            className="mt-2 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600"
           >
             Find the perfect security solution for your needs
           </motion.p>
@@ -97,7 +97,7 @@ export function CategoriesSection() {
             ? Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-52 animate-pulse rounded-xl border border-neutral-800 bg-neutral-900"
+                  className="h-52 animate-pulse rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900 dark:bg-neutral-900 bg-neutral-100"
                 />
               ))
             : categories.map((category, i) => {
@@ -116,7 +116,7 @@ export function CategoriesSection() {
                     onClick={() =>
                       navigate('shop', { category: category.slug })
                     }
-                    className="category-shine group relative flex min-h-[200px] flex-col items-start overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
+                    className="category-shine group relative flex min-h-[200px] flex-col items-start overflow-hidden rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900 dark:bg-neutral-900 bg-white p-6 text-left transition-all duration-300 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10"
                   >
                     {/* Background Pattern */}
                     <div
@@ -136,27 +136,27 @@ export function CategoriesSection() {
 
                     <div className="relative z-10 flex w-full items-start justify-between">
                       {/* Icon */}
-                      <div className="icon-pulse-hover mb-4 flex size-12 items-center justify-center rounded-xl border border-neutral-700/50 bg-neutral-800/80 transition-all duration-300 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10 group-hover:shadow-md group-hover:shadow-cyan-500/10">
+                      <div className="icon-pulse-hover mb-4 flex size-12 items-center justify-center rounded-xl border border-neutral-700/50 dark:border-neutral-700/50 border-neutral-300 bg-neutral-800/80 dark:bg-neutral-800/80 bg-neutral-100 transition-all duration-300 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10 group-hover:shadow-md group-hover:shadow-cyan-500/10">
                         <IconComponent className="size-5 text-neutral-400 transition-colors duration-300 group-hover:text-cyan-400" />
                       </div>
 
                       {/* Product Count Badge */}
-                      <div className="flex items-center gap-1 rounded-full bg-neutral-800/80 px-2.5 py-1 text-[10px] font-medium text-neutral-400 transition-all duration-300 group-hover:bg-cyan-500/10 group-hover:text-cyan-400">
+                      <div className="flex items-center gap-1 rounded-full bg-neutral-800/80 dark:bg-neutral-800/80 bg-neutral-100 px-2.5 py-1 text-[10px] font-medium text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-all duration-300 group-hover:bg-cyan-500/10 group-hover:text-cyan-400">
                         <span>{category.productCount}</span>
                         <span>item{category.productCount !== 1 ? 's' : ''}</span>
                       </div>
                     </div>
 
                     <div className="relative z-10">
-                      <h3 className="mb-1 text-lg font-semibold text-white transition-colors duration-300 group-hover:text-cyan-400">
+                      <h3 className="mb-1 text-lg font-semibold text-white dark:text-white text-neutral-900 transition-colors duration-300 group-hover:text-cyan-400">
                         {category.name}
                       </h3>
                       {category.description && (
-                        <p className="mb-3 line-clamp-2 text-sm text-neutral-400">
+                        <p className="mb-3 line-clamp-2 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
                           {category.description}
                         </p>
                       )}
-                      <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-neutral-500 transition-colors duration-300 group-hover:text-cyan-400">
+                      <div className="mt-3 flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-500 text-neutral-400 transition-colors duration-300 group-hover:text-cyan-400">
                         <span>Browse category</span>
                         <ArrowRight className="size-3 transition-transform duration-300 group-hover:translate-x-0.5" />
                       </div>
@@ -177,7 +177,7 @@ export function CategoriesSection() {
         <div className="mt-8 flex justify-center">
           <button
             onClick={() => navigate('shop')}
-            className="group flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/50 px-5 py-2.5 text-sm font-medium text-neutral-400 transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/5 hover:text-cyan-400 hover:shadow-md hover:shadow-cyan-500/5"
+            className="group flex items-center gap-2 rounded-full border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900/50 dark:bg-neutral-900/50 bg-neutral-50 px-5 py-2.5 text-sm font-medium text-neutral-400 dark:text-neutral-400 text-neutral-600 transition-all duration-300 hover:border-cyan-500/40 hover:bg-cyan-500/5 hover:text-cyan-400 hover:shadow-md hover:shadow-cyan-500/5"
           >
             View All Categories
             <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />

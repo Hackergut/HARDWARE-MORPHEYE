@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  allowedDevOrigins: ["0.0.0.0", "21.0.9.198"],
 };
 
 export default nextConfig;

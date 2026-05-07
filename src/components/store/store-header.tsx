@@ -151,7 +151,7 @@ export function StoreHeader() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchValue.trim()) {
-      navigate('shop', { query: searchValue.trim() })
+      navigate('search', { query: searchValue.trim() })
       setSearchValue('')
       setSearchOpen(false)
       setShowSuggestions(false)

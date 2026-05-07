@@ -19,11 +19,13 @@ import { RecentlyViewedSection } from '@/components/store/recently-viewed-sectio
 import { BrandShowcase } from '@/components/store/brand-showcase'
 import { OrderTrackingPage } from '@/components/store/order-tracking-page'
 import { ContactPage } from '@/components/store/contact-page'
+import { SearchResultsPage } from '@/components/store/search-results-page'
 import { CookieConsent } from '@/components/store/cookie-consent'
 import { SocialProofNotification } from '@/components/store/social-proof-notification'
 import { QuickViewModal } from '@/components/store/quick-view-modal'
 import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
+import { AnnouncementBar } from '@/components/store/announcement-bar'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -86,6 +88,8 @@ export default function Home() {
         return <OrderTrackingPage />
       case 'contact':
         return <ContactPage />
+      case 'search':
+        return <SearchResultsPage />
       default:
         return <HomePage />
     }
@@ -93,6 +97,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <AnnouncementBar />
       <StoreHeader />
       <main className="flex-1">
         <AnimatePresence mode="wait">

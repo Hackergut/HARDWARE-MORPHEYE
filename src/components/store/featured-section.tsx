@@ -63,16 +63,16 @@ export function FeaturedSection() {
   if (!loading && products.length === 0) return null
 
   return (
-    <section className="relative overflow-hidden bg-[#0a0a0a] py-16">
+    <section className="relative overflow-hidden bg-[#0a0a0a] dark:bg-[#0a0a0a] bg-white py-16">
       {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-cyan-950/10 via-[#0a0a0a] to-teal-950/5" />
+      <div className="absolute inset-0 bg-gradient-to-b from-cyan-950/10 dark:from-cyan-950/10 from-cyan-50 via-[#0a0a0a] dark:via-[#0a0a0a] via-white to-teal-950/5 dark:to-teal-950/5 to-teal-50" />
       <div className="absolute top-0 right-1/4 w-[500px] h-[400px] bg-cyan-500/3 rounded-full blur-[150px]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-2xl font-bold text-white dark:text-white text-neutral-900">
                 Featured Products
               </h2>
               {/* Rotating badge */}
@@ -96,7 +96,7 @@ export function FeaturedSection() {
             </div>
             {/* Gradient underline */}
             <div className="mt-2 h-0.5 w-32 bg-gradient-to-r from-cyan-500 via-teal-500 to-transparent" />
-            <p className="mt-2 text-sm text-neutral-400">
+            <p className="mt-2 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
               Handpicked by our security experts
             </p>
           </div>
@@ -115,12 +115,12 @@ export function FeaturedSection() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse rounded-xl border border-neutral-800 bg-neutral-900"
+                className="animate-pulse rounded-xl border border-neutral-800 dark:border-neutral-800 border-neutral-200 bg-neutral-900 dark:bg-neutral-900 bg-neutral-100"
               >
-                <div className="aspect-square bg-neutral-800" />
+                <div className="aspect-square bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
                 <div className="space-y-2 p-4">
-                  <div className="h-4 w-3/4 rounded bg-neutral-800" />
-                  <div className="h-5 w-1/3 rounded bg-neutral-800" />
+                  <div className="h-4 w-3/4 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
+                  <div className="h-5 w-1/3 rounded bg-neutral-800 dark:bg-neutral-800 bg-neutral-200" />
                 </div>
               </div>
             ))}

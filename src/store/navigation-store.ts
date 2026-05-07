@@ -11,6 +11,7 @@ export type Page =
   | 'comparison'
   | 'tracking'
   | 'contact'
+  | 'search'
   | 'admin' 
   | 'admin-products' 
   | 'admin-orders' 

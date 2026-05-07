@@ -2,27 +2,67 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, ArrowRight, Lock, ShieldCheck, Gift, Clock } from 'lucide-react'
+import { Mail, ArrowRight, Lock, ShieldCheck, Gift, Clock, Loader2 } from 'lucide-react'
+import { useNotificationStore } from '@/store/notification-store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function NewsletterSection() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [focused, setFocused] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [emailError, setEmailError] = useState('')
+  const showNotification = useNotificationStore((s) => s.show)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email.trim()) {
-      setSubscribed(true)
-      setEmail('')
+    setEmailError('')
+
+    if (!email.trim()) {
+      setEmailError('Email is required')
+      return
+    }
+
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailError('Please enter a valid email address')
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: email.split('@')[0],
+          email,
+          subject: 'Newsletter Subscription',
+          message: `Newsletter subscription request from ${email}`,
+        }),
+      })
+
+      if (res.ok) {
+        setSubscribed(true)
+        setEmail('')
+        showNotification('Successfully subscribed to newsletter!', 'success')
+      } else {
+        const data = await res.json()
+        showNotification(data.error || 'Failed to subscribe. Please try again.', 'error')
+      }
+    } catch {
+      showNotification('Network error. Please try again.', 'error')
+    } finally {
+      setSubmitting(false)
     }
   }
 
   return (
     <section className="relative overflow-hidden py-20">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-[#0a0a0a] to-teal-950/30" />
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 dark:from-cyan-950/40 from-cyan-50 via-[#0a0a0a] dark:via-[#0a0a0a] via-white to-teal-950/30 dark:to-teal-950/30 to-teal-50" />
       
       {/* Animated grid pattern */}
       <div
@@ -79,10 +119,10 @@ export function NewsletterSection() {
             </div>
           </div>
 
-          <h2 className="mb-2 text-3xl font-bold text-white">
+          <h2 className="mb-2 text-3xl font-bold text-white dark:text-white text-neutral-900">
             Stay Ahead in Crypto Security
           </h2>
-          <p className="mb-3 text-neutral-400">
+          <p className="mb-3 text-neutral-400 dark:text-neutral-400 text-neutral-600">
             Get exclusive deals, security tips, and early access to new products.
           </p>
 
@@ -108,17 +148,17 @@ export function NewsletterSection() {
                 ].map((avatar, i) => (
                   <div
                     key={i}
-                    className={`flex size-7 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[10px] font-bold text-white ${avatar.color}`}
+                    className={`flex size-7 items-center justify-center rounded-full border-2 border-[#0a0a0a] dark:border-[#0a0a0a] border-white text-[10px] font-bold text-white ${avatar.color}`}
                   >
                     {avatar.initial}
                   </div>
                 ))}
               </div>
-              <span className="text-sm font-semibold text-neutral-300">
+              <span className="text-sm font-semibold text-neutral-300 dark:text-neutral-300 text-neutral-700">
                 Join <span className="text-cyan-400">12,847+</span> subscribers
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+            <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-500 text-neutral-400">
               <Clock className="size-3" />
               <span>Latest issue sent 2 days ago</span>
             </div>
@@ -136,7 +176,7 @@ export function NewsletterSection() {
               <p className="text-base font-semibold text-cyan-400">
                 You&apos;re subscribed!
               </p>
-              <p className="mt-1 text-sm text-neutral-400">
+              <p className="mt-1 text-sm text-neutral-400 dark:text-neutral-400 text-neutral-600">
                 Check your inbox for your 10% discount code.
               </p>
             </motion.div>
@@ -150,30 +190,43 @@ export function NewsletterSection() {
                 <Input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (emailError) setEmailError('')
+                  }}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
                   placeholder="Enter your email address"
-                  required
-                  className={`h-12 border-neutral-700 bg-neutral-900/80 pl-10 pr-4 text-white placeholder:text-neutral-500 transition-all duration-300 ${
+                  disabled={submitting}
+                  className={`h-12 border-neutral-700 dark:border-neutral-700 border-neutral-300 bg-neutral-900/80 dark:bg-neutral-900/80 bg-white/80 pl-10 pr-4 text-white dark:text-white text-neutral-900 placeholder:text-neutral-500 transition-all duration-300 ${
                     focused
                       ? 'border-cyan-500/60 shadow-[0_0_16px_rgba(6,182,212,0.12)] ring-1 ring-cyan-500/20'
                       : ''
-                  }`}
+                  } ${emailError ? 'border-red-500 dark:border-red-500' : ''}`}
                 />
+                {emailError && (
+                  <p className="absolute -bottom-5 left-0 text-[10px] text-red-400">{emailError}</p>
+                )}
               </div>
               <Button
                 type="submit"
+                disabled={submitting}
                 className="subscribe-burst h-12 bg-cyan-500 px-8 font-semibold text-black shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:bg-cyan-400 hover:shadow-cyan-500/40 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
               >
-                Subscribe
-                <ArrowRight className="ml-2 size-4" />
+                {submitting ? (
+                  <Loader2 className="size-5 animate-spin" />
+                ) : (
+                  <>
+                    Subscribe
+                    <ArrowRight className="ml-2 size-4" />
+                  </>
+                )}
               </Button>
             </form>
           )}
 
           {/* Privacy Note */}
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-600">
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-neutral-600 dark:text-neutral-600 text-neutral-400">
             <ShieldCheck className="size-3" />
             <span>
               No spam. Unsubscribe anytime.
