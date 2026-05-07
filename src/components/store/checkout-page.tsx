@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Loader2, ArrowLeft, Tag, X } from 'lucide-react'
+import { Loader2, ArrowLeft, Tag, X, Lock, ShieldCheck, User, MapPin, Calendar, Truck } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useNotificationStore } from '@/store/notification-store'
@@ -37,6 +37,7 @@ export function CheckoutPage() {
     shippingZip: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [focusedField, setFocusedField] = useState<string | null>(null)
 
   // Promo code state
   const [promoInput, setPromoInput] = useState('')
@@ -190,8 +191,30 @@ export function CheckoutPage() {
     )
   }
 
-  const inputClass =
-    'border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30'
+  const inputClass = (field: string) =>
+    `border-neutral-700 bg-neutral-900 text-white placeholder:text-neutral-500 transition-all duration-300 ${
+      focusedField === field
+        ? 'border-cyan-500 shadow-[0_0_12px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/20'
+        : 'focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30'
+    }`
+
+  // Estimated delivery date
+  const getEstimatedDelivery = () => {
+    const now = new Date()
+    const addBusinessDays = (start: Date, days: number): Date => {
+      const date = new Date(start)
+      let addedDays = 0
+      while (addedDays < days) {
+        date.setDate(date.getDate() + 1)
+        if (date.getDay() !== 0 && date.getDay() !== 6) addedDays++
+      }
+      return date
+    }
+    const start = addBusinessDays(now, 5)
+    const end = addBusinessDays(now, 7)
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}`
+  }
 
   return (
     <motion.div
@@ -207,7 +230,36 @@ export function CheckoutPage() {
         Return to Cart
       </button>
 
-      <h1 className="mb-8 text-2xl font-bold text-white">Checkout</h1>
+      {/* Secure Checkout Badge */}
+      <div className="mb-6 flex items-center justify-center gap-3">
+        <div className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/5 px-5 py-2">
+          <Lock className="size-4 text-cyan-400" />
+          <span className="text-sm font-semibold text-cyan-400">Secure Checkout</span>
+          <ShieldCheck className="size-4 text-emerald-400" />
+        </div>
+      </div>
+
+      <h1 className="mb-8 text-center text-2xl font-bold text-white">Checkout</h1>
+
+      {/* Returning Customer Prompt */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 flex items-center justify-between rounded-xl border border-neutral-800 bg-neutral-900/50 px-5 py-3"
+      >
+        <div className="flex items-center gap-2">
+          <User className="size-4 text-neutral-400" />
+          <span className="text-sm text-neutral-400">Returning customer?</span>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300"
+          onClick={() => showNotification('Login feature coming soon!', 'info')}
+        >
+          Sign In for Faster Checkout
+        </Button>
+      </motion.div>
 
       <form onSubmit={handleSubmit}>
         <div className="grid gap-8 lg:grid-cols-3">
@@ -215,24 +267,27 @@ export function CheckoutPage() {
           <div className="space-y-8 lg:col-span-2">
             {/* Customer Info */}
             <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
-              <h2 className="mb-4 text-lg font-semibold text-white">
-                Customer Information
-              </h2>
+              <div className="mb-4 flex items-center gap-2">
+                <div className="flex size-7 items-center justify-center rounded-lg bg-cyan-500/10">
+                  <User className="size-4 text-cyan-400" />
+                </div>
+                <h2 className="text-lg font-semibold text-white">
+                  Customer Information
+                </h2>
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label className="text-neutral-300">Full Name *</Label>
                   <Input
                     value={form.customerName}
-                    onChange={(e) =>
-                      updateField('customerName', e.target.value)
-                    }
-                    placeholder="John Doe"
-                    className={inputClass}
+                    onChange={(e) => updateField('customerName', e.target.value)}
+                    onFocus={() => setFocusedField('customerName')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Enter your full name"
+                    className={inputClass('customerName')}
                   />
                   {errors.customerName && (
-                    <p className="text-xs text-red-500">
-                      {errors.customerName}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.customerName}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -240,16 +295,14 @@ export function CheckoutPage() {
                   <Input
                     type="email"
                     value={form.customerEmail}
-                    onChange={(e) =>
-                      updateField('customerEmail', e.target.value)
-                    }
-                    placeholder="john@example.com"
-                    className={inputClass}
+                    onChange={(e) => updateField('customerEmail', e.target.value)}
+                    onFocus={() => setFocusedField('customerEmail')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="your@email.com"
+                    className={inputClass('customerEmail')}
                   />
                   {errors.customerEmail && (
-                    <p className="text-xs text-red-500">
-                      {errors.customerEmail}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.customerEmail}</p>
                   )}
                 </div>
                 <div className="space-y-2 sm:col-span-2">
@@ -257,11 +310,11 @@ export function CheckoutPage() {
                   <Input
                     type="tel"
                     value={form.customerPhone}
-                    onChange={(e) =>
-                      updateField('customerPhone', e.target.value)
-                    }
+                    onChange={(e) => updateField('customerPhone', e.target.value)}
+                    onFocus={() => setFocusedField('customerPhone')}
+                    onBlur={() => setFocusedField(null)}
                     placeholder="+1 (555) 000-0000"
-                    className={inputClass}
+                    className={inputClass('customerPhone')}
                   />
                 </div>
               </div>
@@ -269,72 +322,69 @@ export function CheckoutPage() {
 
             {/* Shipping Address */}
             <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-6">
-              <h2 className="mb-4 text-lg font-semibold text-white">
-                Shipping Address
-              </h2>
+              <div className="mb-4 flex items-center gap-2">
+                <div className="flex size-7 items-center justify-center rounded-lg bg-cyan-500/10">
+                  <MapPin className="size-4 text-cyan-400" />
+                </div>
+                <h2 className="text-lg font-semibold text-white">
+                  Shipping Address
+                </h2>
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">
                   <Label className="text-neutral-300">Street Address *</Label>
                   <Input
                     value={form.shippingAddr}
-                    onChange={(e) =>
-                      updateField('shippingAddr', e.target.value)
-                    }
+                    onChange={(e) => updateField('shippingAddr', e.target.value)}
+                    onFocus={() => setFocusedField('shippingAddr')}
+                    onBlur={() => setFocusedField(null)}
                     placeholder="123 Main St, Apt 4"
-                    className={inputClass}
+                    className={inputClass('shippingAddr')}
                   />
                   {errors.shippingAddr && (
-                    <p className="text-xs text-red-500">
-                      {errors.shippingAddr}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.shippingAddr}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-neutral-300">City *</Label>
                   <Input
                     value={form.shippingCity}
-                    onChange={(e) =>
-                      updateField('shippingCity', e.target.value)
-                    }
-                    placeholder="New York"
-                    className={inputClass}
+                    onChange={(e) => updateField('shippingCity', e.target.value)}
+                    onFocus={() => setFocusedField('shippingCity')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="City name"
+                    className={inputClass('shippingCity')}
                   />
                   {errors.shippingCity && (
-                    <p className="text-xs text-red-500">
-                      {errors.shippingCity}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.shippingCity}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-neutral-300">Country *</Label>
                   <Input
                     value={form.shippingCountry}
-                    onChange={(e) =>
-                      updateField('shippingCountry', e.target.value)
-                    }
-                    placeholder="United States"
-                    className={inputClass}
+                    onChange={(e) => updateField('shippingCountry', e.target.value)}
+                    onFocus={() => setFocusedField('shippingCountry')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Country"
+                    className={inputClass('shippingCountry')}
                   />
                   {errors.shippingCountry && (
-                    <p className="text-xs text-red-500">
-                      {errors.shippingCountry}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.shippingCountry}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-neutral-300">ZIP Code *</Label>
                   <Input
                     value={form.shippingZip}
-                    onChange={(e) =>
-                      updateField('shippingZip', e.target.value)
-                    }
-                    placeholder="10001"
-                    className={inputClass}
+                    onChange={(e) => updateField('shippingZip', e.target.value)}
+                    onFocus={() => setFocusedField('shippingZip')}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="Postal code"
+                    className={inputClass('shippingZip')}
                   />
                   {errors.shippingZip && (
-                    <p className="text-xs text-red-500">
-                      {errors.shippingZip}
-                    </p>
+                    <p className="text-xs text-red-500">{errors.shippingZip}</p>
                   )}
                 </div>
               </div>
@@ -348,17 +398,38 @@ export function CheckoutPage() {
                 Order Summary
               </h2>
 
-              <div className="max-h-64 space-y-3 overflow-y-auto">
+              <div className="max-h-72 space-y-3 overflow-y-auto custom-scrollbar">
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between text-sm"
+                    className="flex items-center gap-3 rounded-lg bg-neutral-800/30 p-2"
                   >
-                    <span className="text-neutral-300">
-                      {item.name}{' '}
-                      <span className="text-neutral-500">×{item.quantity}</span>
-                    </span>
-                    <span className="text-white">
+                    {/* Item thumbnail */}
+                    <div className="relative size-10 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center">
+                          <span className="text-[8px] text-neutral-500">No img</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-xs font-medium text-white">{item.name}</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-neutral-500">×{item.quantity}</span>
+                        <span className="text-[10px] text-neutral-600">•</span>
+                        <div className="flex items-center gap-0.5">
+                          <Calendar className="size-2.5 text-neutral-600" />
+                          <span className="text-[9px] text-neutral-500">{getEstimatedDelivery()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-xs font-semibold text-white">
                       ${(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
@@ -375,9 +446,7 @@ export function CheckoutPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-400">Shipping</span>
                   <span
-                    className={
-                      shipping === 0 ? 'text-cyan-400' : 'text-white'
-                    }
+                    className={shipping === 0 ? 'text-cyan-400' : 'text-white'}
                   >
                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                   </span>
@@ -411,17 +480,20 @@ export function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Promo Code Input */}
+              {/* Promo Code Input - Dashed border style */}
               {!appliedPromo && (
                 <div className="mt-4">
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                    Have a promo code?
+                  </p>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-neutral-500" />
                       <Input
                         value={promoInput}
                         onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                        placeholder="Promo code"
-                        className="border-neutral-700 bg-neutral-800 pl-9 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-9 text-sm"
+                        placeholder="Enter code"
+                        className="border-dashed border-neutral-600 bg-neutral-800 pl-9 text-white placeholder:text-neutral-500 focus-visible:border-cyan-500 focus-visible:ring-cyan-500/30 h-9 text-sm"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault()
@@ -485,9 +557,28 @@ export function CheckoutPage() {
                     Processing...
                   </>
                 ) : (
-                  'Place Order'
+                  <>
+                    <Lock className="mr-2 size-4" />
+                    Place Order
+                  </>
                 )}
               </Button>
+
+              {/* Trust badges */}
+              <div className="mt-4 flex items-center justify-center gap-4">
+                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                  <Lock className="size-3 text-cyan-400" />
+                  SSL Encrypted
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                  <ShieldCheck className="size-3 text-emerald-400" />
+                  Money-Back
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+                  <Truck className="size-3 text-cyan-400" />
+                  Insured
+                </div>
+              </div>
 
               <p className="mt-3 text-center text-xs text-neutral-500">
                 Your payment information is secure and encrypted.

@@ -303,6 +303,24 @@ export function AdminProducts() {
     }
   }
 
+  const handleToggleActive = async (product: Product) => {
+    try {
+      const res = await fetch('/api/admin/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: product.id, active: !product.active }),
+      })
+      if (res.ok) {
+        showNotification(product.active ? 'Product deactivated' : 'Product activated', 'success')
+        fetchProducts()
+      } else {
+        showNotification('Failed to update product status', 'error')
+      }
+    } catch {
+      showNotification('Failed to update product status', 'error')
+    }
+  }
+
   const addImageField = () => {
     setForm((f) => ({ ...f, images: [...f.images, ''] }))
   }
@@ -485,29 +503,51 @@ export function AdminProducts() {
                         )}
                     </TableCell>
                     <TableCell>
-                      <span
-                        className={`text-sm font-medium ${
-                          product.stock <= 5
-                            ? 'text-red-400'
-                            : product.stock <= 20
-                              ? 'text-yellow-400'
-                              : 'text-white'
-                        }`}
-                      >
-                        {product.stock}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-sm font-medium ${
+                            product.stock <= 5
+                              ? 'text-red-400'
+                              : product.stock <= 20
+                                ? 'text-yellow-400'
+                                : 'text-white'
+                          }`}
+                        >
+                          {product.stock}
+                        </span>
+                        <div className="w-12 h-1.5 rounded-full bg-neutral-800 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all ${
+                              product.stock <= 5
+                                ? 'bg-red-400 w-[15%]'
+                                : product.stock <= 20
+                                  ? 'bg-yellow-400 w-[40%]'
+                                  : product.stock <= 50
+                                    ? 'bg-cyan-400 w-[70%]'
+                                    : 'bg-emerald-400 w-full'
+                            }`}
+                          />
+                        </div>
+                      </div>
                     </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => handleToggleActive(product)}
+                        className={`group relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-200 ease-in-out focus:outline-none ${
                           product.active
-                            ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
-                            : 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20'
-                        }
+                            ? 'border-cyan-500/30 bg-cyan-500/20'
+                            : 'border-neutral-700 bg-neutral-800'
+                        }`}
+                        title={product.active ? 'Click to deactivate' : 'Click to activate'}
                       >
-                        {product.active ? 'Active' : 'Inactive'}
-                      </Badge>
+                        <span
+                          className={`pointer-events-none inline-block size-3.5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out ${
+                            product.active
+                              ? 'translate-x-4 bg-cyan-400'
+                              : 'translate-x-0.5 bg-neutral-500'
+                          }`}
+                        />
+                      </button>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">

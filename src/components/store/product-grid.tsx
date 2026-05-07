@@ -1,13 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight, Package, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, LayoutGrid, List, X, ShoppingBag, ArrowRight, Package, ChevronLeft, ChevronRight, SlidersHorizontal, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Slider } from '@/components/ui/slider'
 import { ProductCard } from './product-card'
 
 interface Product {
@@ -48,6 +50,8 @@ interface ProductGridProps {
 }
 
 const PRODUCTS_PER_PAGE = 12
+const PRICE_MIN = 0
+const PRICE_MAX = 500
 
 export function ProductGrid({
   title = 'All Products',
@@ -69,6 +73,8 @@ export function ProductGrid({
   const [searchFocused, setSearchFocused] = useState(false)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [showDeals, setShowDeals] = useState(false)
+  const [priceRange, setPriceRange] = useState([PRICE_MIN, PRICE_MAX])
   const { searchQuery, selectedBrand: navBrand, navigate } = useNavigationStore()
 
   useEffect(() => {
@@ -108,7 +114,21 @@ export function ProductGrid({
       const res = await fetch(`/api/products?${params}`)
       if (res.ok) {
         const data = await res.json()
-        setProducts(data.products || [])
+        let filteredProducts = data.products || []
+
+        // Client-side deals filter (comparePrice > price)
+        if (showDeals) {
+          filteredProducts = filteredProducts.filter(
+            (p: Product) => p.comparePrice && p.comparePrice > p.price
+          )
+        }
+
+        // Client-side price range filter
+        filteredProducts = filteredProducts.filter(
+          (p: Product) => p.price >= priceRange[0] && p.price <= priceRange[1]
+        )
+
+        setProducts(filteredProducts)
         setTotalProductCount(data.pagination?.total || 0)
         setTotalPages(data.pagination?.totalPages || 1)
       }
@@ -117,7 +137,7 @@ export function ProductGrid({
     } finally {
       setIsLoading(false)
     }
-  }, [selectedCategory, sort, search, selectedBrand, page])
+  }, [selectedCategory, sort, search, selectedBrand, page, showDeals, priceRange])
 
   const fetchCategories = async () => {
     try {
@@ -146,13 +166,13 @@ export function ProductGrid({
   // Reset page when filters change
   useEffect(() => {
     setPage(1)
-  }, [selectedCategory, sort, search, selectedBrand])
+  }, [selectedCategory, sort, search, selectedBrand, showDeals, priceRange])
 
   useEffect(() => {
     if (!initialProducts) {
       fetchProducts()
     }
-  }, [selectedCategory, sort, fetchProducts, initialProducts, selectedBrand, page])
+  }, [selectedCategory, sort, fetchProducts, initialProducts, selectedBrand, page, showDeals, priceRange])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -166,6 +186,24 @@ export function ProductGrid({
     if (search) {
       setTimeout(() => fetchProducts(), 0)
     }
+  }
+
+  // Count active filters
+  const activeFilterCount = [
+    selectedCategory !== 'all',
+    selectedBrand !== 'all',
+    showDeals,
+    priceRange[0] > PRICE_MIN || priceRange[1] < PRICE_MAX,
+    search !== '',
+  ].filter(Boolean).length
+
+  const clearAllFilters = () => {
+    setSearch('')
+    setSelectedCategory('all')
+    setSelectedBrand('all')
+    setShowDeals(false)
+    setPriceRange([PRICE_MIN, PRICE_MAX])
+    setPage(1)
   }
 
   // Generate page numbers to display
@@ -375,6 +413,102 @@ export function ProductGrid({
             ))}
           </div>
         )}
+
+        {/* Deals Tab + Price Range Row */}
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Deals Filter Tab */}
+            <button
+              onClick={() => setShowDeals(!showDeals)}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+                showDeals
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-md shadow-amber-500/20'
+                  : 'border border-neutral-700 bg-neutral-800/60 text-neutral-400 hover:border-amber-500/40 hover:text-amber-400'
+              }`}
+            >
+              <Sparkles className="size-3" />
+              Deals
+            </button>
+          </div>
+
+          {/* Price Range Slider */}
+          <div className="flex items-center gap-3 min-w-0 sm:min-w-[280px]">
+            <SlidersHorizontal className="size-4 shrink-0 text-neutral-500" />
+            <div className="flex-1 min-w-0">
+              <Slider
+                min={PRICE_MIN}
+                max={PRICE_MAX}
+                step={10}
+                value={priceRange}
+                onValueChange={setPriceRange}
+                className="[&_[data-slot=slider-track]]:bg-neutral-800 [&_[data-slot=slider-range]]:bg-cyan-500 [&_[data-slot=slider-thumb]]:border-cyan-500 [&_[data-slot=slider-thumb]]:bg-neutral-900 [&_[data-slot=slider-thumb]]:hover:ring-cyan-500/30"
+              />
+            </div>
+            <span className="shrink-0 text-[10px] font-medium text-neutral-400">
+              ${priceRange[0]} - ${priceRange[1]}
+            </span>
+          </div>
+        </div>
+
+        {/* Active Filter Chips */}
+        {activeFilterCount > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-neutral-800/50 pt-3">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+              Active:
+            </span>
+            {search && (
+              <div className="flex items-center gap-1 rounded-full border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-[10px] text-neutral-300">
+                Search: &ldquo;{search}&rdquo;
+                <button onClick={clearSearch} className="ml-1 text-neutral-500 hover:text-red-400 transition-colors">
+                  <X className="size-3" />
+                </button>
+              </div>
+            )}
+            {selectedCategory !== 'all' && (
+              <div className="flex items-center gap-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[10px] text-cyan-400">
+                {categories.find(c => c.slug === selectedCategory)?.name || selectedCategory}
+                <button onClick={() => setSelectedCategory('all')} className="ml-1 text-cyan-500/50 hover:text-cyan-300 transition-colors">
+                  <X className="size-3" />
+                </button>
+              </div>
+            )}
+            {selectedBrand !== 'all' && (
+              <div className="flex items-center gap-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[10px] text-cyan-400">
+                {selectedBrand}
+                <button onClick={() => setSelectedBrand('all')} className="ml-1 text-cyan-500/50 hover:text-cyan-300 transition-colors">
+                  <X className="size-3" />
+                </button>
+              </div>
+            )}
+            {showDeals && (
+              <div className="flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-[10px] text-amber-400">
+                <Sparkles className="size-2.5" />
+                Deals
+                <button onClick={() => setShowDeals(false)} className="ml-1 text-amber-500/50 hover:text-amber-300 transition-colors">
+                  <X className="size-3" />
+                </button>
+              </div>
+            )}
+            {(priceRange[0] > PRICE_MIN || priceRange[1] < PRICE_MAX) && (
+              <div className="flex items-center gap-1 rounded-full border border-neutral-700 bg-neutral-800 px-2.5 py-1 text-[10px] text-neutral-300">
+                ${priceRange[0]} - ${priceRange[1]}
+                <button onClick={() => setPriceRange([PRICE_MIN, PRICE_MAX])} className="ml-1 text-neutral-500 hover:text-red-400 transition-colors">
+                  <X className="size-3" />
+                </button>
+              </div>
+            )}
+            {activeFilterCount > 1 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAllFilters}
+                className="h-6 px-2 text-[10px] text-red-400 hover:text-red-300 hover:bg-red-500/10"
+              >
+                Clear All
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Grid / List */}
@@ -394,12 +528,7 @@ export function ProductGrid({
             We couldn&apos;t find any products matching your criteria. Try adjusting your filters or search terms.
           </p>
           <Button
-            onClick={() => {
-              setSearch('')
-              setSelectedCategory('all')
-              setSelectedBrand('all')
-              navigate('shop')
-            }}
+            onClick={clearAllFilters}
             className="bg-cyan-500 px-6 text-black hover:bg-cyan-400"
           >
             <ShoppingBag className="mr-2 size-4" />
@@ -417,7 +546,7 @@ export function ProductGrid({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 onClick={() => navigate('product', { productId: product.id })}
-                className="group flex cursor-pointer items-center gap-4 rounded-xl border border-neutral-800 bg-[#111111] p-3 transition-all hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5"
+                className="group flex cursor-pointer items-center gap-4 rounded-xl border border-neutral-800 bg-[#111111] p-3 sm:p-4 transition-all hover:border-cyan-500/20 hover:shadow-md hover:shadow-cyan-500/5"
               >
                 <div className="relative size-20 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-800">
                   {product.images?.[0] ? (
@@ -429,6 +558,12 @@ export function ProductGrid({
                   ) : (
                     <div className="flex h-full items-center justify-center text-neutral-600">
                       <Package className="size-6" />
+                    </div>
+                  )}
+                  {/* Deal badge on list view */}
+                  {product.comparePrice && product.comparePrice > product.price && (
+                    <div className="absolute right-1 top-1 rounded bg-amber-500 px-1 py-0.5 text-[8px] font-bold text-black">
+                      -{Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%
                     </div>
                   )}
                 </div>
@@ -453,6 +588,28 @@ export function ProductGrid({
                       </span>
                     )}
                   </div>
+                  {/* Rating in list view */}
+                  {(product.rating ?? 0) > 0 && (
+                    <div className="mt-1 flex items-center gap-1">
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <span
+                            key={i}
+                            className={`text-[10px] ${
+                              i < Math.floor(product.rating || 0)
+                                ? 'text-amber-500'
+                                : 'text-neutral-700'
+                            }`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      {product.reviewCount && (
+                        <span className="text-[9px] text-neutral-600">({product.reviewCount})</span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <p className="text-base font-bold text-cyan-400">

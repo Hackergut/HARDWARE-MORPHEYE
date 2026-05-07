@@ -13,18 +13,25 @@ import {
   Menu,
   X,
   Shield,
+  User,
 } from 'lucide-react'
 import { useNavigationStore, type Page } from '@/store/navigation-store'
 import { useAdminAuthStore } from '@/store/admin-auth-store'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
-const navItems: { icon: React.ElementType; label: string; page: Page }[] = [
-  { icon: LayoutDashboard, label: 'Dashboard', page: 'admin' },
-  { icon: Package, label: 'Products', page: 'admin-products' },
-  { icon: ShoppingCart, label: 'Orders', page: 'admin-orders' },
-  { icon: Mail, label: 'Messages', page: 'admin-contact' },
-  { icon: Settings, label: 'Settings', page: 'admin-settings' },
+const navItems: { icon: React.ElementType; label: string; page: Page; activeFor: Page[] }[] = [
+  { icon: LayoutDashboard, label: 'Dashboard', page: 'admin', activeFor: ['admin'] },
+  { icon: Package, label: 'Products', page: 'admin-products', activeFor: ['admin-products'] },
+  { icon: ShoppingCart, label: 'Orders', page: 'admin-orders', activeFor: ['admin-orders', 'admin-order-detail'] },
+  { icon: Mail, label: 'Messages', page: 'admin-contact', activeFor: ['admin-contact'] },
+  { icon: Settings, label: 'Settings', page: 'admin-settings', activeFor: ['admin-settings'] },
 ]
 
 export function AdminSidebar() {
@@ -37,8 +44,12 @@ export function AdminSidebar() {
     navigate('home')
   }
 
+  const isActive = (item: typeof navItems[number]) => {
+    return item.activeFor.includes(currentPage)
+  }
+
   return (
-    <>
+    <TooltipProvider delayDuration={200}>
       {/* Mobile top bar */}
       <div className="flex items-center justify-between border-b border-neutral-800 bg-neutral-900 p-3 md:hidden">
         <div className="flex items-center gap-2">
@@ -67,7 +78,7 @@ export function AdminSidebar() {
           <nav className="flex flex-col p-2">
             {navItems.map((item) => {
               const Icon = item.icon
-              const isActive = currentPage === item.page
+              const active = isActive(item)
               return (
                 <button
                   key={item.page}
@@ -75,8 +86,8 @@ export function AdminSidebar() {
                     navigate(item.page)
                     setCollapsed(true)
                   }}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
+                  className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    active
                       ? 'admin-nav-active'
                       : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                   }`}
@@ -86,6 +97,17 @@ export function AdminSidebar() {
                 </button>
               )
             })}
+            <Separator className="my-2 bg-neutral-800" />
+            {/* User Avatar - Mobile */}
+            <div className="flex items-center gap-3 rounded-lg px-3 py-2.5">
+              <div className="flex size-8 items-center justify-center rounded-full bg-cyan-500/10 ring-1 ring-cyan-500/20">
+                <User className="size-4 text-cyan-400" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">Admin</p>
+                <p className="text-[10px] text-neutral-500">admin@morpheye.com</p>
+              </div>
+            </div>
             <Separator className="my-2 bg-neutral-800" />
             <button
               onClick={() => {
@@ -136,42 +158,77 @@ export function AdminSidebar() {
         <nav className="flex-1 space-y-1 p-3">
           {navItems.map((item) => {
             const Icon = item.icon
-            const isActive = currentPage === item.page
+            const active = isActive(item)
             return (
-              <button
-                key={item.page}
-                onClick={() => navigate(item.page)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'admin-nav-active'
-                    : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
-                }`}
-              >
-                <Icon className="size-4" />
-                {item.label}
-              </button>
+              <Tooltip key={item.page}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => navigate(item.page)}
+                    className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                      active
+                        ? 'admin-nav-active'
+                        : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="size-4" />
+                    {item.label}
+                    {/* Active indicator dot */}
+                    {active && (
+                      <span className="absolute right-3 size-1.5 rounded-full bg-cyan-400" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="border-neutral-700 bg-neutral-900 text-neutral-300">
+                  {item.label}
+                </TooltipContent>
+              </Tooltip>
             )
           })}
         </nav>
 
-        {/* Footer */}
+        {/* User Avatar + Footer */}
         <div className="border-t border-neutral-800 p-3 space-y-1">
-          <button
-            onClick={() => navigate('home')}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
-          >
-            <ArrowLeft className="size-4" />
-            Back to Store
-          </button>
-          <button
-            onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
-          >
-            <LogOut className="size-4" />
-            Logout
-          </button>
+          {/* User avatar section */}
+          <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 mb-1">
+            <div className="flex size-9 items-center justify-center rounded-full bg-cyan-500/10 ring-1 ring-cyan-500/20">
+              <User className="size-4 text-cyan-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-sm font-medium text-white">Admin</p>
+              <p className="truncate text-[10px] text-neutral-500">admin@morpheye.com</p>
+            </div>
+          </div>
+          <Separator className="bg-neutral-800" />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => navigate('home')}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+              >
+                <ArrowLeft className="size-4" />
+                Back to Store
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="border-neutral-700 bg-neutral-900 text-neutral-300">
+              Back to Store
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
+              >
+                <LogOut className="size-4" />
+                Logout
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="border-neutral-700 bg-neutral-900 text-neutral-300">
+              Logout
+            </TooltipContent>
+          </Tooltip>
         </div>
       </aside>
-    </>
+    </TooltipProvider>
   )
 }

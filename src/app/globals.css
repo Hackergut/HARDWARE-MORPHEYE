@@ -52,7 +52,42 @@
 
 :root {
   --radius: 0.625rem;
-  /* Morpheye Dark Theme - always dark */
+  /* Morpheye Light Theme (default when .dark is NOT applied) */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+  --primary: #06b6d4;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ef4444;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #06b6d4;
+  --chart-1: #06b6d4;
+  --chart-2: #f59e0b;
+  --chart-3: #10b981;
+  --chart-4: #8b5cf6;
+  --chart-5: #ef4444;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #06b6d4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #06b6d4;
+}
+
+.dark {
+  /* Morpheye Dark Theme */
   --background: #0a0a0a;
   --foreground: #ffffff;
   --card: #111111;
@@ -95,13 +130,13 @@
   }
 }
 
-/* Custom scrollbar for dark theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
   background: #333;
@@ -109,6 +144,17 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Light mode scrollbar overrides */
+:root:not(.dark) ::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }
 
 /* Morpheye Glow Effects */

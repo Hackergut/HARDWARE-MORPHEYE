@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { useNavigationStore } from '@/store/navigation-store'
 import { useNotificationStore } from '@/store/notification-store'
 
 interface OrderItem {
@@ -97,6 +98,7 @@ export function AdminOrders() {
   const [detailOpen, setDetailOpen] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null)
   const showNotification = useNotificationStore((s) => s.show)
+  const { navigate } = useNavigationStore()
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -158,8 +160,7 @@ export function AdminOrders() {
   }
 
   const openDetail = (order: Order) => {
-    setSelectedOrder(order)
-    setDetailOpen(true)
+    navigate('admin-order-detail', { orderId: order.id })
   }
 
   const formatDate = (dateStr: string) => {
@@ -262,10 +263,10 @@ export function AdminOrders() {
                 filteredOrders.map((order) => (
                   <TableRow
                     key={order.id}
-                    className="cursor-pointer border-neutral-800 hover:bg-neutral-800/50"
+                    className="cursor-pointer border-neutral-800 hover:bg-neutral-800/50 transition-colors"
                     onClick={() => openDetail(order)}
                   >
-                    <TableCell className="font-mono text-xs text-white">
+                    <TableCell className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
                       {order.orderNumber}
                     </TableCell>
                     <TableCell className="text-sm text-neutral-300">
@@ -329,11 +330,12 @@ export function AdminOrders() {
                     >
                       <Button
                         variant="ghost"
-                        size="icon"
+                        size="sm"
                         onClick={() => openDetail(order)}
-                        className="size-8 text-neutral-400 hover:text-cyan-400"
+                        className="text-xs text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
                       >
-                        <Eye className="size-3.5" />
+                        <Eye className="mr-1 size-3.5" />
+                        View
                       </Button>
                     </TableCell>
                   </TableRow>

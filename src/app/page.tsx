@@ -27,7 +27,7 @@ import { AdminLayout } from '@/components/admin/admin-layout'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-contact', 'admin-settings']
+const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-order-detail', 'admin-contact', 'admin-settings']
 
 function HomePage() {
   return (
@@ -56,7 +56,7 @@ export default function Home() {
 
   if (isAdmin) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] text-white">
+      <div className="min-h-screen bg-background text-foreground">
         <AdminLayout />
         <NotificationToast />
         <MetaPixel />
@@ -92,7 +92,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0a0a] text-white">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <StoreHeader />
       <main className="flex-1">
         <AnimatePresence mode="wait">

@@ -27,6 +27,8 @@ import {
   Eye,
   Clock,
   Flame,
+  Gift,
+  PlusCircle,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -42,6 +44,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Checkbox } from '@/components/ui/checkbox'
 import { ProductCard } from './product-card'
 import { ProductReviews } from './product-reviews'
 
@@ -235,6 +238,8 @@ export function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null)
   const [related, setRelated] = useState<Product[]>([])
   const [alsoBought, setAlsoBought] = useState<Product[]>([])
+  const [bundleProducts, setBundleProducts] = useState<Product[]>([])
+  const [bundleSelections, setBundleSelections] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(true)
   const [activeImage, setActiveImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -342,12 +347,77 @@ export function ProductDetail() {
             ).slice(0, 4)
           )
         }
+
+        // Fetch bundle products for "Frequently Bought Together" — related category products
+        const bundleRes = await fetch(`/api/products?category=${catSlug || ''}&limit=3&sort=rating`)
+        if (bundleRes.ok) {
+          const bundleData = await bundleRes.json()
+          const filtered = (bundleData.products || []).filter(
+            (p: Product) => p.id !== (data.product?.id || data.id)
+          ).slice(0, 3)
+          setBundleProducts(filtered)
+          // Default: all bundle items selected
+          const selections: Record<string, boolean> = {}
+          selections[data.product?.id || data.id] = true
+          filtered.forEach((p: Product) => {
+            selections[p.id] = true
+          })
+          setBundleSelections(selections)
+        }
       }
     } catch {
       // ignore
     } finally {
       setLoading(false)
     }
+  }
+
+  const toggleBundleSelection = (id: string) => {
+    // Don't allow deselecting the current product
+    if (id === product?.id) return
+    setBundleSelections((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const getBundleTotal = () => {
+    if (!product) return { original: 0, discounted: 0, savings: 0 }
+    const currentProductPrice = product.price
+    const selectedBundlePrices = bundleProducts
+      .filter((p) => bundleSelections[p.id])
+      .map((p) => p.price)
+    const allPrices = [currentProductPrice, ...selectedBundlePrices]
+    const original = allPrices.reduce((sum, p) => sum + p, 0)
+    const discounted = original * 0.95 // 5% bundle discount
+    const savings = original - discounted
+    return { original, discounted, savings }
+  }
+
+  const handleAddBundleToCart = () => {
+    if (!product) return
+    // Add current product
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0] || '',
+      slug: product.slug,
+    })
+    // Add selected bundle products
+    bundleProducts
+      .filter((p) => bundleSelections[p.id])
+      .forEach((p) => {
+        addItem({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          image: p.images?.[0] || '',
+          slug: p.slug,
+        })
+      })
+    const bundleTotal = getBundleTotal()
+    showNotification(
+      `Bundle added to cart! You saved $${bundleTotal.savings.toFixed(2)}`,
+      'success'
+    )
   }
 
   const openLightbox = useCallback((index: number) => {
@@ -1029,6 +1099,135 @@ export function ProductDetail() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Frequently Bought Together */}
+      {bundleProducts.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-16"
+        >
+          <div className="mb-6 flex items-center gap-3">
+            <Gift className="size-5 text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">
+              Frequently Bought Together
+            </h2>
+            <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30 text-[10px] font-bold">
+              5% BUNDLE DISCOUNT
+            </Badge>
+            <div className="h-px flex-1 bg-gradient-to-r from-neutral-800 to-transparent" />
+          </div>
+
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 sm:p-6">
+            {/* Product cards with + symbols */}
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-0 sm:justify-center">
+              {/* Current Product */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className={`flex items-center gap-3 rounded-lg border p-3 transition-all w-full sm:w-auto ${
+                  bundleSelections[product.id]
+                    ? 'border-cyan-500/30 bg-cyan-500/5'
+                    : 'border-neutral-800 bg-neutral-900/50 opacity-60'
+                }`}
+              >
+                <Checkbox
+                  checked={bundleSelections[product.id]}
+                  disabled
+                  className="border-cyan-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
+                />
+                <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                  {product.images?.[0] ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="size-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex size-full items-center justify-center">
+                      <Package className="size-5 text-neutral-600" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-semibold text-white">{product.name}</p>
+                  <p className="text-xs font-bold text-cyan-400">${product.price.toFixed(2)}</p>
+                </div>
+              </motion.div>
+
+              {/* Bundle Products with + symbols */}
+              {bundleProducts.map((bp, idx) => (
+                <div key={bp.id} className="flex items-center gap-3 w-full sm:w-auto">
+                  <PlusCircle className="hidden size-5 shrink-0 text-neutral-600 sm:block" />
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.2 + idx * 0.1 }}
+                    className={`flex items-center gap-3 rounded-lg border p-3 transition-all w-full sm:w-auto cursor-pointer ${
+                      bundleSelections[bp.id]
+                        ? 'border-cyan-500/30 bg-cyan-500/5'
+                        : 'border-neutral-800 bg-neutral-900/50 opacity-60'
+                    }`}
+                    onClick={() => toggleBundleSelection(bp.id)}
+                  >
+                    <Checkbox
+                      checked={bundleSelections[bp.id] || false}
+                      onCheckedChange={() => toggleBundleSelection(bp.id)}
+                      className="border-cyan-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
+                    />
+                    <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-neutral-800">
+                      {bp.images?.[0] ? (
+                        <img
+                          src={bp.images[0]}
+                          alt={bp.name}
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center">
+                          <Package className="size-5 text-neutral-600" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-white">{bp.name}</p>
+                      <p className="text-xs font-bold text-cyan-400">${bp.price.toFixed(2)}</p>
+                    </div>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+
+            {/* Bundle Total & Add to Cart */}
+            <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-800/40 p-4 sm:flex-row">
+              <div className="flex items-center gap-4">
+                <div>
+                  <p className="text-xs text-neutral-500">Total Price:</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-lg text-neutral-500 line-through">
+                      ${getBundleTotal().original.toFixed(2)}
+                    </span>
+                    <span className="text-2xl font-bold text-cyan-400">
+                      ${getBundleTotal().discounted.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] font-bold">
+                  Save ${getBundleTotal().savings.toFixed(2)}
+                </Badge>
+              </div>
+              <Button
+                onClick={handleAddBundleToCart}
+                className="w-full sm:w-auto bg-cyan-500 px-8 text-black font-semibold hover:bg-cyan-400 transition-all"
+              >
+                <ShoppingCart className="mr-2 size-4" />
+                Add All to Cart
+              </Button>
+            </div>
+          </div>
+        </motion.div>
       )}
 
       {/* Product Reviews */}

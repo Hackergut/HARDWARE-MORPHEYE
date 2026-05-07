@@ -7,6 +7,7 @@ import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { AdminDashboard } from '@/components/admin/admin-dashboard'
 import { AdminProducts } from '@/components/admin/admin-products'
 import { AdminOrders } from '@/components/admin/admin-orders'
+import { AdminOrderDetail } from '@/components/admin/admin-order-detail'
 import { AdminContact } from '@/components/admin/admin-contact'
 import { AdminSettings } from '@/components/admin/admin-settings'
 
@@ -26,6 +27,8 @@ export function AdminLayout() {
         return <AdminProducts />
       case 'admin-orders':
         return <AdminOrders />
+      case 'admin-order-detail':
+        return <AdminOrderDetail />
       case 'admin-contact':
         return <AdminContact />
       case 'admin-settings':

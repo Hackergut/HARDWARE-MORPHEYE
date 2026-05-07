@@ -36,27 +36,27 @@ export function ShopPage() {
   const activeCategory = selectedCategory || 'all'
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen dark:bg-[#0a0a0a] bg-white">
       {/* Decorative Header Banner */}
       <div className="shop-banner">
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-2">
-            <ShoppingBag className="size-5 text-cyan-400" />
+            <ShoppingBag className="size-5 text-cyan-500" />
             <nav className="flex items-center gap-1.5 text-sm">
               <button
                 onClick={() => navigate('home')}
-                className="text-neutral-500 transition-colors hover:text-cyan-400"
+                className="dark:text-neutral-500 text-neutral-400 transition-colors hover:text-cyan-400"
               >
                 Home
               </button>
-              <ChevronRight className="size-3.5 text-neutral-600" />
-              <span className="text-white font-medium">Shop</span>
+              <ChevronRight className="size-3.5 dark:text-neutral-600 text-neutral-300" />
+              <span className="dark:text-white text-neutral-900 font-medium">Shop</span>
             </nav>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold dark:text-white text-neutral-900 tracking-tight">
             Browse Hardware Wallets
           </h1>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm dark:text-neutral-400 text-neutral-500">
             Explore our curated collection of certified crypto security devices
           </p>
           {/* Ambient glow */}
@@ -71,8 +71,8 @@ export function ShopPage() {
             onClick={() => navigate('shop', {})}
             className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
               activeCategory === 'all'
-                ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'
+                ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
+                : 'dark:bg-neutral-800 bg-neutral-100 dark:text-neutral-400 text-neutral-600 hover:dark:bg-neutral-700 hover:bg-neutral-200 hover:dark:text-white hover:text-neutral-900'
             }`}
           >
             All
@@ -83,8 +83,8 @@ export function ShopPage() {
               onClick={() => navigate('shop', { category: cat.slug })}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 activeCategory === cat.slug
-                  ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20'
-                  : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white'
+                  ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
+                  : 'dark:bg-neutral-800 bg-neutral-100 dark:text-neutral-400 text-neutral-600 hover:dark:bg-neutral-700 hover:bg-neutral-200 hover:dark:text-white hover:text-neutral-900'
               }`}
             >
               {cat.name}
