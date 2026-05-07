@@ -3,13 +3,12 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  // Create categories
   const hardwareWallets = await prisma.category.create({
     data: {
       name: 'Hardware Wallets',
       slug: 'hardware-wallets',
       description: 'Secure your crypto with the best hardware wallets from authorized reseller',
-      image: '/images/cat-hardware.jpg',
+      image: '/images/banner/banner-1.jpg',
       featured: true,
       sortOrder: 1,
     },
@@ -20,7 +19,7 @@ async function main() {
       name: 'Accessories',
       slug: 'accessories',
       description: 'Premium accessories for your hardware wallet',
-      image: '/images/cat-accessories.jpg',
+      image: '/images/banner/banner-5.jpg',
       featured: true,
       sortOrder: 2,
     },
@@ -31,7 +30,7 @@ async function main() {
       name: 'Bundles & Kits',
       slug: 'bundles',
       description: 'Save more with curated bundles and starter kits',
-      image: '/images/cat-bundles.jpg',
+      image: '/images/banner/banner-6.jpg',
       featured: true,
       sortOrder: 3,
     },
@@ -42,13 +41,12 @@ async function main() {
       name: 'Recovery & Backup',
       slug: 'recovery-backup',
       description: 'Metal seed phrase storage and backup solutions',
-      image: '/images/cat-recovery.jpg',
+      image: '/images/banner/banner-7.jpg',
       featured: false,
       sortOrder: 4,
     },
   })
 
-  // Create products - Hardware Wallets
   const products = [
     {
       name: 'Ledger Nano X',
@@ -58,9 +56,9 @@ async function main() {
       price: 149.99,
       comparePrice: 169.99,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop'
+        '/images/products/product-detail-1.png',
+        '/images/products/product-img-1.png',
+        '/images/banner/banner-1.jpg'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
@@ -90,8 +88,8 @@ async function main() {
       price: 79.99,
       comparePrice: 99.99,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop'
+        '/images/products/product-img-2.png',
+        '/images/products/product-detail-2.png'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
@@ -121,9 +119,9 @@ async function main() {
       price: 219.99,
       comparePrice: 249.99,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1631534597796-2a31267a2436?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop'
+        '/images/products/product-detail-3.png',
+        '/images/products/product-img-1.png',
+        '/images/banner/banner-2.jpg'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Trezor',
@@ -153,8 +151,8 @@ async function main() {
       price: 79.99,
       comparePrice: null,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop'
+        '/images/products/product-img-2.png',
+        '/images/banner/banner-3.jpg'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Trezor',
@@ -184,9 +182,9 @@ async function main() {
       price: 399.99,
       comparePrice: null,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop'
+        '/images/products/product-detail-1.png',
+        '/images/products/product-detail-3.png',
+        '/images/banner/banner-4.jpg'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
@@ -216,8 +214,8 @@ async function main() {
       price: 119.99,
       comparePrice: 149.99,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop'
+        '/images/products/product-detail-2.png',
+        '/images/products/product-img-1.png'
       ]),
       categoryId: hardwareWallets.id,
       brand: 'Keystone',
@@ -239,7 +237,6 @@ async function main() {
       rating: 4.7,
       reviewCount: 628,
     },
-    // Accessories
     {
       name: 'Ledger Pod Case',
       slug: 'ledger-pod-case',
@@ -247,7 +244,7 @@ async function main() {
       shortDesc: 'Premium protective case for Ledger Nano wallets',
       price: 29.99,
       comparePrice: 39.99,
-      images: JSON.stringify(['https://images.unsplash.com/photo-1585336261022-680e295ce275?w=800&h=800&fit=crop']),
+      images: JSON.stringify(['/images/banner/banner-5.jpg']),
       categoryId: accessories.id,
       brand: 'Ledger',
       sku: 'LDG-POD-001',
@@ -272,7 +269,7 @@ async function main() {
       shortDesc: 'Official USB-C cable pack for Trezor wallets',
       price: 14.99,
       comparePrice: null,
-      images: JSON.stringify(['https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=800&fit=crop']),
+      images: JSON.stringify(['/images/banner/banner-5.jpg']),
       categoryId: accessories.id,
       brand: 'Trezor',
       sku: 'TRZ-CBL-001',
@@ -289,7 +286,6 @@ async function main() {
       rating: 4.3,
       reviewCount: 187,
     },
-    // Bundles
     {
       name: 'Ledger Starter Pack',
       slug: 'ledger-starter-pack',
@@ -298,8 +294,8 @@ async function main() {
       price: 159.99,
       comparePrice: 189.97,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop'
+        '/images/products/product-detail-1.png',
+        '/images/banner/banner-6.jpg'
       ]),
       categoryId: bundles.id,
       brand: 'Ledger',
@@ -324,8 +320,8 @@ async function main() {
       price: 299.99,
       comparePrice: 369.98,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1631534597796-2a31267a2436?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop'
+        '/images/products/product-detail-3.png',
+        '/images/products/product-img-1.png'
       ]),
       categoryId: bundles.id,
       brand: 'Multi',
@@ -342,7 +338,6 @@ async function main() {
       rating: 4.9,
       reviewCount: 234,
     },
-    // Recovery
     {
       name: 'Cryptosteel Capsule',
       slug: 'cryptosteel-capsule',
@@ -351,8 +346,8 @@ async function main() {
       price: 59.99,
       comparePrice: 79.99,
       images: JSON.stringify([
-        'https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop',
-        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop'
+        '/images/banner/banner-7.jpg',
+        '/images/products/product-img-2.png'
       ]),
       categoryId: recovery.id,
       brand: 'Cryptosteel',
@@ -379,7 +374,7 @@ async function main() {
       shortDesc: 'Metal seed phrase storage — indestructible backup',
       price: 49.99,
       comparePrice: null,
-      images: JSON.stringify(['https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop']),
+      images: JSON.stringify(['/images/banner/banner-7.jpg']),
       categoryId: recovery.id,
       brand: 'Billfodl',
       sku: 'BFL-SSW-001',
@@ -403,7 +398,6 @@ async function main() {
     await prisma.product.create({ data: product })
   }
 
-  // Create site settings
   const settings = [
     { key: 'site_name', value: 'Morpheye' },
     { key: 'tagline', value: 'Authorized Hardware Wallet Reseller' },
@@ -424,7 +418,6 @@ async function main() {
     await prisma.siteSetting.create({ data: setting })
   }
 
-  // Create admin user
   await prisma.user.create({
     data: {
       email: 'admin@morpheye.com',

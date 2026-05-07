@@ -103,7 +103,7 @@ export function HeroSection() {
             className={`absolute inset-0 size-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             poster="/images/hero/hero-poster.jpg"
           >
-            <source src="/videos/hero-bg.mp4" type="video/mp4" />
+            <source src="/videos/banner-crypto.mp4" type="video/mp4" />
           </video>
         ) : (
           <div className="absolute inset-0 grid-pattern" />
