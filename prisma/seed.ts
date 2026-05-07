@@ -57,7 +57,11 @@ async function main() {
       shortDesc: 'Bluetooth-enabled premium hardware wallet with 5,500+ coin support',
       price: 149.99,
       comparePrice: 169.99,
-      images: JSON.stringify(['/images/ledger-nano-x-1.jpg', '/images/ledger-nano-x-2.jpg', '/images/ledger-nano-x-3.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
       sku: 'LDG-NX-001',
@@ -85,7 +89,10 @@ async function main() {
       shortDesc: 'Enhanced security hardware wallet with larger screen',
       price: 79.99,
       comparePrice: 99.99,
-      images: JSON.stringify(['/images/ledger-nano-s-plus-1.jpg', '/images/ledger-nano-s-plus-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
       sku: 'LDG-NSP-001',
@@ -113,7 +120,11 @@ async function main() {
       shortDesc: 'Premium touchscreen hardware wallet with open-source firmware',
       price: 219.99,
       comparePrice: 249.99,
-      images: JSON.stringify(['/images/trezor-t-1.jpg', '/images/trezor-t-2.jpg', '/images/trezor-t-3.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1631534597796-2a31267a2436?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Trezor',
       sku: 'TRZ-MT-001',
@@ -141,7 +152,10 @@ async function main() {
       shortDesc: 'Next-gen secure hardware wallet with Secure Element',
       price: 79.99,
       comparePrice: null,
-      images: JSON.stringify(['/images/trezor-safe3-1.jpg', '/images/trezor-safe3-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Trezor',
       sku: 'TRZ-S3-001',
@@ -169,7 +183,11 @@ async function main() {
       shortDesc: 'Revolutionary curved E Ink display hardware wallet by iPod creator',
       price: 399.99,
       comparePrice: null,
-      images: JSON.stringify(['/images/ledger-stax-1.jpg', '/images/ledger-stax-2.jpg', '/images/ledger-stax-3.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1642781992478-2ce1c3e5688c?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Ledger',
       sku: 'LDG-STX-001',
@@ -197,7 +215,10 @@ async function main() {
       shortDesc: 'Air-gapped QR code hardware wallet with fingerprint sensor',
       price: 119.99,
       comparePrice: 149.99,
-      images: JSON.stringify(['/images/keystone-pro3-1.jpg', '/images/keystone-pro3-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1639762681485-074b7f9381ac?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop'
+      ]),
       categoryId: hardwareWallets.id,
       brand: 'Keystone',
       sku: 'KST-P3-001',
@@ -226,7 +247,7 @@ async function main() {
       shortDesc: 'Premium protective case for Ledger Nano wallets',
       price: 29.99,
       comparePrice: 39.99,
-      images: JSON.stringify(['/images/ledger-case-1.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1585336261022-680e295ce275?w=800&h=800&fit=crop']),
       categoryId: accessories.id,
       brand: 'Ledger',
       sku: 'LDG-POD-001',
@@ -251,7 +272,7 @@ async function main() {
       shortDesc: 'Official USB-C cable pack for Trezor wallets',
       price: 14.99,
       comparePrice: null,
-      images: JSON.stringify(['/images/trezor-cable-1.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&h=800&fit=crop']),
       categoryId: accessories.id,
       brand: 'Trezor',
       sku: 'TRZ-CBL-001',
@@ -276,7 +297,10 @@ async function main() {
       shortDesc: 'Complete starter pack: Nano X + Case + Recovery Sheet',
       price: 159.99,
       comparePrice: 189.97,
-      images: JSON.stringify(['/images/ledger-starter-1.jpg', '/images/ledger-starter-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1616295386261-9d4be535507f?w=800&h=800&fit=crop'
+      ]),
       categoryId: bundles.id,
       brand: 'Ledger',
       sku: 'LDG-BDL-001',
@@ -299,7 +323,10 @@ async function main() {
       shortDesc: 'Trezor Model T + Ledger Nano X dual security bundle',
       price: 299.99,
       comparePrice: 369.98,
-      images: JSON.stringify(['/images/dual-bundle-1.jpg', '/images/dual-bundle-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1631534597796-2a31267a2436?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=800&h=800&fit=crop'
+      ]),
       categoryId: bundles.id,
       brand: 'Multi',
       sku: 'MUL-BDL-001',
@@ -323,7 +350,10 @@ async function main() {
       shortDesc: 'Stainless steel seed phrase backup — fireproof & waterproof',
       price: 59.99,
       comparePrice: 79.99,
-      images: JSON.stringify(['/images/cryptosteel-1.jpg', '/images/cryptosteel-2.jpg']),
+      images: JSON.stringify([
+        'https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1624996379697-f1d4647c8296?w=800&h=800&fit=crop'
+      ]),
       categoryId: recovery.id,
       brand: 'Cryptosteel',
       sku: 'CST-CAP-001',
@@ -349,7 +379,7 @@ async function main() {
       shortDesc: 'Metal seed phrase storage — indestructible backup',
       price: 49.99,
       comparePrice: null,
-      images: JSON.stringify(['/images/billfodl-1.jpg']),
+      images: JSON.stringify(['https://images.unsplash.com/photo-1642788451960-9e09e25a339d?w=800&h=800&fit=crop']),
       categoryId: recovery.id,
       brand: 'Billfodl',
       sku: 'BFL-SSW-001',

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Truck, Award, ChevronDown, Users, Star, BadgeCheck, ShoppingBag, ChevronLeft, ChevronRight, Package } from 'lucide-react'
+import { Shield, Truck, Award, ChevronDown, Users, Star, BadgeCheck, ShoppingBag, ChevronLeft, ChevronRight, Package, Play, Pause } from 'lucide-react'
 import Image from 'next/image'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Button } from '@/components/ui/button'
@@ -35,6 +35,10 @@ export function HeroSection() {
   const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -45,7 +49,6 @@ export function HeroSection() {
           setProducts(data.products || [])
         }
       } catch {
-        // ignore
       } finally {
         setLoading(false)
       }
@@ -53,7 +56,6 @@ export function HeroSection() {
     fetchFeatured()
   }, [])
 
-  // Auto-rotate every 4 seconds
   useEffect(() => {
     if (isPaused || products.length <= 1) return
     const interval = setInterval(() => {
@@ -74,77 +76,69 @@ export function HeroSection() {
     setCurrentIndex((prev) => (prev + 1) % products.length)
   }, [products.length])
 
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => !prev)
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted
+    }
+  }, [isMuted])
+
   const currentProduct = products[currentIndex]
   const prevProduct = products[currentIndex === 0 ? products.length - 1 : currentIndex - 1]
   const nextProduct = products[(currentIndex + 1) % products.length]
 
   return (
-    <section className="relative overflow-hidden bg-background grid-pattern hero-particles">
-      {/* Animated gradient mesh background - 4 overlapping radial gradients that shift */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section className="relative overflow-hidden bg-background">
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        {!videoError ? (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            onCanPlayThrough={() => setVideoLoaded(true)}
+            onError={() => setVideoError(true)}
+            className={`absolute inset-0 size-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            poster="/images/hero/hero-poster.jpg"
+          >
+            <source src="/videos/hero-bg.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <div className="absolute inset-0 grid-pattern" />
+        )}
+
+        {/* Fallback gradient while video loads */}
+        {!videoLoaded && !videoError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/80 via-background to-teal-950/60 grid-pattern" />
+        )}
+
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60" />
+
+        {/* Animated scanlines */}
+        <div className="absolute inset-0 pointer-events-none scanlines opacity-30" />
+      </div>
+
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
         <div
-          className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full opacity-30"
+          className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full opacity-20"
           style={{
-            background: 'radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(6,182,212,0.3) 0%, transparent 70%)',
             animation: 'mesh-drift-1 12s ease-in-out infinite',
           }}
         />
         <div
-          className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-25"
+          className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full opacity-15"
           style={{
-            background: 'radial-gradient(circle, rgba(20,184,166,0.2) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(20,184,166,0.25) 0%, transparent 70%)',
             animation: 'mesh-drift-2 15s ease-in-out infinite',
           }}
         />
-        <div
-          className="absolute bottom-[-10%] left-[30%] w-[700px] h-[700px] rounded-full opacity-20"
-          style={{
-            background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)',
-            animation: 'mesh-drift-3 18s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="absolute top-[40%] left-[50%] w-[400px] h-[400px] rounded-full opacity-15"
-          style={{
-            background: 'radial-gradient(circle, rgba(34,211,238,0.2) 0%, transparent 70%)',
-            animation: 'mesh-drift-4 14s ease-in-out infinite',
-          }}
-        />
       </div>
-
-      {/* Background gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-emerald-500/5" />
-
-      {/* Decorative circuit/tech pattern SVG - grid with dots at intersections */}
-      <div className="absolute inset-0 overflow-hidden opacity-[0.04]">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="circuit-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#06b6d4" strokeWidth="0.5" />
-              <circle cx="0" cy="0" r="2" fill="#06b6d4" />
-              <circle cx="60" cy="0" r="1.5" fill="#06b6d4" />
-              <circle cx="0" cy="60" r="1.5" fill="#06b6d4" />
-              {/* Connection lines on some intersections */}
-              <line x1="0" y1="30" x2="20" y2="30" stroke="#06b6d4" strokeWidth="0.3" opacity="0.5" />
-              <line x1="30" y1="0" x2="30" y2="20" stroke="#06b6d4" strokeWidth="0.3" opacity="0.5" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#circuit-grid)" />
-        </svg>
-      </div>
-
-      {/* Radial glow effect */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] bg-emerald-500/8 rounded-full blur-[100px]" />
-
-      {/* Additional ambient particles */}
-      <div className="absolute top-1/3 left-[70%] w-1.5 h-1.5 rounded-full bg-cyan-400/20 animate-pulse" />
-      <div className="absolute top-2/3 left-[10%] w-1 h-1 rounded-full bg-teal-400/15 animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-[85%] w-1 h-1 rounded-full bg-cyan-300/10 animate-pulse" style={{ animationDelay: '2s' }} />
-
-      {/* Scanline/CRT effect */}
-      <div className="absolute inset-0 pointer-events-none z-10 scanlines" />
 
       <div className="relative z-20 mx-auto flex min-h-[70vh] sm:min-h-[85vh] max-w-7xl flex-col items-center justify-center px-4 py-12 sm:py-20 text-center sm:px-6 lg:px-8">
         <motion.div
@@ -207,6 +201,18 @@ export function HeroSection() {
           </Button>
         </motion.div>
 
+        {/* Mute/Unmute button for video */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          onClick={toggleMute}
+          className="absolute top-6 right-6 z-30 flex size-10 items-center justify-center rounded-full border border-border/50 bg-card/60 text-muted-foreground backdrop-blur-sm transition-all hover:bg-card/80 hover:text-foreground"
+          aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+        >
+          {isMuted ? <Pause className="size-4" /> : <Play className="size-4" />}
+        </motion.button>
+
         {/* Floating trust badges */}
         <div className="mt-8 sm:mt-16 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
           {floatingBadges.map((badge) => (
@@ -258,7 +264,6 @@ export function HeroSection() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {loading ? (
-            // Loading skeleton
             <div className="flex items-center justify-center gap-4 sm:gap-8">
               <div className="hidden sm:block w-36 h-44 rounded-xl bg-muted/50 animate-pulse" />
               <div className="w-56 sm:w-72 h-72 sm:h-96 rounded-2xl bg-muted/50 animate-pulse" />
@@ -266,7 +271,6 @@ export function HeroSection() {
             </div>
           ) : products.length > 0 ? (
             <div className="relative flex items-center justify-center">
-              {/* Left Peek Card */}
               {prevProduct && (
                 <motion.div
                   key={`prev-${prevProduct.id}`}
@@ -296,7 +300,6 @@ export function HeroSection() {
                 </motion.div>
               )}
 
-              {/* Center Main Card */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`center-${currentProduct?.id}`}
@@ -306,13 +309,11 @@ export function HeroSection() {
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
                   className="relative z-10 mx-auto"
                 >
-                  {/* Multi-layer glow halo behind product */}
                   <div className="absolute inset-0 -m-6 rounded-3xl bg-cyan-500/15 blur-2xl" />
                   <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-400/10 blur-xl" />
                   <div className="absolute inset-0 -m-2 rounded-xl bg-gradient-to-br from-cyan-500/10 to-teal-500/8 blur-lg" />
 
                   <div className="relative w-64 sm:w-72 lg:w-80 overflow-hidden rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-cyan-500/30">
-                    {/* Product Image */}
                     <div className="relative aspect-square">
                       {currentProduct?.images?.[0] ? (
                         <Image
@@ -327,7 +328,6 @@ export function HeroSection() {
                           <Package className="size-16 text-muted-foreground" />
                         </div>
                       )}
-                      {/* Discount badge */}
                       {currentProduct?.comparePrice && currentProduct.comparePrice > currentProduct.price && (
                         <div className="absolute top-3 right-3 rounded-lg bg-amber-500 px-2.5 py-1 text-xs font-bold text-black">
                           Save {Math.round(((currentProduct.comparePrice - currentProduct.price) / currentProduct.comparePrice) * 100)}%
@@ -335,7 +335,6 @@ export function HeroSection() {
                       )}
                     </div>
 
-                    {/* Product Info */}
                     <div className="p-4 sm:p-5">
                       {currentProduct?.brand && (
                         <span className="text-[10px] font-medium text-cyan-400 uppercase tracking-wider">
@@ -367,7 +366,6 @@ export function HeroSection() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Right Peek Card */}
               {nextProduct && (
                 <motion.div
                   key={`next-${nextProduct.id}`}
@@ -397,7 +395,6 @@ export function HeroSection() {
                 </motion.div>
               )}
 
-              {/* Navigation Arrows */}
               {products.length > 1 && (
                 <>
                   <button
@@ -418,7 +415,6 @@ export function HeroSection() {
               )}
             </div>
           ) : (
-            // Fallback when no products
             <div className="flex items-center justify-center gap-6">
               <div className="relative rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 float-animation">
                 <div className="absolute inset-0 -m-4 rounded-2xl bg-cyan-500/10 blur-xl" />
@@ -433,7 +429,6 @@ export function HeroSection() {
             </div>
           )}
 
-          {/* Navigation Dots */}
           {products.length > 1 && (
             <div className="mt-6 flex items-center justify-center gap-2">
               {products.map((_, i) => (
@@ -452,7 +447,6 @@ export function HeroSection() {
           )}
         </motion.div>
 
-        {/* Scroll Indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

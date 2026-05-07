@@ -58,8 +58,11 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/images/logo.png",
-    apple: "/images/logo.png",
+    icon: [
+      { url: "/images/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/images/favicon/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/images/favicon/icon.svg",
   },
   openGraph: {
     type: "website",
@@ -71,7 +74,7 @@ export const metadata: Metadata = {
       "Secure your crypto with certified hardware wallets. Authorized reseller of Ledger, Trezor & Keystone. Free shipping on orders over $150.",
     images: [
       {
-        url: "/images/hero-banner.jpg",
+        url: "/images/hero/hero-banner.jpg",
         width: 1344,
         height: 768,
         alt: "Morpheye — Authorized Hardware Wallet Reseller",
@@ -83,7 +86,7 @@ export const metadata: Metadata = {
     title: "Morpheye — Authorized Hardware Wallet Reseller",
     description:
       "Secure your crypto with certified hardware wallets. Authorized reseller of Ledger, Trezor & Keystone.",
-    images: ["/images/hero-banner.jpg"],
+    images: ["/images/hero/hero-banner.jpg"],
     creator: "@morpheye",
   },
   alternates: {
@@ -101,7 +104,7 @@ const jsonLdOrganization = {
   name: "Morpheye",
   description: "Authorized hardware wallet reseller for Ledger, Trezor, and Keystone",
   url: "https://morpheye.com",
-  logo: "https://morpheye.com/images/logo.png",
+  logo: "https://morpheye.com/images/logo/logo.svg",
   sameAs: [
     "https://facebook.com/morpheye",
     "https://twitter.com/morpheye",

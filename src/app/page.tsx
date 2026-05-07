@@ -32,6 +32,10 @@ import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { AnnouncementBar } from '@/components/store/announcement-bar'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
+import { FlashPromoBanner } from '@/components/store/flash-promo-banner'
+import { CategoryShowcaseBanner } from '@/components/store/category-showcase-banner'
+import { TrustSecurityBanner } from '@/components/store/trust-security-banner'
+import { CryptoCtaBanner } from '@/components/store/crypto-cta-banner'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-order-detail', 'admin-contact', 'admin-settings']
@@ -40,13 +44,14 @@ function HomePage() {
   return (
     <>
       <HeroSection />
+      <FlashPromoBanner />
       <FeaturedSection />
+      <CategoryShowcaseBanner />
       <RecentlyViewedSection />
-      <CategoriesSection />
       <DealOfTheDay />
       <BrandShowcase />
-      <TrustSection />
-      <NewsletterSection />
+      <TrustSecurityBanner />
+      <CryptoCtaBanner />
     </>
   )
 }
