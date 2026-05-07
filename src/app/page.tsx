@@ -1,0 +1,60 @@
+'use client'
+
+import { useNavigationStore } from '@/store/navigation-store'
+import { StoreHeader } from '@/components/store/store-header'
+import { StoreFooter } from '@/components/store/store-footer'
+import { HeroSection } from '@/components/store/hero-section'
+import { FeaturedSection } from '@/components/store/featured-section'
+import { CategoriesSection } from '@/components/store/categories-section'
+import { TrustSection } from '@/components/store/trust-section'
+import { NewsletterSection } from '@/components/store/newsletter-section'
+import { ShopPage } from '@/components/store/shop-page'
+import { ProductDetail } from '@/components/store/product-detail'
+import { CartPage } from '@/components/store/cart-page'
+import { CheckoutPage } from '@/components/store/checkout-page'
+import { CheckoutSuccess } from '@/components/store/checkout-success'
+import { NotificationToast } from '@/components/store/notification-toast'
+
+function HomePage() {
+  return (
+    <>
+      <HeroSection />
+      <FeaturedSection />
+      <CategoriesSection />
+      <TrustSection />
+      <NewsletterSection />
+    </>
+  )
+}
+
+export default function Home() {
+  const { currentPage } = useNavigationStore()
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return <HomePage />
+      case 'shop':
+        return <ShopPage />
+      case 'product':
+        return <ProductDetail />
+      case 'cart':
+        return <CartPage />
+      case 'checkout':
+        return <CheckoutPage />
+      case 'checkout-success':
+        return <CheckoutSuccess />
+      default:
+        return <HomePage />
+    }
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col bg-[#0a0a0a] text-white">
+      <StoreHeader />
+      <main className="flex-1">{renderPage()}</main>
+      <StoreFooter />
+      <NotificationToast />
+    </div>
+  )
+}
