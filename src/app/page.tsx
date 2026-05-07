@@ -20,6 +20,7 @@ import { BrandShowcase } from '@/components/store/brand-showcase'
 import { OrderTrackingPage } from '@/components/store/order-tracking-page'
 import { ContactPage } from '@/components/store/contact-page'
 import { CookieConsent } from '@/components/store/cookie-consent'
+import { SocialProofNotification } from '@/components/store/social-proof-notification'
 import { QuickViewModal } from '@/components/store/quick-view-modal'
 import { NotificationToast } from '@/components/store/notification-toast'
 import { AdminLayout } from '@/components/admin/admin-layout'
@@ -110,6 +111,7 @@ export default function Home() {
       <StoreFooter />
       <QuickViewModal />
       <CookieConsent />
+      <SocialProofNotification />
       <NotificationToast />
       <MetaPixel />
     </div>

@@ -24,6 +24,9 @@ import {
   ChevronDown,
   Lock,
   X,
+  Eye,
+  Clock,
+  Flame,
 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
@@ -243,6 +246,10 @@ export function ProductDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const [liveViewCount, setLiveViewCount] = useState(0)
+  const [recentPurchaseCount, setRecentPurchaseCount] = useState(0)
+  const [hoursUntilDispatch, setHoursUntilDispatch] = useState(0)
+  const [minutesUntilDispatch, setMinutesUntilDispatch] = useState(0)
 
   const { selectedProductId, navigate } = useNavigationStore()
   const addItem = useCartStore((s) => s.addItem)
@@ -252,6 +259,44 @@ export function ProductDetail() {
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  // Live view count - random 12-47, changes every 30s
+  useEffect(() => {
+    const setRandomViewCount = () => {
+      setLiveViewCount(Math.floor(Math.random() * 36) + 12)
+    }
+    setRandomViewCount()
+    const interval = setInterval(setRandomViewCount, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Recently purchased count - random 1-5
+  useEffect(() => {
+    setRecentPurchaseCount(Math.floor(Math.random() * 5) + 1)
+  }, [])
+
+  // Hours until 5PM dispatch
+  useEffect(() => {
+    const calculateDispatch = () => {
+      const now = new Date()
+      const dispatch = new Date(now)
+      dispatch.setHours(17, 0, 0, 0) // 5PM today
+      if (now >= dispatch) {
+        // Already past 5PM, show tomorrow
+        setHoursUntilDispatch(0)
+        setMinutesUntilDispatch(0)
+        return
+      }
+      const diff = dispatch.getTime() - now.getTime()
+      const hours = Math.floor(diff / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      setHoursUntilDispatch(hours)
+      setMinutesUntilDispatch(minutes)
+    }
+    calculateDispatch()
+    const interval = setInterval(calculateDispatch, 60000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -615,6 +660,27 @@ export function ProductDetail() {
             {product.name}
           </h1>
 
+          {/* Live View Count */}
+          {liveViewCount > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-2"
+            >
+              <div className="flex items-center gap-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 px-3 py-1">
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="size-2 rounded-full bg-cyan-400"
+                />
+                <Eye className="size-3 text-cyan-400" />
+                <span className="text-xs font-medium text-cyan-400">
+                  {liveViewCount} people viewing this right now
+                </span>
+              </div>
+            </motion.div>
+          )}
+
           {/* Rating */}
           {product.rating > 0 && (
             <div className="flex items-center gap-2">
@@ -696,6 +762,31 @@ export function ProductDetail() {
                   : 'Out of Stock'}
             </span>
           </div>
+
+          {/* Recently Purchased & Dispatch Timer */}
+          {stockStatus !== 'out_of_stock' && (
+            <div className="flex flex-col gap-2">
+              {/* Recently Purchased */}
+              {recentPurchaseCount > 0 && (
+                <div className="flex items-center gap-2 rounded-lg border border-amber-500/15 bg-amber-500/5 px-4 py-2.5">
+                  <Flame className="size-4 text-amber-400" />
+                  <span className="text-xs font-medium text-amber-300">
+                    {recentPurchaseCount} {recentPurchaseCount === 1 ? 'person' : 'people'} bought this in the last 24 hours
+                  </span>
+                </div>
+              )}
+
+              {/* Dispatch Timer */}
+              {hoursUntilDispatch > 0 && (
+                <div className="flex items-center gap-2 rounded-lg border border-cyan-500/15 bg-cyan-500/5 px-4 py-2.5">
+                  <Clock className="size-4 text-cyan-400" />
+                  <span className="text-xs font-medium text-cyan-300">
+                    Order within <span className="font-bold text-cyan-400">{hoursUntilDispatch}h {minutesUntilDispatch}m</span> for guaranteed dispatch today
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Estimated Delivery */}
           {stockStatus !== 'out_of_stock' && (

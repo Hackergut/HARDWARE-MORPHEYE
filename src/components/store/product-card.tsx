@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle } from 'lucide-react'
+import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle, Flame } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
@@ -161,6 +161,13 @@ export function ProductCard({ product }: ProductCardProps) {
               -{discount}%
             </Badge>
           )}
+          {/* Hot badge for highly rated products with many reviews */}
+          {(product.rating ?? 0) > 4.7 && (product.reviewCount ?? 0) > 1000 && (
+            <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-[10px] font-bold text-white shadow-lg shadow-orange-500/30">
+              <Flame className="mr-0.5 size-3" />
+              Hot
+            </Badge>
+          )}
         </div>
 
         {/* Wishlist Heart Button */}
@@ -246,6 +253,16 @@ export function ProductCard({ product }: ProductCardProps) {
                   ${product.comparePrice.toFixed(2)}
                 </span>
               )}
+              {/* Low stock pulsing badge */}
+              {stockStatus === 'low-stock' && product.stock !== undefined && product.stock !== null && (
+                <motion.span
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="rounded-md bg-red-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-red-400 border border-red-500/20"
+                >
+                  Only {product.stock} left!
+                </motion.span>
+              )}
             </div>
             {/* Stock indicator */}
             <div className="flex items-center gap-1.5">
@@ -254,6 +271,12 @@ export function ProductCard({ product }: ProductCardProps) {
                 {stockConfig.label}
               </span>
             </div>
+            {/* Selling Fast text for low stock */}
+            {stockStatus === 'low-stock' && (
+              <span className="text-[10px] font-medium text-amber-400">
+                Selling Fast
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1">
             <Button

@@ -77,7 +77,7 @@ export function AdminSidebar() {
                   }}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-cyan-500/10 text-cyan-400'
+                      ? 'admin-nav-active'
                       : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                   }`}
                 >
@@ -141,9 +141,9 @@ export function AdminSidebar() {
               <button
                 key={item.page}
                 onClick={() => navigate(item.page)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-cyan-500/10 text-cyan-400'
+                    ? 'admin-nav-active'
                     : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                 }`}
               >

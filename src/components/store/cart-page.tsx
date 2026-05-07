@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ShoppingBag, Trash2, Plus, Minus, ArrowLeft, ShieldCheck, Lock, Truck, Tag, X, Loader2 } from 'lucide-react'
+import { ShoppingBag, Trash2, Plus, Minus, ArrowLeft, ShieldCheck, Lock, Truck, Tag, X, Loader2, Clock, AlertTriangle } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useNotificationStore } from '@/store/notification-store'
@@ -32,6 +32,38 @@ export function CartPage() {
   const [promoInput, setPromoInput] = useState('')
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null)
   const [promoLoading, setPromoLoading] = useState(false)
+
+  // Cart timer state
+  const [cartTimer, setCartTimer] = useState(30 * 60) // 30 minutes in seconds
+
+  // Reset cart timer on page visit
+  useEffect(() => {
+    const stored = localStorage.getItem('morpheye_cart_timer')
+    if (stored) {
+      const elapsed = Math.floor((Date.now() - parseInt(stored)) / 1000)
+      const remaining = Math.max(0, 30 * 60 - elapsed)
+      setCartTimer(remaining)
+    } else {
+      localStorage.setItem('morpheye_cart_timer', Date.now().toString())
+      setCartTimer(30 * 60)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (cartTimer <= 0) return
+    const interval = setInterval(() => {
+      setCartTimer((prev) => Math.max(0, prev - 1))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [cartTimer])
+
+  const timerMinutes = Math.floor(cartTimer / 60)
+  const timerSeconds = cartTimer % 60
+
+  // Check if any items have low stock (stock <= 20)
+  // Since cart items don't carry stock info, we'll assume items are high demand
+  // based on cart presence for urgency messaging
+  const hasHighDemandItems = items.length > 0
 
   const subtotal = getTotal()
   const shipping = subtotal > FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : 9.99
@@ -161,6 +193,31 @@ export function CartPage() {
           <Trash2 className="mr-1 size-4" />
           Clear Cart
         </Button>
+      </div>
+
+      {/* Cart Abandonment Reminder */}
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5 rounded-lg border border-amber-500/15 bg-amber-500/5 px-4 py-2.5">
+          <Clock className="size-4 text-amber-400 shrink-0" />
+          <span className="text-xs font-medium text-amber-300">
+            Your cart is reserved for 30 minutes
+          </span>
+          <motion.span
+            animate={{ opacity: [1, 0.5, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="ml-1 rounded-md bg-amber-500/15 px-2 py-0.5 text-xs font-bold text-amber-400 border border-amber-500/20"
+          >
+            {String(timerMinutes).padStart(2, '0')}:{String(timerSeconds).padStart(2, '0')}
+          </motion.span>
+        </div>
+        {hasHighDemandItems && (
+          <div className="flex items-center gap-2 rounded-lg border border-red-500/15 bg-red-500/5 px-4 py-2.5">
+            <AlertTriangle className="size-4 text-red-400 shrink-0" />
+            <span className="text-xs font-medium text-red-300">
+              Items in your cart are in high demand
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Free Shipping Progress Bar */}

@@ -37,9 +37,15 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0a0a0a] md:flex-row">
+      {/* Cyan accent line at top */}
+      <div className="admin-accent-line md:hidden" />
       <AdminSidebar />
-      <main className="flex-1 overflow-auto">
-        {renderContent()}
+      <main className="flex-1 overflow-auto bg-gradient-to-b from-neutral-950 to-neutral-900/80">
+        {/* Desktop accent line */}
+        <div className="hidden md:block admin-accent-line" />
+        <div key={currentPage} className="admin-tab-content">
+          {renderContent()}
+        </div>
       </main>
     </div>
   )

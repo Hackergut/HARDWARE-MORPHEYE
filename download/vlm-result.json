@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "Rating: 6/10  \n\nTop 2 Improvements:  \n1. Add a clear, prominent call-to-action (CTA) button (e.g., \"Shop Now\" or \"Explore Wallets\") below the headline to drive conversions.  \n2. Include visual elements (e.g., product images, icons) to break up text and make the page more engaging.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1778149044,
+  "id": "202605071817191b8347b1e4214d57",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "202605071817191b8347b1e4214d57",
+  "usage": {
+    "completion_tokens": 79,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1000,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 1079
+  }
+}

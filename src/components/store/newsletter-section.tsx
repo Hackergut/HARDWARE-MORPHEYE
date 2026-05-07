@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, ArrowRight, Lock, ShieldCheck, Gift } from 'lucide-react'
+import { Mail, ArrowRight, Lock, ShieldCheck, Gift, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -87,11 +87,41 @@ export function NewsletterSection() {
           </p>
 
           {/* Incentive Text */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-2">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-2">
             <Gift className="size-4 text-amber-400" />
             <span className="text-sm font-medium text-amber-400">
               10% off your first order when you subscribe
             </span>
+          </div>
+
+          {/* Subscriber Social Proof */}
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <div className="flex items-center gap-2">
+              {/* Overlapping Avatars */}
+              <div className="flex -space-x-2">
+                {[
+                  { initial: 'A', color: 'bg-cyan-500' },
+                  { initial: 'M', color: 'bg-teal-500' },
+                  { initial: 'S', color: 'bg-amber-500' },
+                  { initial: 'K', color: 'bg-emerald-500' },
+                  { initial: 'R', color: 'bg-violet-500' },
+                ].map((avatar, i) => (
+                  <div
+                    key={i}
+                    className={`flex size-7 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[10px] font-bold text-white ${avatar.color}`}
+                  >
+                    {avatar.initial}
+                  </div>
+                ))}
+              </div>
+              <span className="text-sm font-semibold text-neutral-300">
+                Join <span className="text-cyan-400">12,847+</span> subscribers
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+              <Clock className="size-3" />
+              <span>Latest issue sent 2 days ago</span>
+            </div>
           </div>
 
           {subscribed ? (

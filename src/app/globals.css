@@ -489,3 +489,308 @@
   transform: scale(1.1);
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
 }
+
+/* ============================================
+   Task 2 - Major Styling Polish Additions
+   ============================================ */
+
+/* Animated gradient mesh drift keyframes */
+@keyframes mesh-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+@keyframes mesh-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-25px, 25px) scale(1.08); }
+  66% { transform: translate(20px, -10px) scale(0.92); }
+}
+
+@keyframes mesh-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.1); }
+}
+
+@keyframes mesh-drift-4 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(calc(-50% + 30px), calc(-50% - 20px)) scale(1.05); }
+}
+
+/* Scanline/CRT effect for futuristic hero */
+.scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* Hero CTA strong glow */
+.hero-cta-glow {
+  box-shadow:
+    0 0 15px rgba(6, 182, 212, 0.3),
+    0 0 30px rgba(6, 182, 212, 0.15),
+    0 0 60px rgba(6, 182, 212, 0.05);
+}
+
+.hero-cta-glow:hover {
+  box-shadow:
+    0 0 20px rgba(6, 182, 212, 0.5),
+    0 0 40px rgba(6, 182, 212, 0.25),
+    0 0 80px rgba(6, 182, 212, 0.1);
+}
+
+/* Learn More button border glow animation */
+.learn-more-glow {
+  position: relative;
+}
+
+.learn-more-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), transparent, rgba(6, 182, 212, 0.15));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.learn-more-glow:hover::before {
+  opacity: 1;
+}
+
+@keyframes border-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(6, 182, 212, 0.1), inset 0 0 5px rgba(6, 182, 212, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2), inset 0 0 10px rgba(6, 182, 212, 0.1);
+  }
+}
+
+.learn-more-glow {
+  animation: border-glow-pulse 3s ease-in-out infinite;
+}
+
+/* Page loading progress bar - thin cyan bar at top */
+.page-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #06b6d4, #22d3ee, #06b6d4, transparent);
+  z-index: 9999;
+  animation: loading-fill 1.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes loading-fill {
+  0% { width: 0; opacity: 1; }
+  70% { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* Scroll progress bar for header */
+.scroll-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #06b6d4, #22d3ee, #14b8a6);
+  transition: width 0.1s linear;
+  z-index: 10;
+}
+
+/* Stagger fade-in for child elements */
+.stagger-fade-in > * {
+  opacity: 0;
+  animation: stagger-item-in 0.5s ease-out forwards;
+}
+
+.stagger-fade-in > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-fade-in > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-fade-in > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-fade-in > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-fade-in > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-fade-in > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-fade-in > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-fade-in > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-fade-in > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-fade-in > *:nth-child(10) { animation-delay: 0.5s; }
+.stagger-fade-in > *:nth-child(n+11) { animation-delay: 0.55s; }
+
+@keyframes stagger-item-in {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Glass card - frosted glass effect */
+.glass-card {
+  background: rgba(17, 17, 17, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(38, 38, 38, 0.8);
+  border-radius: 0.75rem;
+}
+
+.glass-card-strong {
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(38, 38, 38, 0.6);
+  border-radius: 0.75rem;
+}
+
+/* Morpheye signature gradient - cyan→teal→emerald */
+.morpheye-gradient {
+  background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 50%, #10b981 100%);
+}
+
+.morpheye-gradient-subtle {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(20, 184, 166, 0.08) 50%, rgba(16, 185, 129, 0.06) 100%);
+}
+
+/* Shimmer effect for skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(38, 38, 38, 1) 25%,
+    rgba(38, 38, 38, 0.6) 50%,
+    rgba(38, 38, 38, 1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Admin panel accent line at top */
+.admin-accent-line {
+  height: 3px;
+  background: linear-gradient(90deg, #06b6d4, #14b8a6, #10b981, transparent);
+}
+
+/* Admin stat card hover - lift + glow */
+.admin-stat-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(6, 182, 212, 0.12), 0 0 15px rgba(6, 182, 212, 0.06);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+/* Admin tab transition */
+.admin-tab-content {
+  animation: admin-fade-in 0.3s ease-out;
+}
+
+@keyframes admin-fade-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Admin sidebar active state - wider left border + brighter text */
+.admin-nav-active {
+  position: relative;
+  background: rgba(6, 182, 212, 0.08);
+  color: #22d3ee;
+  border-left: 3px solid #06b6d4;
+  padding-left: calc(0.75rem - 3px);
+  font-weight: 600;
+}
+
+/* Header bottom glow that intensifies on scroll */
+.header-glow {
+  position: relative;
+}
+
+.header-glow::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.5), rgba(6, 182, 212, 0.3), transparent);
+  opacity: 0.3;
+  transition: opacity 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
+.header-glow.scrolled::after {
+  opacity: 1;
+  height: 2px;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
+}
+
+/* Logo glow effect */
+.logo-glow {
+  position: relative;
+}
+
+.logo-glow::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.logo-glow:hover::before {
+  opacity: 1;
+}
+
+/* Shop page decorative banner */
+.shop-banner {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(10, 10, 10, 0.9) 50%, rgba(20, 184, 166, 0.06) 100%);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+/* Product counter stylish design */
+.product-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  font-size: 0.75rem;
+  color: #a3a3a3;
+}
+
+.product-counter .count-value {
+  color: #22d3ee;
+  font-weight: 600;
+}
+
+/* Subtle divider with gradient */
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.2), rgba(38, 38, 38, 0.5), transparent);
+}
