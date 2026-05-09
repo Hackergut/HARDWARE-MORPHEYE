@@ -1,85 +1,63 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useNavigationStore } from '@/store/navigation-store'
 import { Button } from '@/components/ui/button'
-import { ShoppingBag, ArrowRight, Star } from 'lucide-react'
+import { ShoppingBag, ArrowRight } from 'lucide-react'
 
-const showcaseProducts = [
-  {
-    id: 'trezor-safe-7',
-    name: 'Trezor Safe 7',
-    brand: 'Trezor',
-    tagline: 'Bluetooth-enabled. EAL6+ Secure Element. Color touchscreen.',
-    price: 79.99,
-    comparePrice: 99.99,
-    image: '/images/products/trezor-safe-7/hero.webp',
-    features: ['EAL6+ Secure Element', 'Bluetooth 5.0', '1.54" Color Touch', 'Wireless Charging'],
-    badge: 'New Release',
-  },
-  {
-    id: 'trezor-safe-3',
-    name: 'Trezor Safe 3',
-    brand: 'Trezor',
-    tagline: 'Compact security. Shamir Backup. USB-C.',
-    price: 59.99,
-    comparePrice: null,
-    image: '/images/products/trezor-safe-3/hero.webp',
-    features: ['Secure Element', 'Shamir Backup', 'USB-C', 'Haptic Feedback'],
-    badge: 'Bestseller',
-  },
-  {
-    id: 'sy2-pro',
-    name: 'SY2 Pro',
-    brand: 'SY2',
-    tagline: 'Air-gapped QR signing. 4" touchscreen.',
-    price: 89.99,
-    comparePrice: 119.99,
-    image: '/images/products/sy2-pro/hero-1.webp',
-    features: ['Air-gapped', '4" Touchscreen', 'Fingerprint', 'Open Source'],
-    badge: null,
-  },
-  {
-    id: 'onekey-pro',
-    name: 'OneKey Pro',
-    brand: 'OneKey',
-    tagline: 'Premium all-metal design. Multi-chain.',
-    price: 129.99,
-    comparePrice: 159.99,
-    image: '/images/products/other/onekey-pro.webp',
-    features: ['All-Metal Body', 'Multi-chain', 'Bluetooth', 'E-ink Display'],
-    badge: 'Premium',
-  },
-  {
-    id: 'secux-nifty',
-    name: 'SecuX Nifty',
-    brand: 'SecuX',
-    tagline: 'Sleek NFC wallet. EAL5+ certified.',
-    price: 149.99,
-    comparePrice: null,
-    image: '/images/products/other/secux-nifty.webp',
-    features: ['NFC Enabled', 'EAL5+', 'Cross-chain', 'Compact'],
-    badge: null,
-  },
-  {
-    id: 's1pro5',
-    name: 'S1 Pro V5',
-    brand: 'S1',
-    tagline: 'Military-grade steel. Indestructible backup.',
-    price: 69.99,
-    comparePrice: 89.99,
-    image: '/images/products/other/s1pro5.webp',
-    features: ['Steel Construction', 'Fireproof', 'Waterproof', 'Shockproof'],
-    badge: 'Sale',
-  },
-]
+interface Product {
+  id: string
+  name: string
+  slug: string
+  brand?: string | null
+  price: number
+  comparePrice?: number | null
+  images: string[]
+  shortDesc?: string | null
+  tags: string[]
+  featured?: boolean
+  active?: boolean
+  stock: number
+}
 
 export function ProductShowcaseSection() {
   const { navigate } = useNavigationStore()
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/products?featured=true&limit=6')
+      .then((r) => r.json())
+      .then((data) => {
+        const list = (data.products || []).map((p: any) => ({
+          ...p,
+          images: typeof p.images === 'string' ? JSON.parse(p.images) : p.images,
+          tags: typeof p.tags === 'string' ? JSON.parse(p.tags) : p.tags,
+        }))
+        setProducts(list)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="relative py-24 sm:py-32 bg-[#0a0a0a]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] aspect-[4/5] animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
-    <section className="relative py-24 sm:py-32 bg-[#0a0a0a]">
+    <section id="featured-section" className="relative py-24 sm:py-32 bg-[#0a0a0a]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -106,85 +84,102 @@ export function ProductShowcaseSection() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {showcaseProducts.map((product, i) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-all duration-300 hover:border-[#0f7157]/30 hover:bg-white/[0.04]"
-            >
-              {/* Badge */}
-              {product.badge && (
-                <div className="absolute top-4 left-4 z-20">
-                  <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-bold shadow-lg ${
-                    product.badge === 'Sale'
-                      ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                      : product.badge === 'New Release'
-                      ? 'bg-[#0f7157] text-white'
-                      : 'bg-[#0f7157]/20 text-[#14b866] border border-[#0f7157]/30'
-                  }`}>
-                    {product.badge}
-                  </span>
-                </div>
-              )}
+          {products.map((product, i) => {
+            const img = product.images?.[0] || '/images/products/product-img-1.png'
+            const discount = product.comparePrice
+              ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
+              : null
+            const tags = product.tags?.slice(0, 4) || []
 
-              {/* Image */}
-              <div className="relative aspect-square p-6 sm:p-8">
-                <div className="relative w-full h-full">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-contain transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6 pt-0">
-                <p className="text-[10px] font-semibold text-[#14b866] uppercase tracking-wider mb-1">
-                  {product.brand}
-                </p>
-                <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
-                <p className="text-sm text-white/40 mb-4">{product.tagline}</p>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {product.features.map((f) => (
-                    <span
-                      key={f}
-                      className="inline-flex items-center rounded-full bg-white/[0.04] border border-white/[0.06] px-2.5 py-1 text-[10px] text-white/50"
-                    >
-                      {f}
+            return (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden transition-all duration-300 hover:border-[#0f7157]/30 hover:bg-white/[0.04] cursor-pointer"
+                onClick={() => navigate('product', { productId: product.id })}
+              >
+                {/* Discount Badge */}
+                {discount && discount > 0 && (
+                  <div className="absolute top-4 left-4 z-20">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 text-[10px] font-bold shadow-lg">
+                      -{discount}% OFF
                     </span>
-                  ))}
+                  </div>
+                )}
+
+                {/* Stock Badge */}
+                {product.stock <= 5 && product.stock > 0 && (
+                  <div className="absolute top-4 right-4 z-20">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1 text-[10px] font-bold shadow-lg">
+                      Low Stock
+                    </span>
+                  </div>
+                )}
+
+                {/* Image */}
+                <div className="relative aspect-square p-6 sm:p-8">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={img}
+                      alt={product.name}
+                      fill
+                      className="object-contain transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  </div>
                 </div>
 
-                {/* Price & CTA */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-xl font-bold text-white">${product.price.toFixed(2)}</span>
-                    {product.comparePrice && (
-                      <span className="ml-2 text-sm text-white/30 line-through">
-                        ${product.comparePrice.toFixed(2)}
-                      </span>
-                    )}
+                {/* Content */}
+                <div className="p-6 pt-0">
+                  <p className="text-[10px] font-semibold text-[#14b866] uppercase tracking-wider mb-1">
+                    {product.brand || 'Hardware Wallet'}
+                  </p>
+                  <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
+                  <p className="text-sm text-white/40 mb-4 line-clamp-2">{product.shortDesc || ''}</p>
+
+                  {/* Tags */}
+                  {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {tags.map((t: string) => (
+                        <span
+                          key={t}
+                          className="inline-flex items-center rounded-full bg-white/[0.04] border border-white/[0.06] px-2.5 py-1 text-[10px] text-white/50 capitalize"
+                        >
+                          {t.replace(/-/g, ' ')}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Price & CTA */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xl font-bold text-white">${product.price.toFixed(2)}</span>
+                      {product.comparePrice && product.comparePrice > product.price && (
+                        <span className="ml-2 text-sm text-white/30 line-through">
+                          ${product.comparePrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate('product', { productId: product.id })
+                      }}
+                      className="bg-[#0f7157] hover:bg-[#14b866] text-white rounded-full px-4"
+                    >
+                      <ShoppingBag className="mr-1.5 size-3.5" />
+                      Shop
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    onClick={() => navigate('shop')}
-                    className="bg-[#0f7157] hover:bg-[#14b866] text-white rounded-full px-4"
-                  >
-                    <ShoppingBag className="mr-1.5 size-3.5" />
-                    Shop
-                  </Button>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* View All CTA */}

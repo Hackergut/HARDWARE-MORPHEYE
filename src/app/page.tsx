@@ -49,6 +49,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { FeaturesSection } from '@/components/store/features-section'
 import { ProductShowcaseSection } from '@/components/store/product-showcase-section'
 import { TrustSectionV2 } from '@/components/store/trust-section-v2'
+import { PageTransition } from '@/components/store/page-transition'
 
 function HomePage() {
   return (
@@ -70,9 +71,9 @@ function HomePage() {
 }
 
 const pageVariants = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  initial: { opacity: 0, y: 20, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  exit: { opacity: 0, y: -20, scale: 0.98 },
 }
 
 export default function Home() {
@@ -130,18 +131,18 @@ export default function Home() {
       <AnnouncementBar />
       <StoreHeader />
       <main className="flex-1">
-        <AnimatePresence mode="wait">
+        <PageTransition>
           <motion.div
             key={currentPage}
             variants={pageVariants}
             initial="initial"
             animate="animate"
             exit="exit"
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             {renderPage()}
           </motion.div>
-        </AnimatePresence>
+        </PageTransition>
       </main>
       <StoreFooter />
       <QuickViewModal />
