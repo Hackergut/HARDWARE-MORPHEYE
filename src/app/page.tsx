@@ -50,13 +50,17 @@ import { FeaturesSection } from '@/components/store/features-section'
 import { ProductShowcaseSection } from '@/components/store/product-showcase-section'
 import { TrustSectionV2 } from '@/components/store/trust-section-v2'
 import { PageTransition } from '@/components/store/page-transition'
+import { VideoHeroSection } from '@/components/store/video-hero-section'
+import { ParallaxGallery } from '@/components/store/parallax-gallery'
 
 function HomePage() {
   return (
     <>
+      <VideoHeroSection />
       <HeroSection />
       <FeaturesSection />
       <ProductShowcaseSection />
+      <ParallaxGallery />
       <TrustSectionV2 />
       <FlashPromoBanner />
       <FeaturedSection />
