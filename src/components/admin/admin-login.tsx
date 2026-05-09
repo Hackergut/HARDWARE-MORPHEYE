@@ -29,7 +29,7 @@ export function AdminLogin() {
 
     const success = login(email, password)
     if (success) {
-      navigate('admin')
+      window.location.hash = 'admin'
     } else {
       setError('Invalid email or password')
     }

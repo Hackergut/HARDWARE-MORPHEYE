@@ -17,6 +17,9 @@ import {
   ArrowDownRight,
   Mail,
   Activity,
+  Building2,
+  Repeat,
+  RefreshCw,
 } from 'lucide-react'
 import {
   Card,
@@ -72,6 +75,20 @@ interface DashboardData {
     reviewCount: number
     images: string[]
   }>
+  totalWholesaleRequests?: number
+  pendingWholesaleRequests?: number
+  totalSubscriptions?: number
+  abandonedCartsCount?: number
+  loyaltyPointsIssued?: number
+}
+
+interface WholesaleRequestBrief {
+  id: string
+  businessName: string
+  phone: string
+  status: string
+  createdAt: string
+  user?: { name: string | null; email: string } | null
 }
 
 interface LowStockProduct {
@@ -357,6 +374,7 @@ export function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>([])
   const [recentMessages, setRecentMessages] = useState<ContactMessage[]>([])
+  const [wholesaleRequests, setWholesaleRequests] = useState<WholesaleRequestBrief[]>([])
   const [loading, setLoading] = useState(true)
   const { navigate } = useNavigationStore()
 
@@ -409,7 +427,20 @@ export function AdminDashboard() {
       }
     }
 
-    Promise.all([fetchDashboard(), fetchLowStock(), fetchRecentMessages()])
+    const fetchWholesaleRequests = async () => {
+      try {
+        const res = await fetch('/api/wholesale/request?limit=5')
+        if (res.ok) {
+          const json = await res.json()
+          const requests = json.requests || json || []
+          setWholesaleRequests(Array.isArray(requests) ? requests.slice(0, 5) : [])
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    Promise.all([fetchDashboard(), fetchLowStock(), fetchRecentMessages(), fetchWholesaleRequests()])
   }, [])
 
   if (loading) {
@@ -599,6 +630,36 @@ export function AdminDashboard() {
           trendUp={false}
           comparisonLabel="vs completed"
           comparisonValue={`${(data.ordersByStatus?.delivered || 0)} delivered`}
+        />
+        <StatCard
+          icon={Building2}
+          title="Wholesale Requests"
+          value={data.totalWholesaleRequests ?? 0}
+          color="bg-purple-500/10 text-purple-400"
+          trend={data.pendingWholesaleRequests ? `${data.pendingWholesaleRequests} pending` : undefined}
+          trendUp={true}
+          comparisonLabel="pending approval"
+          comparisonValue={`${data.pendingWholesaleRequests ?? 0} requests`}
+        />
+        <StatCard
+          icon={Repeat}
+          title="Subscriptions"
+          value={data.totalSubscriptions ?? 0}
+          color="bg-emerald-500/10 text-emerald-400"
+          trend="Recurring revenue"
+          trendUp={true}
+          comparisonLabel="active plans"
+          comparisonValue={`${data.totalSubscriptions ?? 0} active`}
+        />
+        <StatCard
+          icon={RefreshCw}
+          title="Abandoned Carts"
+          value={data.abandonedCartsCount ?? 0}
+          color="bg-orange-500/10 text-orange-400"
+          trend="Needs recovery"
+          trendUp={false}
+          comparisonLabel="recovery rate"
+          comparisonValue={`${data.abandonedCartsCount && data.totalOrders ? Math.round((data.totalOrders / (data.totalOrders + data.abandonedCartsCount)) * 100) : 0}% recovered`}
         />
       </motion.div>
 
@@ -949,6 +1010,53 @@ export function AdminDashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Recent Wholesale Requests */}
+      {wholesaleRequests.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <Card className="border-neutral-800 bg-neutral-900">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base font-semibold text-white">
+                <Building2 className="size-4 text-purple-400" />
+                Recent Wholesale Requests
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {wholesaleRequests.map((req) => (
+                  <div
+                    key={req.id}
+                    className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-800/30 p-3 transition-colors hover:bg-neutral-800/50 cursor-pointer"
+                    onClick={() => navigate('admin-wholesale-requests')}
+                  >
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-purple-500/10">
+                      <Building2 className="size-5 text-purple-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white">{req.businessName}</p>
+                      <p className="text-xs text-neutral-500">
+                        {req.user?.email || req.phone}
+                      </p>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${
+                        req.status === 'pending'
+                          ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                          : req.status === 'approved'
+                          ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+                          : 'bg-red-500/10 text-red-400 border-red-500/20'
+                      }`}
+                    >
+                      {req.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Top Products */}
       {data.topProducts.length > 0 && (

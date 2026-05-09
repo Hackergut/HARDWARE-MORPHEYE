@@ -13,6 +13,9 @@ const quickLinks = [
   { label: 'Home', page: 'home' as const },
   { label: 'Shop', page: 'shop' as const },
   { label: 'Bundles', page: 'shop' as const },
+  { label: 'Wholesale', page: 'wholesale' as const },
+  { label: 'Loyalty', page: 'loyalty' as const },
+  { label: 'Blog', page: 'blog' as const },
   { label: 'Contact', page: 'contact' as const },
   { label: 'Privacy Policy', page: 'privacy' as const },
   { label: 'Terms of Service', page: 'terms' as const },
@@ -24,6 +27,7 @@ const supportLinks = [
   { label: 'Returns', page: null as string | null },
   { label: 'Warranty', page: null as string | null },
   { label: 'Track Order', page: 'tracking' as string | null },
+  { label: 'Subscriptions', page: 'subscriptions' as string | null },
 ]
 
 const socialLinks = [

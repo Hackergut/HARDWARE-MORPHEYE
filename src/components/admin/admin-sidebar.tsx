@@ -14,6 +14,12 @@ import {
   X,
   Shield,
   User,
+  Users,
+  Send,
+  FileText,
+  Award,
+  RefreshCw,
+  Trash2,
 } from 'lucide-react'
 import { useNavigationStore, type Page } from '@/store/navigation-store'
 import { useAdminAuthStore } from '@/store/admin-auth-store'
@@ -30,6 +36,12 @@ const navItems: { icon: React.ElementType; label: string; page: Page; activeFor:
   { icon: LayoutDashboard, label: 'Dashboard', page: 'admin', activeFor: ['admin'] },
   { icon: Package, label: 'Products', page: 'admin-products', activeFor: ['admin-products'] },
   { icon: ShoppingCart, label: 'Orders', page: 'admin-orders', activeFor: ['admin-orders', 'admin-order-detail'] },
+  { icon: Users, label: 'Wholesale', page: 'admin-wholesale', activeFor: ['admin-wholesale', 'admin-wholesale-requests'] },
+  { icon: Send, label: 'Email Campaigns', page: 'admin-email-campaigns', activeFor: ['admin-email-campaigns'] },
+  { icon: Trash2, label: 'Abandoned Carts', page: 'admin-abandoned-carts', activeFor: ['admin-abandoned-carts'] },
+  { icon: FileText, label: 'Blog', page: 'admin-blog', activeFor: ['admin-blog'] },
+  { icon: Award, label: 'Loyalty', page: 'admin-loyalty', activeFor: ['admin-loyalty'] },
+  { icon: RefreshCw, label: 'Subscriptions', page: 'admin-subscriptions', activeFor: ['admin-subscriptions'] },
   { icon: Mail, label: 'Messages', page: 'admin-contact', activeFor: ['admin-contact'] },
   { icon: Settings, label: 'Settings', page: 'admin-settings', activeFor: ['admin-settings'] },
 ]
@@ -155,7 +167,7 @@ export function AdminSidebar() {
         </div>
 
         {/* Nav Items */}
-        <nav className="flex-1 space-y-1 p-3">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {navItems.map((item) => {
             const Icon = item.icon
             const active = isActive(item)
@@ -170,9 +182,8 @@ export function AdminSidebar() {
                         : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                     }`}
                   >
-                    <Icon className="size-4" />
-                    {item.label}
-                    {/* Active indicator dot */}
+                    <Icon className="size-4 shrink-0" />
+                    <span className="truncate">{item.label}</span>
                     {active && (
                       <span className="absolute right-3 size-1.5 rounded-full bg-cyan-400" />
                     )}
@@ -188,7 +199,6 @@ export function AdminSidebar() {
 
         {/* User Avatar + Footer */}
         <div className="border-t border-neutral-800 p-3 space-y-1">
-          {/* User avatar section */}
           <div className="flex items-center gap-3 rounded-lg px-3 py-2.5 mb-1">
             <div className="flex size-9 items-center justify-center rounded-full bg-cyan-500/10 ring-1 ring-cyan-500/20">
               <User className="size-4 text-cyan-400" />

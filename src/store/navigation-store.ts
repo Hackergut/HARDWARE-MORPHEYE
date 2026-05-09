@@ -15,12 +15,25 @@ export type Page =
   | 'faq'
   | 'privacy'
   | 'terms'
+  | 'wholesale'
+  | 'wholesale-apply'
+  | 'loyalty'
+  | 'subscriptions'
+  | 'blog'
+  | 'blog-post'
   | 'admin' 
   | 'admin-products' 
   | 'admin-orders' 
   | 'admin-order-detail'
   | 'admin-settings'
   | 'admin-contact'
+  | 'admin-wholesale'
+  | 'admin-wholesale-requests'
+  | 'admin-email-campaigns'
+  | 'admin-blog'
+  | 'admin-loyalty'
+  | 'admin-subscriptions'
+  | 'admin-abandoned-carts'
 
 interface NavigationState {
   currentPage: Page
@@ -29,7 +42,8 @@ interface NavigationState {
   searchQuery: string | null
   selectedBrand: string | null
   selectedOrderId: string | null
-  navigate: (page: Page, params?: { productId?: string; category?: string; query?: string; brand?: string; orderId?: string }) => void
+  selectedPostSlug: string | null
+  navigate: (page: Page, params?: { productId?: string; category?: string; query?: string; brand?: string; orderId?: string; postSlug?: string }) => void
   goBack: () => void
   history: Page[]
 }
@@ -41,10 +55,11 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   searchQuery: null,
   selectedBrand: null,
   selectedOrderId: null,
+  selectedPostSlug: null,
   history: ['home'],
   navigate: (page, params) => {
     const state = get()
-    const newHistory = [...state.history, page].slice(-30) // Keep last 30 entries max
+    const newHistory = [...state.history, page].slice(-30)
     set({
       currentPage: page,
       selectedProductId: params?.productId ?? null,
@@ -52,6 +67,7 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
       searchQuery: params?.query ?? null,
       selectedBrand: params?.brand ?? null,
       selectedOrderId: params?.orderId ?? null,
+      selectedPostSlug: params?.postSlug ?? null,
       history: newHistory,
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })

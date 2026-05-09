@@ -49,6 +49,9 @@ const navLinks = [
   { label: 'Home', page: 'home' as const },
   { label: 'Shop', page: 'shop' as const },
   { label: 'Bundles', page: 'shop' as const, category: 'bundles' },
+  { label: 'Wholesale', page: 'wholesale' as const },
+  { label: 'Loyalty', page: 'loyalty' as const },
+  { label: 'Blog', page: 'blog' as const },
   { label: 'Support', page: 'contact' as const },
 ]
 
@@ -500,16 +503,6 @@ export function StoreHeader() {
               </PopoverContent>
             </Popover>
 
-            {/* Admin */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('admin')}
-              className="text-muted-foreground hover:text-cyan-400 dark:hover:text-cyan-400"
-              title="Admin Panel"
-            >
-              <Shield className="size-4" />
-            </Button>
           </div>
 
           {/* Mobile Actions */}
@@ -662,16 +655,6 @@ export function StoreHeader() {
                         {comparisonCount}
                       </Badge>
                     )}
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('admin')
-                      setMobileOpen(false)
-                    }}
-                    className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors dark:hover:bg-card hover:bg-muted hover:text-foreground"
-                  >
-                    <Shield className="size-4" />
-                    Admin
                   </button>
                   <div className="my-2 border-t border-border" />
                   <button

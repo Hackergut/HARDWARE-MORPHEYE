@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle, Flame, Sparkles, Truck } from 'lucide-react'
+import { Star, ShoppingCart, Eye, Package, Heart, ArrowLeftRight, Circle, Flame, Sparkles, Truck, Building2 } from 'lucide-react'
 import { useNavigationStore } from '@/store/navigation-store'
 import { useCartStore } from '@/store/cart-store'
 import { useWishlistStore } from '@/store/wishlist-store'
@@ -30,6 +30,9 @@ export interface ProductCardProps {
     reviewCount?: number
     stock?: number
     createdAt?: string | Date | null
+    wholesalePrice?: number | null
+    wholesaleOnly?: boolean
+    minWholesaleQty?: number
   }
 }
 
@@ -266,6 +269,17 @@ export function ProductCard({ product }: ProductCardProps) {
               Hot
             </Badge>
           )}
+          {product.wholesaleOnly && (
+            <Badge className="bg-gradient-to-r from-purple-500 to-violet-500 text-[10px] font-bold text-white shadow-lg shadow-purple-500/30">
+              <Building2 className="mr-0.5 size-3" />
+              Wholesale
+            </Badge>
+          )}
+          {product.wholesalePrice && !product.wholesaleOnly && (
+            <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20 text-[10px] font-medium">
+              Wholesale Available
+            </Badge>
+          )}
         </div>
 
         {/* Quick View Button - appears on image hover */}
@@ -379,10 +393,21 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="mt-auto flex items-end justify-between">
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold text-cyan-400">
-                ${product.price.toFixed(2)}
-              </span>
-              {product.comparePrice && product.comparePrice > product.price && (
+              {product.wholesalePrice ? (
+                <>
+                  <span className="text-lg font-bold text-purple-400">
+                    ${product.wholesalePrice.toFixed(2)}
+                  </span>
+                  <span className="text-xs text-muted-foreground line-through">
+                    ${product.price.toFixed(2)}
+                  </span>
+                </>
+              ) : (
+                <span className="text-lg font-bold text-cyan-400">
+                  ${product.price.toFixed(2)}
+                </span>
+              )}
+              {product.comparePrice && product.comparePrice > product.price && !product.wholesalePrice && (
                 <span className="text-xs text-muted-foreground line-through">
                   ${product.comparePrice.toFixed(2)}
                 </span>
@@ -409,6 +434,11 @@ export function ProductCard({ product }: ProductCardProps) {
             {stockStatus === 'low-stock' && (
               <span className="text-[10px] font-medium text-amber-400">
                 Selling Fast
+              </span>
+            )}
+            {product.minWholesaleQty && product.minWholesaleQty > 1 && (
+              <span className="text-[10px] font-medium text-purple-400">
+                Min Order: {product.minWholesaleQty}
               </span>
             )}
           </div>

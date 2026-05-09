@@ -73,4 +73,25 @@ export class ProductService {
     const response = await this.list({ featured: true, limit })
     return response.products
   }
+
+  static async getWholesaleProducts(filters?: { category?: string; search?: string }): Promise<ProductListItem[]> {
+    const params = new URLSearchParams()
+    params.set('wholesale', 'true')
+    if (filters?.category) params.set('category', filters.category)
+    if (filters?.search) params.set('search', filters.search)
+    params.set('limit', '100')
+
+    const res = await fetch(`${this.baseUrl}?${params.toString()}`)
+    if (!res.ok) throw new Error('Failed to fetch wholesale products')
+    const data = await res.json()
+    return data.products || []
+  }
+
+  static async getBundledProducts(bundleIds: string[]): Promise<ProductListItem[]> {
+    if (!bundleIds.length) return []
+    const res = await fetch(`${this.baseUrl}?ids=${bundleIds.join(',')}`)
+    if (!res.ok) throw new Error('Failed to fetch bundled products')
+    const data = await res.json()
+    return data.products || []
+  }
 }

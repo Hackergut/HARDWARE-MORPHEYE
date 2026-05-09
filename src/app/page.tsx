@@ -29,21 +29,34 @@ import { CookieConsent } from '@/components/store/cookie-consent'
 import { SocialProofNotification } from '@/components/store/social-proof-notification'
 import { QuickViewModal } from '@/components/store/quick-view-modal'
 import { NotificationToast } from '@/components/store/notification-toast'
-import { AdminLayout } from '@/components/admin/admin-layout'
 import { AnnouncementBar } from '@/components/store/announcement-bar'
 import { MetaPixel } from '@/components/integrations/meta-pixel'
 import { FlashPromoBanner } from '@/components/store/flash-promo-banner'
 import { CategoryShowcaseBanner } from '@/components/store/category-showcase-banner'
 import { TrustSecurityBanner } from '@/components/store/trust-security-banner'
 import { CryptoCtaBanner } from '@/components/store/crypto-cta-banner'
+import { WholesalePage } from '@/components/store/wholesale-page'
+import { WholesaleApplyPage } from '@/components/store/wholesale-apply-page'
+import { LoyaltyPage } from '@/components/store/loyalty-page'
+import { SubscriptionsPage } from '@/components/store/subscriptions-page'
+import { BlogPage } from '@/components/store/blog-page'
+import { BlogPostPage } from '@/components/store/blog-post-page'
+import { ExitIntentPopup } from '@/components/store/exit-intent-popup'
+import { CartAbandonmentTracker } from '@/components/store/cart-abandonment-tracker'
+import { CurrencySelector } from '@/components/store/currency-selector'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const adminPages = ['admin', 'admin-products', 'admin-orders', 'admin-order-detail', 'admin-contact', 'admin-settings']
+import { FeaturesSection } from '@/components/store/features-section'
+import { ProductShowcaseSection } from '@/components/store/product-showcase-section'
+import { TrustSectionV2 } from '@/components/store/trust-section-v2'
 
 function HomePage() {
   return (
     <>
       <HeroSection />
+      <FeaturesSection />
+      <ProductShowcaseSection />
+      <TrustSectionV2 />
       <FlashPromoBanner />
       <FeaturedSection />
       <CategoryShowcaseBanner />
@@ -64,18 +77,6 @@ const pageVariants = {
 
 export default function Home() {
   const { currentPage } = useNavigationStore()
-
-  const isAdmin = adminPages.includes(currentPage)
-
-  if (isAdmin) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <AdminLayout />
-        <NotificationToast />
-        <MetaPixel />
-      </div>
-    )
-  }
 
   const renderPage = () => {
     switch (currentPage) {
@@ -107,6 +108,18 @@ export default function Home() {
         return <PrivacyPolicyPage />
       case 'terms':
         return <TermsPage />
+      case 'wholesale':
+        return <WholesalePage />
+      case 'wholesale-apply':
+        return <WholesaleApplyPage />
+      case 'loyalty':
+        return <LoyaltyPage />
+      case 'subscriptions':
+        return <SubscriptionsPage />
+      case 'blog':
+        return <BlogPage />
+      case 'blog-post':
+        return <BlogPostPage />
       default:
         return <NotFoundPage />
     }
@@ -135,6 +148,8 @@ export default function Home() {
       <CookieConsent />
       <SocialProofNotification />
       <NotificationToast />
+      <ExitIntentPopup />
+      <CartAbandonmentTracker />
       <MetaPixel />
     </div>
   )
